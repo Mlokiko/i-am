@@ -1,0 +1,1 @@
+bazowy projekt .net maui w którym wyłączone jest kompilowanie dla windows/ios/tizen/macos - tylko android został

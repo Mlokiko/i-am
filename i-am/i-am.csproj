@@ -19,10 +19,10 @@
 		<Nullable>enable</Nullable>
 
 		<!-- Display name -->
-		<ApplicationTitle>i-am</ApplicationTitle>
+		<ApplicationTitle>I AM</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.iam</ApplicationId>
+		<ApplicationId>com.company.i_am</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -67,16 +67,16 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.9" />
-		<PackageReference Include="Plugin.Firebase" Version="4.0.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Models\" />
-	  <Folder Include="PageModels\" />
+		<PackageReference Include="Plugin.Firebase.Core" Version="4.2.0" />
+		<PackageReference Include="Plugin.Firebase.Firestore" Version="4.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <GoogleServicesJson Include="Platforms\Android\google-services.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="PageModels\" />
 	</ItemGroup>
 
 </Project>

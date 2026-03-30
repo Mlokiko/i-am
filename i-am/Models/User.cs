@@ -22,13 +22,14 @@ namespace i_am.Models
         public string PhoneNumber { get; set; } = string.Empty;
 
         [FirestoreProperty("birthdate")]
-        public DateTime Birthdate { get; set; }
+        public DateTimeOffset BirthDate { get; set; }
 
         [FirestoreProperty("sex")]
         public string Sex { get; set; } = string.Empty;
 
+        //DateTime nie zapisuje się dobrze do Firestore, więc używamy DateTimeOffset, który jest kompatybilny z Firestore i przechowuje zarówno datę, jak i strefę czasową (mimo że niepotrzebnie)
         [FirestoreProperty("createdAt")]
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
         [FirestoreProperty("isCareGiver")]
         public bool IsCaregiver { get; set; }

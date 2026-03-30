@@ -1,4 +1,5 @@
 ﻿using i_am.Pages.Authentication;
+using i_am.Pages.Main;
 
 namespace i_am
 {
@@ -9,6 +10,8 @@ namespace i_am
             InitializeComponent();
             Routing.RegisterRoute(nameof(LoginPage), typeof(LoginPage));
             Routing.RegisterRoute(nameof(RegisterPage), typeof(RegisterPage));
+            Routing.RegisterRoute(nameof(ManageAccountPage), typeof(ManageAccountPage));
+            Routing.RegisterRoute(nameof(InformationPage), typeof(InformationPage));
         }
     }
 }

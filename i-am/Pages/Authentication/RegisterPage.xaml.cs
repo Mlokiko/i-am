@@ -1,6 +1,8 @@
 using i_am.Services;
 using i_am.Models;
 using System.Text.RegularExpressions;
+using i_am.Pages.CareGiver;
+using i_am.Pages.CareTaker;
 
 namespace i_am.Pages.Authentication;
 
@@ -81,19 +83,22 @@ public partial class RegisterPage : ContentPage
                 Name = NameEntry.Text.Trim(),
                 Email = EmailEntry.Text.Trim(),
                 PhoneNumber = fullPhoneNumber,
-                Birthdate = BirthdatePicker.Date.ToUniversalTime(),
+                BirthDate = BirthdatePicker.Date.ToUniversalTime(),
                 Sex = SexPicker.SelectedItem.ToString(),
                 IsCaregiver = CaregiverSwitch.IsToggled
                 // CreatedAt, CaretakersID, and CaregiversID are automatically set by User model
             };
 
+            Preferences.Default.Set("IsCaregiver", userProfile.IsCaregiver);
             // 4. Save the profile to Firestore under the exact same UID
             await _firestoreService.CreateUserProfileAsync(uid, userProfile);
 
             await DisplayAlert("Sukces", "Konto zosta³o pomyœlnie stworzone!", "OK");
 
-            // 5. Navigate into the app
-            await Shell.Current.GoToAsync($"//{nameof(MainPage)}");
+            if (userProfile.IsCaregiver)
+                await Shell.Current.GoToAsync($"//{nameof(CareGiverMainPage)}");
+            else
+                await Shell.Current.GoToAsync($"//{nameof(CareTakerMainPage)}");
         }
         catch (Exception ex)
         {

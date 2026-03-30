@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="i_am.Pages.Main.InformationPage"
+             Title="Informacje"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light=White, Dark=#121212}">
+    <ScrollView >
+        <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*" RowSpacing="0">
+
+            <VerticalStackLayout 
+                Grid.Row="0"
+                Padding="20"
+                Spacing="5"
+                BackgroundColor="#512BD4">
+                <Label 
+                        Text="Informacje"
+                        FontSize="32"
+                        FontAttributes="Bold"
+                        TextColor="White"
+                        HorizontalOptions="Center" />
+            </VerticalStackLayout>
+
+
+            <VerticalStackLayout 
+                Grid.Row="1"
+                Padding="0" 
+                Spacing="0" 
+                HorizontalOptions="FillAndExpand">
+
+                <Label 
+                    Text="Numery alarmowe"
+                    FontSize="24"
+                    Padding="20"
+                    FontAttributes="Bold"
+                    HorizontalOptions="Center"/>
+
+                <Border Padding="1" Stroke="#512BD4" StrokeShape="5">
+                    <VerticalStackLayout>
+                        <Border Padding="10" Stroke="#512BD4">
+                            <StackLayout Orientation="Horizontal" Spacing="10">
+                                <Label FontSize="18" VerticalOptions="Center" HorizontalTextAlignment="Center">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Pogotowie ratunkowe - "/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label FontSize="18" FontAttributes="Bold" TextColor="#512BD4" VerticalOptions="Center">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span 
+                                                FontAttributes="Bold"
+                                                TextColor="#512BD4"
+                                                Text="999"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer 
+                                            Tapped="OnPhoneNumberTapped"
+                                            CommandParameter="999" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </StackLayout>
+                        </Border>
+                        <Border Padding="10" Stroke="#512BD4">
+                            <StackLayout Orientation="Horizontal" Spacing="10">
+                                <Label FontSize="18" VerticalOptions="Center" HorizontalTextAlignment="Center">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Numer alarmowy - "/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label FontSize="18" FontAttributes="Bold" TextColor="#512BD4" VerticalOptions="Center">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span 
+                                                FontAttributes="Bold"
+                                                TextColor="#512BD4"
+                                                Text="112"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer 
+                                            Tapped="OnPhoneNumberTapped"
+                                            CommandParameter="112" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </StackLayout>
+                        </Border>
+                        <Border Padding="10" Stroke="#512BD4">
+                            <StackLayout Orientation="Horizontal" Spacing="10">
+                                <Label FontSize="18" VerticalOptions="Center" HorizontalTextAlignment="Center">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Telefon Pogadania - "/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label FontSize="18" FontAttributes="Bold" TextColor="#512BD4" VerticalOptions="Center">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span 
+                                                FontAttributes="Bold"
+                                                TextColor="#512BD4"
+                                                Text="800012005"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer 
+                                            Tapped="OnPhoneNumberTapped"
+                                            CommandParameter="800012005" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </StackLayout>
+                        </Border>
+                        <Border Padding="10" Stroke="#512BD4">
+                            <VerticalStackLayout Spacing="8">
+                                <Label FontSize="18"  LineBreakMode="WordWrap">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Centrum Wsparcia dla Osób Dorosłych w Kryzysie Psychicznym - "/>
+                                            <Span Text="800702222"
+                                                FontAttributes="Bold"
+                                                TextColor="#512BD4">
+                                                <Span.GestureRecognizers>
+                                                    <TapGestureRecognizer 
+                                                        Tapped="OnPhoneNumberTapped"
+                                                        CommandParameter="800702222" />
+                                                </Span.GestureRecognizers>
+                                            </Span>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label FontSize="18" LineBreakMode="WordWrap">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Czat dostępny na: "/>
+                                            <Span Text="centrumwsparcia.pl"
+                                                FontAttributes="Bold"
+                                                TextDecorations="Underline"
+                                                TextColor="{AppThemeBinding Light=Green, Dark=LightGreen}" >
+                                                <Span.GestureRecognizers>
+                                                    <TapGestureRecognizer 
+                                                        Tapped="OnWebsiteTapped"
+                                                        CommandParameter="https://centrumwsparcia.pl" />
+                                                </Span.GestureRecognizers>
+                                            </Span>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Padding="10" Stroke="#512BD4">
+                            <VerticalStackLayout Spacing="8">
+                                <Label FontSize="18" LineBreakMode="WordWrap">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Całodobowy telefon zaufania dla osób dorosłych - "/>
+                                            <Span Text="116123"
+                                                FontAttributes="Bold"
+                                                TextColor="#512BD4">
+                                                <Span.GestureRecognizers>
+                                                    <TapGestureRecognizer 
+                                                        Tapped="OnPhoneNumberTapped"
+                                                        CommandParameter="116123" />
+                                                </Span.GestureRecognizers>
+                                            </Span>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label FontSize="18" LineBreakMode="WordWrap">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Czat dostępny na: "/>
+                                            <Span Text="116sos.pl"
+                                                FontAttributes="Bold"
+                                                TextDecorations="Underline"
+                                                TextColor="{AppThemeBinding Light=Green, Dark=LightGreen}" >
+                                                <Span.GestureRecognizers>
+                                                    <TapGestureRecognizer 
+                                                        Tapped="OnWebsiteTapped"
+                                                        CommandParameter="https://116sos.pl" />
+                                                </Span.GestureRecognizers>
+                                            </Span>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Padding="10" Stroke="#512BD4">
+                            <VerticalStackLayout Spacing="8">
+                                <Label FontSize="18"  LineBreakMode="WordWrap">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Całodobowy telefon zaufania dzieci i młodzieży - "/>
+                                            <Span Text="116111"
+                                                FontAttributes="Bold"
+                                                TextColor="#512BD4">
+                                                <Span.GestureRecognizers>
+                                                    <TapGestureRecognizer 
+                                                        Tapped="OnPhoneNumberTapped"
+                                                        CommandParameter="116111" />
+                                                </Span.GestureRecognizers>
+                                            </Span>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label FontSize="18" LineBreakMode="WordWrap">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Czat dostępny na: "/>
+                                            <Span Text="116111.pl/czatuj"
+                                                FontAttributes="Bold"
+                                                TextDecorations="Underline"
+                                                TextColor="{AppThemeBinding Light=Green, Dark=LightGreen}" >
+                                                <Span.GestureRecognizers>
+                                                    <TapGestureRecognizer 
+                                                        Tapped="OnWebsiteTapped"
+                                                        CommandParameter="https://116111.pl/czatuj" />
+                                                </Span.GestureRecognizers>
+                                            </Span>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+
+
+            <VerticalStackLayout 
+                Grid.Row="3"
+                Padding="30,20"
+                Spacing="10"
+                HorizontalOptions="Fill">
+
+                <Label 
+                    Text="O depresji"
+                    FontSize="24"
+                    Padding="20"
+                    FontAttributes="Bold"
+                    HorizontalOptions="Center"/>
+
+                <Label 
+                    Text="• Depresja to choroba, a nie chwilowy smutek ani oznaka słabości. Może trwać tygodniami lub miesiącami i nie mija sama z siebie. Wpływa na sposób myślenia, odczuwania emocji oraz na codzienne funkcjonowanie."  FontSize="16" 
+                    HorizontalTextAlignment="Justify"
+                    Margin="0,10"/>
+
+                <Label 
+                    Text="• Objawy depresji mogą być różne u każdej osoby. Często pojawia się długotrwały smutek, brak energii lub zainteresowania rzeczami, które wcześniej sprawiały radość. Mogą też występować problemy ze snem, koncentracją lub apetytem."
+                    FontSize="16"
+                    HorizontalTextAlignment="Justify"
+                    Margin="0,10"/>
+
+                <Label 
+                    Text="• Depresja utrudnia codzienne życie i wykonywanie nawet prostych czynności. Osoba chora może mieć trudność z wstawaniem z łóżka, pracą lub kontaktami z innymi ludźmi. Z czasem może to prowadzić do poczucia bezradności i izolacji."
+                    FontSize="16"
+                    HorizontalTextAlignment="Justify"
+                    Margin="0,10"/>
+
+                <Label 
+                    Text="• Wsparcie i szybka reakcja otoczenia są bardzo ważne w leczeniu depresji. Regularne monitorowanie samopoczucia pomaga zauważyć pogorszenie stanu psychicznego. Dzięki temu osoba bliska może szybciej zareagować i zapewnić potrzebną pomoc."
+                    FontSize="16"
+                    HorizontalTextAlignment="Justify"
+                    Margin="0,10"/>
+            </VerticalStackLayout>
+
+        </Grid>
+    </ScrollView>
+</ContentPage>

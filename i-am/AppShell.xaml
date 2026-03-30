@@ -5,10 +5,16 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:i_am"
     xmlns:auth="clr-namespace:i_am.Pages.Authentication"
+    xmlns:taker="clr-namespace:i_am.Pages.CareTaker"
+    xmlns:giver="clr-namespace:i_am.Pages.CareGiver"
+    xmlns:main="clr-namespace:i_am.Pages.Main"
     Title="i_am"
     Shell.FlyoutBehavior="Disabled">
 
-
+    <ShellContent
+        Title="Loading"
+        ContentTemplate="{DataTemplate auth:LoadingPage}"
+        Route="LoadingPage" />
     <ShellContent
         Title="Welcome"
         ContentTemplate="{DataTemplate auth:LandingPage}"
@@ -17,5 +23,12 @@
         Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
-
+    <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate taker:CareTakerMainPage}"
+        Route="CareTakerMainPage" />
+    <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate giver:CareGiverMainPage}"
+        Route="CareGiverMainPage" />
 </Shell>

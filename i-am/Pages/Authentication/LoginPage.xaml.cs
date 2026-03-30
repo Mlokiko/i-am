@@ -1,3 +1,5 @@
+using i_am.Pages.CareGiver;
+using i_am.Pages.CareTaker;
 using i_am.Services;
 
 namespace i_am.Pages.Authentication;
@@ -27,13 +29,22 @@ public partial class LoginPage : ContentPage
         {
             string uid = await _firestoreService.LoginAsync(email, password);
 
+            var profile = await _firestoreService.GetUserProfileAsync(uid);
+
             // 3. Clear the fields so they are empty if the user logs out later
             EmailEntry.Text = string.Empty;
             PasswordEntry.Text = string.Empty;
 
-            // 4. Navigate to the main app screen
-            // Using "//" tells the AppShell to clear the navigation stack so the user can't hit "Back" to go to the login screen
-            await Shell.Current.GoToAsync($"//{nameof(MainPage)}");
+            if (profile != null)
+            {
+                // MAUI ma wbudowany mechanizm do przechowywania danych, skorzystamy z niego.
+                Preferences.Default.Set("IsCaregiver", profile.IsCaregiver);
+
+                if (profile.IsCaregiver)
+                    await Shell.Current.GoToAsync($"//{nameof(CareGiverMainPage)}");
+                else
+                    await Shell.Current.GoToAsync($"//{nameof(CareTakerMainPage)}");
+            }
         }
         catch (Exception ex)
         {

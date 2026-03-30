@@ -1,4 +1,7 @@
 ﻿using i_am.Pages.Authentication;
+using i_am.Pages.CareGiver;
+using i_am.Pages.CareTaker;
+using i_am.Pages.Main;
 using i_am.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
@@ -29,10 +32,18 @@ namespace i_am
 #endif
             builder.Services.AddSingleton<FirestoreService>(); // Creates one instance for the whole app
 
+            builder.Services.AddTransient<LoadingPage>();
             builder.Services.AddTransient<LandingPage>();
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<RegisterPage>();
+            builder.Services.AddTransient<ManageAccountPage>();
+            builder.Services.AddTransient<InformationPage>();
+
             builder.Services.AddTransient<MainPage>();
+
+            builder.Services.AddTransient<CareGiverMainPage>();
+            builder.Services.AddTransient<CareTakerMainPage>();
+
             return builder.Build();
         }
     }

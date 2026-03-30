@@ -10,40 +10,6 @@
                    FontSize="24" 
                    FontAttributes="Bold" 
                    HorizontalOptions="Center" />
-
-            <Entry x:Name="NameEntry" 
-                   Placeholder="Enter Name" />
-
-            <Entry x:Name="AgeEntry" 
-                   Placeholder="Enter Age" 
-                   Keyboard="Numeric" />
-
-            <Button Text="Add User to Firestore" 
-                    Clicked="OnAddUserClicked" 
-                    BackgroundColor="Green" />
-
-            <Button Text="Load Users from Firestore" 
-                    Clicked="OnLoadUsersClicked" 
-                    BackgroundColor="Blue" />
-
-            <BoxView HeightRequest="1" Color="Gray" Margin="0,10" />
-
-            <Label Text="Database Records:" FontAttributes="Bold" />
-
-            <CollectionView x:Name="UsersCollectionView">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Frame Margin="0,5" Padding="10" BorderColor="LightGray">
-                            <VerticalStackLayout>
-                                <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
-                                <Label Text="{Binding Age, StringFormat='Age: {0}'}" TextColor="Gray" />
-                                <Label Text="{Binding Id, StringFormat='ID: {0}'}" FontSize="10" TextColor="LightGray" />
-                            </VerticalStackLayout>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-
         </VerticalStackLayout>
     </ScrollView>
 

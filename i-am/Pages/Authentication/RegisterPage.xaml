@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="i_am.Pages.Authentication.RegisterPage"
+             Title="RegisterPage">
+    <ScrollView>
+        <VerticalStackLayout Spacing="15" Padding="30">
+
+            <Label
+                Text="Rejestracja"
+                FontSize="32"
+                FontAttributes="Bold"
+                HorizontalOptions="Center"
+                Margin="0,0,0,10"/>
+            
+            <Label 
+                Text="Email"
+                FontSize="16"
+                FontAttributes="Bold"
+                Margin="0,15,0,5"/>
+            <Entry
+                x:Name="EmailEntry"
+                Placeholder="np. example@example.com"
+                Keyboard="Email" />
+
+            <HorizontalStackLayout Spacing="8" Margin="0,10,0,5" VerticalOptions="End">
+                <Label 
+                    Text="Hasło"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    Margin="0,10,0,5"/>
+                <Border Stroke="#2B0B98" StrokeThickness="2" BackgroundColor="Transparent"
+                        StrokeShape="RoundRectangle 15" HeightRequest="24" WidthRequest="24"
+                        HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label Text="?" TextColor="#2B0B98" FontAttributes="Bold"
+                           HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnPasswordInfoTapped" />
+                    </Border.GestureRecognizers>
+                </Border>
+            </HorizontalStackLayout>
+            <Grid>
+                <Entry
+                    x:Name="PasswordEntry"
+                    Placeholder="np. MojeB@rdzoSiln3HaSlO"
+                    IsPassword="True" />
+
+                <Label 
+                    x:Name="TogglePasswordLabel"
+                    Text="Pokaż" 
+                    TextColor="#2B0B98" 
+                    FontAttributes="Bold" 
+                    VerticalOptions="Center" 
+                    HorizontalOptions="End" 
+                    Margin="0,0,15,0">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnTogglePasswordTapped" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+
+            <Label 
+                Text="Potwierdź hasło"
+                FontSize="16"
+                FontAttributes="Bold"
+                Margin="0,10,0,5"/>
+            <Grid>
+                <Entry
+                    x:Name="ConfirmPasswordEntry"
+                    Placeholder="Powtórz hasło"
+                    IsPassword="True" />
+
+                <Label 
+                    x:Name="ToggleConfirmPasswordLabel"
+                    Text="Pokaż" 
+                    TextColor="#2B0B98" 
+                    FontAttributes="Bold" 
+                    VerticalOptions="Center" 
+                    HorizontalOptions="End" 
+                    Margin="0,0,15,0">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnTogglePasswordTapped" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+
+            <HorizontalStackLayout Spacing="8" Margin="0,10,0,5" VerticalOptions="End">
+                <Label 
+                    Text="Nazwa użytkownika"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    VerticalOptions="Center"/>
+
+                <Border Stroke="#2B0B98" StrokeThickness="2" BackgroundColor="Transparent"
+                        StrokeShape="RoundRectangle 15" HeightRequest="24" WidthRequest="24"
+                        HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label Text="?" TextColor="#2B0B98" FontAttributes="Bold"
+                           HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnNameInfoTapped" />
+                    </Border.GestureRecognizers>
+                </Border>
+            </HorizontalStackLayout>
+            <Entry
+                x:Name="NameEntry"
+                Placeholder="np. Andrju" />
+
+            <HorizontalStackLayout Spacing="8" Margin="0,10,0,5" VerticalOptions="End">
+                <Label 
+                    Text="Numer telefonu"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    VerticalOptions="Center"/>
+
+                <Border Stroke="#2B0B98" StrokeThickness="2" BackgroundColor="Transparent"
+                        StrokeShape="RoundRectangle 15" HeightRequest="24" WidthRequest="24"
+                        HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label Text="?" TextColor="#2B0B98" FontAttributes="Bold"
+                           HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnPhoneInfoTapped" />
+                    </Border.GestureRecognizers>
+                </Border>
+            </HorizontalStackLayout>
+
+            <Grid ColumnDefinitions="Auto, *">
+                <Entry 
+                    x:Name="PhonePrefixEntry" 
+                    Text="+48"
+                    Grid.Column="0"
+                    Margin="0,0,10,0"
+                    WidthRequest="70"
+                    Keyboard="Telephone" />
+                <Entry
+                    x:Name="PhoneEntry"
+                    Grid.Column="1"
+                    Placeholder="np. 111 222 333"
+                    Keyboard="Telephone" />
+            </Grid>
+
+            <HorizontalStackLayout Spacing="8" Margin="0,10,0,5" VerticalOptions="End">
+                <Label 
+                    Text="Data urodzenia"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    Margin="0,10,0,5"/>
+                <Border Stroke="#2B0B98" StrokeThickness="2" BackgroundColor="Transparent"
+                        StrokeShape="RoundRectangle 15" HeightRequest="24" WidthRequest="24"
+                        HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label Text="?" TextColor="#2B0B98" FontAttributes="Bold"
+                           HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnBirthdayInfoTapped" />
+                    </Border.GestureRecognizers>
+                </Border>
+            </HorizontalStackLayout>
+            <DatePicker 
+                x:Name="BirthdatePicker"
+                Format="dd/MM/yyyy" />
+
+
+            <HorizontalStackLayout Spacing="8" Margin="0,10,0,5" VerticalOptions="End">
+                <Label 
+                    Text="Płeć"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    Margin="0,10,0,5"/>     
+                <Border Stroke="#2B0B98" StrokeThickness="2" BackgroundColor="Transparent"
+                        StrokeShape="RoundRectangle 15" HeightRequest="24" WidthRequest="24"
+                        HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label Text="?" TextColor="#2B0B98" FontAttributes="Bold"
+                           HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnSexInfoTapped" />
+                    </Border.GestureRecognizers>
+                </Border>
+            </HorizontalStackLayout>
+            <Picker x:Name="SexPicker" Title="Kliknij aby wybrać z listy">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Mężczyzna</x:String>
+                        <x:String>Kobieta</x:String>
+                        <x:String>Inne</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+
+            <HorizontalStackLayout Spacing="10" VerticalOptions="Center" Margin="0,10,0,0">
+                <Label Text="Jesteś opiekunem?" VerticalOptions="Center" />
+                <Border Stroke="#2B0B98" StrokeThickness="2" BackgroundColor="Transparent"
+                        StrokeShape="RoundRectangle 15" HeightRequest="24" WidthRequest="24"
+                        HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label Text="?" TextColor="#2B0B98" FontAttributes="Bold"
+                           HorizontalOptions="Center" VerticalOptions="Center" />
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnCareGiverInfoTapped" />
+                    </Border.GestureRecognizers>
+                </Border>
+                <Switch x:Name="CaregiverSwitch" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <Button 
+                x:Name="RegisterButton"
+                Text="Stwórz konto" 
+                Clicked="OnRegisterClicked" 
+                BackgroundColor="#2B0B98" TextColor="White" 
+                CornerRadius="8" HeightRequest="50" FontAttributes="Bold"
+                Margin="0,20,0,0"/>
+
+            <ActivityIndicator 
+                x:Name="LoadingSpinner"
+                IsRunning="False"
+                IsVisible="False"
+                Color="#2B0B98"
+                HorizontalOptions="Center"
+                Margin="0,10,0,0" />
+
+            <Button 
+                Text="Masz już konto? Zaloguj się"
+                Clicked="OnLoginClicked"
+                BackgroundColor="Transparent"
+                TextColor="#2B0B98"
+                FontAttributes="Bold"
+                Margin="0,10,0,30" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -67,6 +67,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.9" />
+		<PackageReference Include="Plugin.Firebase.Auth" Version="5.0.1" />
 		<PackageReference Include="Plugin.Firebase.Core" Version="4.2.0" />
 		<PackageReference Include="Plugin.Firebase.Firestore" Version="4.0.0" />
 	</ItemGroup>
@@ -77,6 +78,21 @@
 
 	<ItemGroup>
 	  <Folder Include="PageModels\" />
+	  <Folder Include="Pages\CareGiver\" />
+	  <Folder Include="Pages\CareTaker\" />
+	  <Folder Include="Pages\Main\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="Pages\Authentication\LandingPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\Authentication\LoginPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\Authentication\RegisterPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	</ItemGroup>
 
 </Project>

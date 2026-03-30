@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="i_am.Pages.Authentication.LoginPage"
+             Title="LoginPage">
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="30" VerticalOptions="Center">
+
+            <Label Text="Logowanie" 
+                   FontSize="32" 
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" 
+                   Margin="0,0,0,20"/>
+
+            <Entry x:Name="EmailEntry" 
+                   Placeholder="Email" 
+                   Keyboard="Email"
+                   ClearButtonVisibility="WhileEditing"/>
+
+            <Entry x:Name="PasswordEntry" 
+                   Placeholder="Hasło" 
+                   IsPassword="True" 
+                   ClearButtonVisibility="WhileEditing"/>
+
+            <Button Text="Login" 
+                    Clicked="OnLoginClicked" 
+                    BackgroundColor="#2B0B98" 
+                    TextColor="White" 
+                    CornerRadius="8" 
+                    HeightRequest="50" 
+                    FontAttributes="Bold"
+                    Margin="0,20,0,0"/>
+
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
+                <Label Text="Nie masz konta?" TextColor="Gray" VerticalOptions="Center"/>
+                <Label Text="Zarejestruj." TextColor="#2B0B98" FontAttributes="Bold" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnGoToRegisterTapped" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

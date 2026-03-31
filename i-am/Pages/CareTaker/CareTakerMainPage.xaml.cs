@@ -1,6 +1,7 @@
-using i_am.Pages.Authentication;
-using i_am.Services;
 using i_am.Models;
+using i_am.Pages.Authentication;
+using i_am.Pages.Main;
+using i_am.Services;
 using System.Collections.ObjectModel;
 
 namespace i_am.Pages.CareTaker;
@@ -14,11 +15,34 @@ public partial class CareTakerMainPage : ContentPage
 		InitializeComponent();
         _firestoreService = firestoreService;
     }
-    private async void OnLogoutClicked(object sender, EventArgs e)
+    private async void OnNotificationsButtonClicked(object sender, EventArgs e)
+    {
+        //await Shell.Current.GoToAsync(nameof(NotificationPage));
+        await Shell.Current.GoToAsync($"//{nameof(MainPage)}");
+    }
+    private async void OnDailyActivityButtonClicked(object sender, EventArgs e)
+    {
+        //await Shell.Current.GoToAsync(nameof(DailyActivityPage));
+        await Shell.Current.GoToAsync($"//{nameof(MainPage)}");
+    }
+    private async void OnCalendarButtonClicked(object sender, EventArgs e)
+    {
+        //await Shell.Current.GoToAsync(nameof(CalendarPage));
+        await Shell.Current.GoToAsync($"//{nameof(MainPage)}");
+    }
+    private async void OnManageCaregiversButtonClicked(object sender, EventArgs e)
+    {
+        //await Shell.Current.GoToAsync(nameof(ManageCaregiversPage));
+        await Shell.Current.GoToAsync($"//{nameof(MainPage)}");
+    }
+    private async void OnManageAccountButtonClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(ManageAccountPage));
+    }
+    private async void OnLogoutButtonClicked(object sender, EventArgs e)
     {
         try
         {
-            // Ask the user to confirm they actually want to log out
             bool confirm = await DisplayAlert("Wyloguj", "Jesteœ pewien ¿e chcesz siê wylogowaæ?", "Tak", "Nie");
 
             if (confirm)
@@ -37,5 +61,9 @@ public partial class CareTakerMainPage : ContentPage
         {
             await DisplayAlert("B³¹d", $"Problem z wylogowaniem: {ex.Message}", "OK");
         }
+    }
+    private async void OnAlarmInformationTapped(object sender, TappedEventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(InformationPage));
     }
 }

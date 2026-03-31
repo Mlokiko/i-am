@@ -51,7 +51,7 @@
 
                 <Button 
                     x:Name="ManageAccountButton"
-                    Text="Zarzadzaj swoim kontem"
+                    Text="Zarządzaj swoim kontem"
                     Clicked="OnManageAccountButtonClicked" 
                     HorizontalOptions="Fill" />
             </VerticalStackLayout>

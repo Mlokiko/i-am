@@ -11,7 +11,6 @@
 
             <BoxView HeightRequest="1" Color="LightGray" Margin="0,10"/>
 
-            <Label Text="Account Details" FontSize="18" FontAttributes="Bold" TextColor="#2B0B98"/>
 
             <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto" RowSpacing="15" ColumnSpacing="20">
 
@@ -38,7 +37,7 @@
 
 
 
-            <Button Text="Delete Account" 
+            <Button Text="Usnuń konto" 
                     Clicked="OnDeleteAccountClicked" 
                     BackgroundColor="DarkRed" 
                     TextColor="White" 

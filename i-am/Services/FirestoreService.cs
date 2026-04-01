@@ -2,6 +2,7 @@
 using i_am.Models;
 using Plugin.Firebase.Auth;
 using Plugin.Firebase.Firestore;
+using Plugin.Firebase.CloudMessaging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace i_am.Services
             var user = await CrossFirebaseAuth.Current.CreateUserAsync(email, password);
             return user.Uid;
         }
-        // wbudowana metoda w plugin nie działa prawidłowo... logowanie nie powinno tworzyć user (sic!), dlatego używam tutaj "własnego" kodu
+        // wbudowana metoda w plugin nie działa prawidłowo... logowanie nie powinno tworzyć user (sic!), dlatego używam tutaj "własnego" kodu - gada z SDK Firebase bezpośrednio
         //public async Task<string> LoginAsync(string email, string password)
         //{
         //    var user = await CrossFirebaseAuth.Current.SignInWithEmailAndPasswordAsync(email, password);
@@ -27,7 +28,6 @@ namespace i_am.Services
         //}
         public async Task<string> LoginAsync(string email, string password)
         {
-            // Bypassing the Plugin wrapper to talk directly to Google's native SDKs
 #if ANDROID
             var result = await Firebase.Auth.FirebaseAuth.Instance.SignInWithEmailAndPasswordAsync(email, password);
             return result.User.Uid;
@@ -99,6 +99,50 @@ namespace i_am.Services
         }
 #endif
         }
+        public async Task UpdateFcmTokenAsync()
+        {
+            string? uid = GetCurrentUserId();
+            if (string.IsNullOrEmpty(uid)) return;
+
+            try
+            {
+                // 1. Sprawdzenie i prośba o uprawnienia (Systemowe okienko)
+                var status = await Permissions.CheckStatusAsync<Permissions.PostNotifications>();
+
+                if (status != PermissionStatus.Granted)
+                {
+                    // Wyświetla systemowe zapytanie "Czy chcesz otrzymywać powiadomienia?"
+                    status = await Permissions.RequestAsync<Permissions.PostNotifications>();
+                }
+
+                // Jeśli użytkownik kliknął "Nie zgadzam się", przerywamy proces
+                if (status != PermissionStatus.Granted)
+                {
+                    Console.WriteLine("[FCM] Użytkownik odmówił uprawnień do powiadomień.");
+                    return;
+                }
+
+                // 2. Jeśli mamy zgodę, aktywujemy Firebase
+                await CrossFirebaseCloudMessaging.Current.CheckIfValidAsync();
+
+                // 3. Pobieramy unikalny token telefonu
+                var token = await CrossFirebaseCloudMessaging.Current.GetTokenAsync();
+
+                if (!string.IsNullOrEmpty(token))
+                {
+                    await CrossFirebaseFirestore.Current
+                        .GetCollection("users")
+                        .GetDocument(uid)
+                        .UpdateDataAsync(("fcmToken", token));
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[FCM Error] Błąd podczas pobierania tokenu: {ex.Message}");
+            }
+        }
+
+
 
         #endregion
         #region Notifications

@@ -39,6 +39,7 @@ public partial class LoginPage : ContentPage
             {
                 // MAUI ma wbudowany mechanizm do przechowywania danych, skorzystamy z niego.
                 Preferences.Default.Set("IsCaregiver", profile.IsCaregiver);
+                await _firestoreService.UpdateFcmTokenAsync();
 
                 if (profile.IsCaregiver)
                     await Shell.Current.GoToAsync($"//{nameof(CareGiverMainPage)}");

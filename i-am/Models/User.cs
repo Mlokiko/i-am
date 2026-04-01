@@ -39,5 +39,8 @@ namespace i_am.Models
 
         [FirestoreProperty("careGiversID")]
         public List<string> CaregiversID { get; set; } = new();
+        
+        [FirestoreProperty("fcmToken")] // Token potrzebny do wysyłania powiadomień Push (FCM)
+        public string FcmToken { get; set; } = string.Empty;
     }
 }

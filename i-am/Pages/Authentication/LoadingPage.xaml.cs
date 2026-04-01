@@ -19,6 +19,7 @@ public partial class LoadingPage : ContentPage
 
         if (_firestoreService.IsUserLoggedIn())
         {
+            await _firestoreService.UpdateFcmTokenAsync();
             bool isCaregiver = Preferences.Default.Get("IsCaregiver", false);
 
             if (isCaregiver)

@@ -92,6 +92,7 @@ public partial class RegisterPage : ContentPage
             Preferences.Default.Set("IsCaregiver", userProfile.IsCaregiver);
             // 4. Save the profile to Firestore under the exact same UID
             await _firestoreService.CreateUserProfileAsync(uid, userProfile);
+            await _firestoreService.UpdateFcmTokenAsync();
 
             await DisplayAlert("Sukces", "Konto zosta³o pomyœlnie stworzone!", "OK");
 

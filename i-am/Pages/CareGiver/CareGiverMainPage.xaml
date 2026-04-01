@@ -38,15 +38,15 @@
                     HorizontalOptions="Fill" />
 
                 <Button 
-                    x:Name="ManageCareTakersButton"
-                    Text="Zarzadzaj Podopiecznymi"
-                    Clicked="OnManageCareTakersButtonClicked" 
-                    HorizontalOptions="Fill" />
-
-                <Button 
                     x:Name="EditCareTakerQuestionsButton"
                     Text="Edytuj pytania podpiecznego"
                     Clicked="OnEditCareTakerQuestionsButtonClicked" 
+                    HorizontalOptions="Fill" />
+
+                <Button 
+                    x:Name="ManageCareTakersButton"
+                    Text="Zarzadzaj Podopiecznymi"
+                    Clicked="OnManageCareTakersButtonClicked" 
                     HorizontalOptions="Fill" />
 
                 <Button 

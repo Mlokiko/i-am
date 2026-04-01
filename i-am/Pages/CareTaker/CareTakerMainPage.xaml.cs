@@ -17,23 +17,21 @@ public partial class CareTakerMainPage : ContentPage
     }
     private async void OnNotificationsButtonClicked(object sender, EventArgs e)
     {
-        //await Shell.Current.GoToAsync(nameof(NotificationPage));
-        await Shell.Current.GoToAsync($"//{nameof(MainPage)}");
+        await Shell.Current.GoToAsync(nameof(NotificationsPage));
     }
     private async void OnDailyActivityButtonClicked(object sender, EventArgs e)
     {
         //await Shell.Current.GoToAsync(nameof(DailyActivityPage));
-        await Shell.Current.GoToAsync($"//{nameof(MainPage)}");
+        await Shell.Current.GoToAsync(nameof(InformationPage));
     }
     private async void OnCalendarButtonClicked(object sender, EventArgs e)
     {
         //await Shell.Current.GoToAsync(nameof(CalendarPage));
-        await Shell.Current.GoToAsync($"//{nameof(MainPage)}");
+        await Shell.Current.GoToAsync(nameof(InformationPage));
     }
     private async void OnManageCaregiversButtonClicked(object sender, EventArgs e)
     {
-        //await Shell.Current.GoToAsync(nameof(ManageCaregiversPage));
-        await Shell.Current.GoToAsync($"//{nameof(MainPage)}");
+        await Shell.Current.GoToAsync(nameof(ManageCareGiversPage));
     }
     private async void OnManageAccountButtonClicked(object sender, EventArgs e)
     {

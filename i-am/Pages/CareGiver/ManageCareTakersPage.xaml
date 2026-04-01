@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:i_am.Models"
+             x:Class="i_am.Pages.CareGiver.ManageCareTakersPage"
+             Title="Zarządzaj Podopiecznymi">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="25">
+
+            <Frame CornerRadius="10" Padding="15" BackgroundColor="#F8F9FA" BorderColor="LightGray" HasShadow="False">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Zaproś nowego podopiecznego" FontSize="18" FontAttributes="Bold" TextColor="#2B0B98"/>
+                    <Entry x:Name="EmailEntry" Placeholder="Adres email podopiecznego" Keyboard="Email" ClearButtonVisibility="WhileEditing"/>
+                    <Button Text="Wyślij Zaproszenie" Clicked="OnSendInviteClicked" BackgroundColor="#2B0B98" TextColor="White" CornerRadius="8" FontAttributes="Bold"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Zaproszenia" FontSize="18" FontAttributes="Bold" TextColor="#2B0B98"/>
+
+                <CollectionView ItemsSource="{Binding AllInvitations}">
+                    <CollectionView.EmptyView>
+                        <Label Text="Brak oczekujących zaproszeń." FontSize="14" TextColor="Gray" FontAttributes="Italic" Margin="0,5,0,10"/>
+                    </CollectionView.EmptyView>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Invitation">
+                            <Frame CornerRadius="8" Padding="10" Margin="0,0,0,10" BorderColor="LightGray" HasShadow="False">
+                                <Grid>
+
+                                    <Grid RowDefinitions="Auto, Auto" ColumnDefinitions="*, Auto, Auto" RowSpacing="10" ColumnSpacing="10" IsVisible="False">
+                                        <Grid.Triggers>
+                                            <DataTrigger TargetType="Grid" Binding="{Binding IsSentByMe}" Value="False">
+                                                <Setter Property="IsVisible" Value="True" />
+                                            </DataTrigger>
+                                        </Grid.Triggers>
+
+                                        <VerticalStackLayout Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+                                            <Label Text="{Binding SenderName}" FontSize="16" FontAttributes="Bold" />
+                                            <Label Text="Chce zostać Twoim podopiecznym." FontSize="12" TextColor="Gray" />
+                                            <Label Text="{Binding Status}" FontSize="10" TextColor="#28A745" FontAttributes="Italic"/>
+                                        </VerticalStackLayout>
+
+                                        <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" HorizontalOptions="End" Spacing="10">
+                                            <HorizontalStackLayout.Triggers>
+                                                <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding Status}" Value="Rejected">
+                                                    <Setter Property="IsVisible" Value="False" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding Status}" Value="Deleted">
+                                                    <Setter Property="IsVisible" Value="False" />
+                                                </DataTrigger>
+                                            </HorizontalStackLayout.Triggers>
+                                            <Button Text="Odrzuć" BackgroundColor="#FFF0F0" TextColor="DarkRed" Clicked="OnRejectClicked" CommandParameter="{Binding .}" HeightRequest="35" CornerRadius="6"/>
+                                            <Button Text="Akceptuj" BackgroundColor="#28A745" TextColor="White" Clicked="OnAcceptClicked" CommandParameter="{Binding .}" HeightRequest="35" CornerRadius="6" FontAttributes="Bold"/>
+                                        </HorizontalStackLayout>
+
+                                        <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Text="Odrzuciłeś zaproszenie." TextColor="DarkRed" IsVisible="False">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="Rejected">
+                                                    <Setter Property="IsVisible" Value="True" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </Grid>
+
+
+                                    <Grid ColumnDefinitions="*, Auto" IsVisible="False">
+                                        <Grid.Triggers>
+                                            <DataTrigger TargetType="Grid" Binding="{Binding IsSentByMe}" Value="True">
+                                                <Setter Property="IsVisible" Value="True" />
+                                            </DataTrigger>
+                                        </Grid.Triggers>
+
+                                        <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                                            <Label Text="Wysłano zaproszenie" FontSize="12" TextColor="Gray"/>
+                                            <Label Text="Czeka na akceptację..." FontSize="14" FontAttributes="Bold" TextColor="DarkOrange">
+                                                <Label.Triggers>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="Rejected">
+                                                        <Setter Property="Text" Value="Odrzucone" />
+                                                        <Setter Property="TextColor" Value="DarkRed" />
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="Deleted">
+                                                        <Setter Property="Text" Value="Zakończone" />
+                                                        <Setter Property="TextColor" Value="Gray" />
+                                                    </DataTrigger>
+                                                </Label.Triggers>
+                                            </Label>
+                                        </VerticalStackLayout>
+
+                                        <Button Grid.Column="1" Text="Anuluj" BackgroundColor="#FFF0F0" TextColor="DarkRed" Clicked="OnCancelInvitationClicked" CommandParameter="{Binding .}" HeightRequest="35" CornerRadius="6">
+                                            <Button.Triggers>
+                                                <DataTrigger TargetType="Button" Binding="{Binding Status}" Value="Rejected">
+                                                    <Setter Property="Text" Value="Usuń" />
+                                                    <Setter Property="BackgroundColor" Value="DarkRed" />
+                                                    <Setter Property="TextColor" Value="White" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Button" Binding="{Binding Status}" Value="Deleted">
+                                                    <Setter Property="Text" Value="Usuń" />
+                                                    <Setter Property="BackgroundColor" Value="#6C757D" />
+                                                    <Setter Property="TextColor" Value="White" />
+                                                </DataTrigger>
+                                            </Button.Triggers>
+                                        </Button>
+                                    </Grid>
+
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <BoxView HeightRequest="1" Color="LightGray" Margin="0,5"/>
+
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Twoi Podopieczni" FontSize="18" FontAttributes="Bold" TextColor="#2B0B98"/>
+                <CollectionView ItemsSource="{Binding CareTakers}">
+                    <CollectionView.EmptyView>
+                        <Label Text="Nie masz jeszcze podopiecznych." FontSize="14" TextColor="Gray" HorizontalOptions="Center" Margin="0,20,0,0"/>
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:User">
+                            <Frame CornerRadius="10" Padding="15" Margin="0,0,0,10" BorderColor="LightGray" HasShadow="True">
+                                <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="10">
+                                    <Image Grid.Column="0" Source="dotnet_bot.png" HeightRequest="40" WidthRequest="40"/>
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                        <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold" />
+                                        <Label Text="{Binding Email}" FontSize="12" TextColor="Gray" />
+                                    </VerticalStackLayout>
+                                    <Button Grid.Column="2" Text="Usuń" BackgroundColor="DarkRed" TextColor="White" Clicked="OnRemoveCareTakerClicked" CommandParameter="{Binding .}" HeightRequest="35" CornerRadius="6" VerticalOptions="Center"/>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -38,11 +38,16 @@ namespace i_am
             builder.Services.AddTransient<RegisterPage>();
             builder.Services.AddTransient<ManageAccountPage>();
             builder.Services.AddTransient<InformationPage>();
+            builder.Services.AddTransient<NotificationsPage>();
 
             builder.Services.AddTransient<MainPage>();
 
             builder.Services.AddTransient<CareGiverMainPage>();
+            builder.Services.AddTransient<ManageCareTakersPage>();
+
             builder.Services.AddTransient<CareTakerMainPage>();
+            builder.Services.AddTransient<ManageCareGiversPage>();
+            
 
             return builder.Build();
         }

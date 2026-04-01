@@ -133,7 +133,11 @@ public partial class ManageCareGiversPage : ContentPage
             if (confirm && _currentUser != null)
             {
                 // Odwrotna kolejnoœæ przy usuwaniu opiekuna! (Opiekun idzie jako pierwszy parametr)
-                await _firestoreService.RemoveAcceptedInvitationAsync(targetUser.Id, _currentUser.Id);
+                await _firestoreService.RemoveAcceptedInvitationAsync(
+                      targetUser.Id,
+                      _currentUser.Id,
+                      _currentUser.Id,
+                      _currentUser.Name);
                 await LoadCareGiversAsync();
             }
         }

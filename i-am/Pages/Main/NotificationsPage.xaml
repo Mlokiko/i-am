@@ -6,7 +6,7 @@
              Title="Powiadomienia">
     <Grid Padding="20">
 
-        <CollectionView x:Name="NotificationsList" ItemsSource="{Binding Invitations}">
+        <CollectionView x:Name="NotificationsListView" ItemsSource="{Binding NotificationsList}">
 
             <CollectionView.EmptyView>
                 <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
@@ -16,77 +16,36 @@
             </CollectionView.EmptyView>
 
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:Invitation">
+                <DataTemplate x:DataType="models:AppNotification">
                     <Frame CornerRadius="10" Padding="15" Margin="0,0,0,15" BorderColor="LightGray" HasShadow="True">
-                        <Grid RowDefinitions="Auto, Auto" ColumnDefinitions="*, Auto, Auto" RowSpacing="10" ColumnSpacing="10">
+                        <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="*, Auto" RowSpacing="5">
 
-                            <VerticalStackLayout Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
-                                <Label Text="{Binding SenderName}" FontSize="18" FontAttributes="Bold" />
-                                <Label Text="Wysłał(a) Ci zaproszenie do połączenia kont." FontSize="14" TextColor="Gray" />
-                                <Label Text="{Binding Status}" FontSize="12" TextColor="#2B0B98" FontAttributes="Italic" Margin="0,5,0,0"/>
-                            </VerticalStackLayout>
-
-                            <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" HorizontalOptions="End" Spacing="10">
-                                <HorizontalStackLayout.Triggers>
-                                    <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding Status}" Value="Rejected">
-                                        <Setter Property="IsVisible" Value="False" />
-                                    </DataTrigger>
-                                    <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding Status}" Value="Deleted">
-                                        <Setter Property="IsVisible" Value="False" />
-                                    </DataTrigger>
-                                </HorizontalStackLayout.Triggers>
-
-                                <Button Text="Odrzuć" 
-                                        BackgroundColor="#FFF0F0" 
-                                        TextColor="DarkRed"
-                                        Clicked="OnRejectClicked"
-                                        CommandParameter="{Binding .}" 
-                                        HeightRequest="40" 
-                                        CornerRadius="8"/>
-
-                                <Button Text="Akceptuj" 
-                                        BackgroundColor="#28A745" 
-                                        TextColor="White"
-                                        Clicked="OnAcceptClicked"
-                                        CommandParameter="{Binding .}" 
-                                        HeightRequest="40" 
-                                        CornerRadius="8"
-                                        FontAttributes="Bold"/>
-                            </HorizontalStackLayout>
-
-                            <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" 
-                                   Text="Odrzuciłeś to zaproszenie." 
-                                   TextColor="DarkRed" 
+                            <Label Grid.Row="0" Grid.Column="0" 
+                                   Text="{Binding Title}" 
+                                   FontSize="18" 
                                    FontAttributes="Bold" 
-                                   VerticalOptions="Center" 
-                                   IsVisible="False">
-                                <Label.Triggers>
-                                    <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="Rejected">
-                                        <Setter Property="IsVisible" Value="True" />
-                                    </DataTrigger>
-                                </Label.Triggers>
-                            </Label>
+                                   TextColor="#2B0B98"/>
 
-                            <VerticalStackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" IsVisible="False" Spacing="10">
-                                <VerticalStackLayout.Triggers>
-                                    <DataTrigger TargetType="VerticalStackLayout" Binding="{Binding Status}" Value="Deleted">
-                                        <Setter Property="IsVisible" Value="True" />
-                                    </DataTrigger>
-                                </VerticalStackLayout.Triggers>
+                            <Label Grid.Row="0" Grid.Column="1" 
+                                   Text="{Binding CreatedAt, StringFormat='{0:dd.MM.yyyy HH:mm}'}" 
+                                   FontSize="12" 
+                                   TextColor="Gray" 
+                                   VerticalOptions="Center"/>
 
-                                <Label Text="Użytkownik usunął to zaproszenie lub zakończył połączenie." 
-                                       TextColor="Gray" 
-                                       FontAttributes="Italic" />
+                            <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
+                                   Text="{Binding Message}" 
+                                   FontSize="14" 
+                                   Margin="0,5,0,10"/>
 
-                                <Button Text="Zrozumiałem (Usuń powiadomienie)" 
-                                        BackgroundColor="#6C757D" 
-                                        TextColor="White"
-                                        Clicked="OnAcknowledgeDeletedClicked"
-                                        CommandParameter="{Binding .}" 
-                                        HeightRequest="40" 
-                                        CornerRadius="8"
-                                        HorizontalOptions="End"/>
-                            </VerticalStackLayout>
+                            <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                    Text="Zrozumiałem (Usuń powiadomienie)" 
+                                    BackgroundColor="#6C757D" 
+                                    TextColor="White"
+                                    Clicked="OnDeleteNotificationClicked"
+                                    CommandParameter="{Binding .}" 
+                                    HeightRequest="40" 
+                                    CornerRadius="8"
+                                    HorizontalOptions="End"/>
 
                         </Grid>
                     </Frame>

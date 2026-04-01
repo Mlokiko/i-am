@@ -145,7 +145,11 @@ public partial class ManageCareTakersPage : ContentPage
             bool confirm = await DisplayAlert("Usuñ", $"Czy usun¹æ {targetUser.Name} z listy?", "Tak", "Anuluj");
             if (confirm && _currentUser != null)
             {
-                await _firestoreService.RemoveAcceptedInvitationAsync(_currentUser.Id, targetUser.Id);
+                await _firestoreService.RemoveAcceptedInvitationAsync(
+                      _currentUser.Id,
+                      targetUser.Id,
+                      _currentUser.Id,
+                      _currentUser.Name);
                 await LoadCareTakersAsync();
             }
         }

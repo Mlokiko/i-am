@@ -101,7 +101,42 @@ namespace i_am.Services
         }
 
         #endregion
+        #region Notifications
 
+        // 1. Wysyłanie powiadomienia
+        public async Task SendNotificationAsync(AppNotification notification)
+        {
+            var firestore = CrossFirebaseFirestore.Current;
+            await firestore.GetCollection("notifications").AddDocumentAsync(notification);
+        }
+
+        // 2. Nasłuchiwanie powiadomień w czasie rzeczywistym
+        public IDisposable ListenForNotifications(string myUid, Action<List<AppNotification>> onUpdate)
+        {
+            var firestore = CrossFirebaseFirestore.Current;
+
+            return firestore.GetCollection("notifications")
+                .WhereEqualsTo("receiverId", myUid)
+                .AddSnapshotListener<AppNotification>((snapshot) =>
+                {
+                    // Opcjonalnie: posortuj najnowsze na górze
+                    var notifications = snapshot.Documents
+                                                .Select(doc => doc.Data)
+                                                .OrderByDescending(n => n.CreatedAt)
+                                                .ToList();
+                    onUpdate?.Invoke(notifications);
+                });
+        }
+
+        // 3. Usuwanie odczytanego powiadomienia
+        public async Task DeleteNotificationAsync(string notificationId)
+        {
+            var firestore = CrossFirebaseFirestore.Current;
+            await firestore.GetCollection("notifications")
+                           .GetDocument(notificationId)
+                           .DeleteDocumentAsync();
+        }
+        #endregion
         #region Zaproszenia (Invitations)
         public async Task<bool> SendInvitationAsync(string senderId, string senderName, bool isSenderCaregiver, string receiverEmail)
         {
@@ -229,12 +264,12 @@ namespace i_am.Services
         }
 
         // Usuwa połączenie między użytkownikami
-        public async Task RemoveAcceptedInvitationAsync(string caregiverId, string caretakerId)
+        public async Task RemoveAcceptedInvitationAsync(string caregiverId, string caretakerId, string removerUid, string removerName)
         {
             var firestore = CrossFirebaseFirestore.Current;
             var batch = firestore.CreateBatch();
 
-            // Usuń ID z list obu użytkowników
+            // 1. Usuń ID z list obu użytkowników
             batch.UpdateData(firestore.GetCollection("users").GetDocument(caregiverId),
                 ("careTakersID", FieldValue.ArrayRemove(caretakerId)));
 
@@ -243,17 +278,14 @@ namespace i_am.Services
 
             await batch.CommitAsync();
 
-            // Zamiast usuwać zaproszenie, zmieniamy jego status na "Deleted", żeby druga osoba dostała powiadomienie
+            // 2. Ostatecznie i trwale usuwamy zaproszenie z bazy (żadnego "Soft Delete")
             var queryA = await firestore.GetCollection("invitations")
                 .WhereEqualsTo("senderId", caregiverId)
                 .WhereEqualsTo("receiverId", caretakerId)
                 .GetDocumentsAsync<Invitation>();
 
             foreach (var doc in queryA.Documents)
-            {
-                if (!string.IsNullOrEmpty(doc.Data?.Id))
-                    await MarkInvitationAsDeletedAsync(doc.Data.Id); // Używamy Soft Delete
-            }
+                if (!string.IsNullOrEmpty(doc.Data?.Id)) await DeleteInvitationPermanentlyAsync(doc.Data.Id);
 
             var queryB = await firestore.GetCollection("invitations")
                 .WhereEqualsTo("senderId", caretakerId)
@@ -261,10 +293,21 @@ namespace i_am.Services
                 .GetDocumentsAsync<Invitation>();
 
             foreach (var doc in queryB.Documents)
+                if (!string.IsNullOrEmpty(doc.Data?.Id)) await DeleteInvitationPermanentlyAsync(doc.Data.Id);
+
+            // 3. WYSYŁANIE NOWEGO POWIADOMIENIA DO DRUGIEJ OSOBY
+            // Kto ma dostać powiadomienie? Ten, którego ID NIE jest ID osoby usuwającej.
+            string targetUserId = (removerUid == caregiverId) ? caretakerId : caregiverId;
+
+            var notification = new AppNotification
             {
-                if (!string.IsNullOrEmpty(doc.Data?.Id))
-                    await MarkInvitationAsDeletedAsync(doc.Data.Id); // Używamy Soft Delete
-            }
+                ReceiverId = targetUserId,
+                Title = "Zakończono współpracę",
+                Message = $"Użytkownik {removerName} usunął Cię ze swojej listy kontaktów.",
+                Type = "ConnectionDeleted"
+            };
+
+            await SendNotificationAsync(notification);
         }
 
         // Zmiana statusu na "Deleted" (Miękkie usunięcie)

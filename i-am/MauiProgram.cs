@@ -40,8 +40,6 @@ namespace i_am
             builder.Services.AddTransient<InformationPage>();
             builder.Services.AddTransient<NotificationsPage>();
 
-            builder.Services.AddTransient<MainPage>();
-
             builder.Services.AddTransient<CareGiverMainPage>();
             builder.Services.AddTransient<ManageCareTakersPage>();
 

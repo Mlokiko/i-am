@@ -15,20 +15,18 @@ namespace i_am.Models
         [FirestoreProperty("senderId")]
         public string SenderId { get; set; } = string.Empty;
 
-        [FirestoreProperty("senderName")] // Saves a database read so we can show "John sent you a request!"
+        [FirestoreProperty("senderName")]
         public string SenderName { get; set; } = string.Empty;
 
         [FirestoreProperty("receiverId")]
         public string ReceiverId { get; set; } = string.Empty;
 
-        // e.g., "Pending", "Accepted", "Rejected"
-        [FirestoreProperty("status")]
+        [FirestoreProperty("status")] // "Pending", "Accepted", "Rejected"
         public string Status { get; set; } = "Pending";
 
         [FirestoreProperty("createdAt")]
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
-        // Helps us know which list to put them in upon acceptance
         [FirestoreProperty("isSenderCaregiver")]
         public bool IsSenderCaregiver { get; set; }
         // Zmienna tylko lokalna, nie wysyłana do firestore

@@ -71,26 +71,25 @@ public partial class RegisterPage : ContentPage
 
         try
         {
-            // 2. Create the Authentication Account. This returns the unique Firebase UID for this user
+            // tworzenie konta w Firebase Authentication, co zwraca unikalny UID u¿ytkownika, który bêdzie u¿ywany jako klucz do przechowywania profilu w Firestore
             string uid = await _firestoreService.RegisterAsync(EmailEntry.Text, PasswordEntry.Text);
 
             string fullPhoneNumber = $"{PhonePrefixEntry.Text.Trim()} {PhoneEntry.Text.Trim()}";
 
-            // 3. Build the UserProfile object using the data from the UI
+            // tworzenie obiektu  user
             var userProfile = new User
             {
-                // Id is automatically handled by the [FirestoreDocumentId] attribute
+                // Id jest automatycznie obs³ugiwany przez atrybut [FirestoreDocumentId]
                 Name = NameEntry.Text.Trim(),
                 Email = EmailEntry.Text.Trim(),
                 PhoneNumber = fullPhoneNumber,
                 BirthDate = BirthdatePicker.Date.ToUniversalTime(),
                 Sex = SexPicker.SelectedItem.ToString(),
                 IsCaregiver = CaregiverSwitch.IsToggled
-                // CreatedAt, CaretakersID, and CaregiversID are automatically set by User model
+                // CreatedAT, CareTtakersID i CaregiversID s¹ automatycznie ustawiane przez model User
             };
 
             Preferences.Default.Set("IsCaregiver", userProfile.IsCaregiver);
-            // 4. Save the profile to Firestore under the exact same UID
             await _firestoreService.CreateUserProfileAsync(uid, userProfile);
             await _firestoreService.UpdateFcmTokenAsync();
 

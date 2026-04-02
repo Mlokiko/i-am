@@ -31,7 +31,7 @@ public partial class LoginPage : ContentPage
 
             var profile = await _firestoreService.GetUserProfileAsync(uid);
 
-            // 3. Clear the fields so they are empty if the user logs out later
+            // Czyszczenie pól, ¿eby po wylogowaniu ich nie by³o
             EmailEntry.Text = string.Empty;
             PasswordEntry.Text = string.Empty;
 

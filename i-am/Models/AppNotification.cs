@@ -21,8 +21,7 @@ namespace i_am.Models
         [FirestoreProperty("message")]
         public string Message { get; set; } = string.Empty;
 
-        // Określa typ powiadomienia, np. "ConnectionDeleted", "Reminder", "Alert"
-        [FirestoreProperty("type")]
+        [FirestoreProperty("type")]     // Określa typ powiadomienia, np. "ConnectionDeleted", "Reminder", "Alert", "InvitationRejected" itp.
         public string Type { get; set; } = string.Empty;
 
         [FirestoreProperty("isRead")]

@@ -25,7 +25,6 @@ public partial class NotificationsPage : ContentPage
         string? myUid = _firestoreService.GetCurrentUserId();
         if (string.IsNullOrEmpty(myUid)) return;
 
-        // U¿ywamy nowej metody nas³uchuj¹cej powiadomieñ
         _notificationListener = _firestoreService.ListenForNotifications(myUid, (freshList) =>
         {
             MainThread.BeginInvokeOnMainThread(() =>
@@ -45,7 +44,6 @@ public partial class NotificationsPage : ContentPage
         _notificationListener?.Dispose();
     }
 
-    // Nowa metoda do usuwania/odczytywania powiadomieñ
     private async void OnNotificationActionClicked(object sender, EventArgs e)
     {
         if (sender is Button btn && btn.CommandParameter is AppNotification notification)
@@ -78,14 +76,13 @@ public partial class NotificationsPage : ContentPage
             }
         }
     }
-    // Nowa metoda obs³uguj¹ca przycisk "X" (tylko zamyka powiadomienie)
+
     private async void OnDismissNotificationClicked(object sender, EventArgs e)
     {
         if (sender is Button btn && btn.CommandParameter is AppNotification notification)
         {
             try
             {
-                // Po prostu usuwamy powiadomienie z bazy (Firestore wyczyœci to z listy automatycznie)
                 await _firestoreService.DeleteNotificationAsync(notification.Id);
             }
             catch (Exception ex)

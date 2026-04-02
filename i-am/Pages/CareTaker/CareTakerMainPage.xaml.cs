@@ -45,13 +45,12 @@ public partial class CareTakerMainPage : ContentPage
 
             if (confirm)
             {
-                // Delete the local cache
+                // Usuwa lokalny cache
                 Preferences.Default.Remove("IsCaregiver");
 
-                // Tell Firebase to clear the saved session
+                // Firebase czyœci sesje
                 await _firestoreService.SignOutAsync();
 
-                // Teleport the user back to the Landing Page, clearing the history stack
                 await Shell.Current.GoToAsync($"//{nameof(LandingPage)}");
             }
         }

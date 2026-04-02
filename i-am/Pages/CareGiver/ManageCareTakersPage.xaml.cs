@@ -11,7 +11,7 @@ public partial class ManageCareTakersPage : ContentPage
     private IDisposable? _sentListener;
     private IDisposable? _receivedListener;
 
-    // ObservableCollection ensures the UI updates automatically
+    // ObservableCollection zapewnia ¿e UI siê samo aktualizuje
     public ObservableCollection<User> CareTakers { get; set; } = new ObservableCollection<User>();
     public ObservableCollection<Invitation> AllInvitations { get; set; } = new ObservableCollection<Invitation>();
     private List<Invitation> _rawSent = new();
@@ -41,8 +41,6 @@ public partial class ManageCareTakersPage : ContentPage
 
         _receivedListener = _firestoreService.ListenForReceivedInvitations(myUid, (freshList) =>
         {
-            // Usunêliœmy filtr 'IsSenderCaregiver' ca³kowicie! 
-            // Teraz aplikacja po prostu pobierze KA¯DE zaproszenie, które do Ciebie przysz³o i ma status "Pending".
             _rawReceived = freshList.Where(inv => inv.Status == "Pending").ToList();
 
             foreach (var inv in _rawReceived) inv.IsSentByMe = false;
@@ -50,13 +48,13 @@ public partial class ManageCareTakersPage : ContentPage
             UpdateUnifiedList();
         });
     }
+
     private void UpdateUnifiedList()
     {
         MainThread.BeginInvokeOnMainThread(() =>
         {
             AllInvitations.Clear();
 
-            // £¹czymy obie listy w jedn¹
             var combined = _rawSent.Concat(_rawReceived).ToList();
 
             foreach (var inv in combined)
@@ -65,6 +63,7 @@ public partial class ManageCareTakersPage : ContentPage
             }
         });
     }
+
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
@@ -98,7 +97,7 @@ public partial class ManageCareTakersPage : ContentPage
         catch (Exception ex) { await DisplayAlert("B³¹d", ex.Message, "OK"); }
         finally { if (sender is Button btn) btn.IsEnabled = true; }
     }
-    // NOWE: Anulowanie wys³anego zaproszenia
+
     private async void OnCancelInvitationClicked(object sender, EventArgs e)
     {
         if (sender is Button btn && btn.CommandParameter is Invitation inv)
@@ -106,6 +105,7 @@ public partial class ManageCareTakersPage : ContentPage
             await _firestoreService.DeleteInvitationPermanentlyAsync(inv.Id);
         }
     }
+
     private async void OnAcceptClicked(object sender, EventArgs e)
     {
         if (sender is Button btn && btn.CommandParameter is Invitation inv)
@@ -114,6 +114,7 @@ public partial class ManageCareTakersPage : ContentPage
             await LoadCareTakersAsync();
         }
     }
+
     private async void OnRejectClicked(object sender, EventArgs e)
     {
         if (sender is Button btn && btn.CommandParameter is Invitation inv)
@@ -122,7 +123,6 @@ public partial class ManageCareTakersPage : ContentPage
         }
     }
 
-    // NOWE: Usuwanie aktywnego podopiecznego
     private async void OnRemoveCareTakerClicked(object sender, EventArgs e)
     {
         if (sender is Button btn && btn.CommandParameter is User targetUser)

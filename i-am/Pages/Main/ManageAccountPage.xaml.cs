@@ -22,7 +22,6 @@ public partial class ManageAccountPage : ContentPage
 
             if (profile != null)
             {
-                // Populate the UI fields
                 HeaderNameLabel.Text = profile.Name;
                 EmailLabel.Text = profile.Email;
                 PhoneLabel.Text = string.IsNullOrEmpty(profile.PhoneNumber) ? "Nie podano" : profile.PhoneNumber;
@@ -34,12 +33,11 @@ public partial class ManageAccountPage : ContentPage
         }
     }
 
-    // 3. Handle Account Deletion
     private async void OnDeleteAccountClicked(object sender, EventArgs e)
     {
         bool confirm = await DisplayAlert(
             "Usuwanie konta",
-            "Jesteœ tego pewien? Tej akcji nie da siê cofn¹æ. Usuniêto zostan¹ wszystkie dane zwi¹ane z twoim kontem.",
+            "Jesteœ tego pewien? Tej akcji nie da siê cofn¹æ. Usuniête zostan¹ wszystkie dane zwi¹zane z twoim kontem.",
             "Tak, usuñ je",
             "Anuluj");
 
@@ -47,13 +45,8 @@ public partial class ManageAccountPage : ContentPage
         {
             try
             {
-                // 1. Call your newly merged and corrected method
                 await _firestoreService.DeleteAccountAndProfileAsync();
-
-                // 2. Clear the local MAUI preferences
                 Preferences.Default.Remove("IsCaregiver");
-
-                // 3. Send them back to the Landing Page as a guest
                 await Shell.Current.GoToAsync($"//{nameof(LandingPage)}");
             }
             catch (Exception ex)

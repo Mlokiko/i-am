@@ -40,7 +40,6 @@ public partial class ManageCareGiversPage : ContentPage
 
         _receivedListener = _firestoreService.ListenForReceivedInvitations(myUid, (freshList) =>
         {
-            // Usunêliœmy filtr 'IsSenderCaregiver' równie¿ tutaj.
             _rawReceived = freshList.Where(inv => inv.Status == "Pending").ToList();
 
             foreach (var inv in _rawReceived) inv.IsSentByMe = false;
@@ -48,6 +47,7 @@ public partial class ManageCareGiversPage : ContentPage
             UpdateUnifiedList();
         });
     }
+
     private void UpdateUnifiedList()
     {
         MainThread.BeginInvokeOnMainThread(() =>

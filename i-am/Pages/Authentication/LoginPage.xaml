@@ -12,15 +12,19 @@
                    HorizontalOptions="Center" 
                    Margin="0,0,0,20"/>
 
-            <Entry x:Name="EmailEntry" 
-                   Placeholder="Email" 
-                   Keyboard="Email"
-                   ClearButtonVisibility="WhileEditing"/>
+            <Border StrokeShape="RoundRectangle 12" Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" StrokeThickness="1" BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" Padding="12,0">
+                <Entry x:Name="EmailEntry" 
+                       Placeholder="Email" 
+                       Keyboard="Email"
+                       ClearButtonVisibility="WhileEditing"/>
+            </Border>
 
-            <Entry x:Name="PasswordEntry" 
-                   Placeholder="Hasło" 
-                   IsPassword="True" 
-                   ClearButtonVisibility="WhileEditing"/>
+            <Border StrokeShape="RoundRectangle 12" Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" StrokeThickness="1" BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" Padding="12,0">
+                <Entry x:Name="PasswordEntry" 
+                       Placeholder="Hasło" 
+                       IsPassword="True" 
+                       ClearButtonVisibility="WhileEditing"/>
+            </Border>
 
             <Button Text="Login" 
                     Clicked="OnLoginClicked" 

@@ -6,9 +6,9 @@
              Shell.NavBarIsVisible="False">
     <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="20">
 
-        <ActivityIndicator IsRunning="True" Color="#2B0B98" />
+        <ActivityIndicator IsRunning="True" Color="{StaticResource Tertiary}" />
 
-        <Label Text="Wczytywanie profilu..." TextColor="Gray" />
+        <Label Text="Wczytywanie profilu..." TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
 
     </VerticalStackLayout>
 

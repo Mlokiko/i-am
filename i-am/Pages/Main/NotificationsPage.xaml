@@ -17,26 +17,26 @@
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:AppNotification">
-                    <Frame CornerRadius="10" Padding="15" Margin="0,0,0,15" BorderColor="LightGray" HasShadow="True">
+                    <Frame CornerRadius="10" Padding="15" Margin="0,0,0,15" BorderColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" HasShadow="True">
                         <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="*, Auto, Auto" RowSpacing="5" ColumnSpacing="10">
 
                             <Label Grid.Row="0" Grid.Column="0" 
                                    Text="{Binding Title}" 
                                    FontSize="18" 
                                    FontAttributes="Bold" 
-                                   TextColor="#2B0B98"
+                                   TextColor="{StaticResource Tertiary}"
                                    VerticalOptions="Center"/>
 
                             <Label Grid.Row="0" Grid.Column="1" 
                                    Text="{Binding CreatedAt, StringFormat='{0:dd.MM.yyyy HH:mm}'}" 
                                    FontSize="12" 
-                                   TextColor="Gray" 
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" 
                                    VerticalOptions="Center"/>
 
                             <Button Grid.Row="0" Grid.Column="2"
                                     Text="✕"
                                     BackgroundColor="Transparent"
-                                    TextColor="Gray"
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}"
                                     WidthRequest="30"
                                     HeightRequest="30"
                                     Padding="0"
@@ -61,7 +61,7 @@
 
                             <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
                                     Text="OK" 
-                                    BackgroundColor="#6C757D" 
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray600}}" 
                                     TextColor="White"
                                     Clicked="OnNotificationActionClicked"
                                     CommandParameter="{Binding .}" 
@@ -71,7 +71,7 @@
                                 <Button.Triggers>
                                     <DataTrigger TargetType="Button" Binding="{Binding Type}" Value="NewInvitation">
                                         <Setter Property="Text" Value="Przejdź do zaproszeń" />
-                                        <Setter Property="BackgroundColor" Value="#2B0B98" />
+                                        <Setter Property="BackgroundColor" Value="{StaticResource Tertiary}" />
                                     </DataTrigger>
                                 </Button.Triggers>
                             </Button>

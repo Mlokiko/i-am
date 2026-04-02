@@ -21,20 +21,13 @@
 
         <Button Text="Logowanie" 
                 Clicked="OnLoginClicked" 
-                BackgroundColor="#2B0B98" 
-                TextColor="White" 
-                CornerRadius="8" 
-                HeightRequest="50" 
-                FontAttributes="Bold"/>
+                Margin="0,0,0,10" />
 
         <Button Text="Rejestracja" 
                 Clicked="OnRegisterClicked" 
                 BackgroundColor="Transparent" 
-                TextColor="#2B0B98" 
-                BorderColor="#2B0B98" 
-                BorderWidth="2" 
-                CornerRadius="8" 
-                HeightRequest="50" 
-                FontAttributes="Bold"/>
+                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDarkText}}" 
+                BorderColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" 
+                BorderWidth="2" />
     </VerticalStackLayout>
 </ContentPage>

@@ -12,7 +12,7 @@
                 Grid.Row="0"
                 Padding="20"
                 Spacing="5"
-                BackgroundColor="#512BD4">
+                BackgroundColor="{StaticResource Tertiary}">
                 <Label 
                         Text="Informacje"
                         FontSize="32"
@@ -35,9 +35,9 @@
                     FontAttributes="Bold"
                     HorizontalOptions="Center"/>
 
-                <Border Padding="1" Stroke="#512BD4" StrokeShape="5">
+                <Border Padding="1" Stroke="{StaticResource Tertiary}" StrokeShape="5">
                     <VerticalStackLayout>
-                        <Border Padding="10" Stroke="#512BD4">
+                        <Border Padding="10" Stroke="{StaticResource Tertiary}">
                             <StackLayout Orientation="Horizontal" Spacing="10">
                                 <Label FontSize="18" VerticalOptions="Center" HorizontalTextAlignment="Center">
                                     <Label.FormattedText>
@@ -46,12 +46,12 @@
                                         </FormattedString>
                                     </Label.FormattedText>
                                 </Label>
-                                <Label FontSize="18" FontAttributes="Bold" TextColor="#512BD4" VerticalOptions="Center">
+                                <Label FontSize="18" FontAttributes="Bold" TextColor="{StaticResource Tertiary}" VerticalOptions="Center">
                                     <Label.FormattedText>
                                         <FormattedString>
                                             <Span 
                                                 FontAttributes="Bold"
-                                                TextColor="#512BD4"
+                                                TextColor="{StaticResource Tertiary}"
                                                 Text="999"/>
                                         </FormattedString>
                                     </Label.FormattedText>
@@ -63,7 +63,7 @@
                                 </Label>
                             </StackLayout>
                         </Border>
-                        <Border Padding="10" Stroke="#512BD4">
+                        <Border Padding="10" Stroke="{StaticResource Tertiary}">
                             <StackLayout Orientation="Horizontal" Spacing="10">
                                 <Label FontSize="18" VerticalOptions="Center" HorizontalTextAlignment="Center">
                                     <Label.FormattedText>
@@ -72,12 +72,12 @@
                                         </FormattedString>
                                     </Label.FormattedText>
                                 </Label>
-                                <Label FontSize="18" FontAttributes="Bold" TextColor="#512BD4" VerticalOptions="Center">
+                                <Label FontSize="18" FontAttributes="Bold" TextColor="{StaticResource Tertiary}" VerticalOptions="Center">
                                     <Label.FormattedText>
                                         <FormattedString>
                                             <Span 
                                                 FontAttributes="Bold"
-                                                TextColor="#512BD4"
+                                                TextColor="{StaticResource Tertiary}"
                                                 Text="112"/>
                                         </FormattedString>
                                     </Label.FormattedText>
@@ -89,7 +89,7 @@
                                 </Label>
                             </StackLayout>
                         </Border>
-                        <Border Padding="10" Stroke="#512BD4">
+                        <Border Padding="10" Stroke="{StaticResource Tertiary}">
                             <StackLayout Orientation="Horizontal" Spacing="10">
                                 <Label FontSize="18" VerticalOptions="Center" HorizontalTextAlignment="Center">
                                     <Label.FormattedText>
@@ -98,12 +98,12 @@
                                         </FormattedString>
                                     </Label.FormattedText>
                                 </Label>
-                                <Label FontSize="18" FontAttributes="Bold" TextColor="#512BD4" VerticalOptions="Center">
+                                <Label FontSize="18" FontAttributes="Bold" TextColor="{StaticResource Tertiary}" VerticalOptions="Center">
                                     <Label.FormattedText>
                                         <FormattedString>
                                             <Span 
                                                 FontAttributes="Bold"
-                                                TextColor="#512BD4"
+                                                TextColor="{StaticResource Tertiary}"
                                                 Text="800012005"/>
                                         </FormattedString>
                                     </Label.FormattedText>
@@ -115,7 +115,7 @@
                                 </Label>
                             </StackLayout>
                         </Border>
-                        <Border Padding="10" Stroke="#512BD4">
+                        <Border Padding="10" Stroke="{StaticResource Tertiary}">
                             <VerticalStackLayout Spacing="8">
                                 <Label FontSize="18"  LineBreakMode="WordWrap">
                                     <Label.FormattedText>
@@ -123,7 +123,7 @@
                                             <Span Text="Centrum Wsparcia dla Osób Dorosłych w Kryzysie Psychicznym - "/>
                                             <Span Text="800702222"
                                                 FontAttributes="Bold"
-                                                TextColor="#512BD4">
+                                                TextColor="{StaticResource Tertiary}">
                                                 <Span.GestureRecognizers>
                                                     <TapGestureRecognizer 
                                                         Tapped="OnPhoneNumberTapped"
@@ -152,7 +152,7 @@
                                 </Label>
                             </VerticalStackLayout>
                         </Border>
-                        <Border Padding="10" Stroke="#512BD4">
+                        <Border Padding="10" Stroke="{StaticResource Tertiary}">
                             <VerticalStackLayout Spacing="8">
                                 <Label FontSize="18" LineBreakMode="WordWrap">
                                     <Label.FormattedText>
@@ -160,7 +160,7 @@
                                             <Span Text="Całodobowy telefon zaufania dla osób dorosłych - "/>
                                             <Span Text="116123"
                                                 FontAttributes="Bold"
-                                                TextColor="#512BD4">
+                                                TextColor="{StaticResource Tertiary}">
                                                 <Span.GestureRecognizers>
                                                     <TapGestureRecognizer 
                                                         Tapped="OnPhoneNumberTapped"
@@ -189,7 +189,7 @@
                                 </Label>
                             </VerticalStackLayout>
                         </Border>
-                        <Border Padding="10" Stroke="#512BD4">
+                        <Border Padding="10" Stroke="{StaticResource Tertiary}">
                             <VerticalStackLayout Spacing="8">
                                 <Label FontSize="18"  LineBreakMode="WordWrap">
                                     <Label.FormattedText>
@@ -197,7 +197,7 @@
                                             <Span Text="Całodobowy telefon zaufania dzieci i młodzieży - "/>
                                             <Span Text="116111"
                                                 FontAttributes="Bold"
-                                                TextColor="#512BD4">
+                                                TextColor="{StaticResource Tertiary}">
                                                 <Span.GestureRecognizers>
                                                     <TapGestureRecognizer 
                                                         Tapped="OnPhoneNumberTapped"

@@ -24,16 +24,11 @@
 
             <Button Text="Login" 
                     Clicked="OnLoginClicked" 
-                    BackgroundColor="#2B0B98" 
-                    TextColor="White" 
-                    CornerRadius="8" 
-                    HeightRequest="50" 
-                    FontAttributes="Bold"
                     Margin="0,20,0,0"/>
 
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
-                <Label Text="Nie masz konta?" TextColor="Gray" VerticalOptions="Center"/>
-                <Label Text="Zarejestruj." TextColor="#2B0B98" FontAttributes="Bold" VerticalOptions="Center">
+                <Label Text="Nie masz konta?" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center"/>
+                <Label Text="Zarejestruj." TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" FontAttributes="Bold" VerticalOptions="Center">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnGoToRegisterTapped" />
                     </Label.GestureRecognizers>

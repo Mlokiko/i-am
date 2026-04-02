@@ -29,10 +29,10 @@
                     FontSize="16"
                     FontAttributes="Bold"
                     Margin="0,10,0,5"/>
-                <Border Stroke="#2B0B98" StrokeThickness="2" BackgroundColor="Transparent"
-                        StrokeShape="RoundRectangle 15" HeightRequest="24" WidthRequest="24"
-                        HorizontalOptions="Center" VerticalOptions="Center">
-                    <Label Text="?" TextColor="#2B0B98" FontAttributes="Bold"
+                    <Border Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDarkText}}" StrokeThickness="2" BackgroundColor="Transparent"
+                            StrokeShape="RoundRectangle 15" HeightRequest="24" WidthRequest="24"
+                            HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="?" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDarkText}}" FontAttributes="Bold"
                            HorizontalOptions="Center" VerticalOptions="Center" />
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnPasswordInfoTapped" />
@@ -48,7 +48,7 @@
                 <Label 
                     x:Name="TogglePasswordLabel"
                     Text="Pokaż" 
-                    TextColor="#2B0B98" 
+                    TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDarkText}}" 
                     FontAttributes="Bold" 
                     VerticalOptions="Center" 
                     HorizontalOptions="End" 
@@ -73,7 +73,7 @@
                 <Label 
                     x:Name="ToggleConfirmPasswordLabel"
                     Text="Pokaż" 
-                    TextColor="#2B0B98" 
+                    TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDarkText}}" 
                     FontAttributes="Bold" 
                     VerticalOptions="Center" 
                     HorizontalOptions="End" 
@@ -91,10 +91,10 @@
                     FontAttributes="Bold"
                     VerticalOptions="Center"/>
 
-                <Border Stroke="#2B0B98" StrokeThickness="2" BackgroundColor="Transparent"
+                <Border Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDarkText}}" StrokeThickness="2" BackgroundColor="Transparent"
                         StrokeShape="RoundRectangle 15" HeightRequest="24" WidthRequest="24"
                         HorizontalOptions="Center" VerticalOptions="Center">
-                    <Label Text="?" TextColor="#2B0B98" FontAttributes="Bold"
+                    <Label Text="?" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDarkText}}" FontAttributes="Bold"
                            HorizontalOptions="Center" VerticalOptions="Center" />
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnNameInfoTapped" />
@@ -112,10 +112,10 @@
                     FontAttributes="Bold"
                     VerticalOptions="Center"/>
 
-                <Border Stroke="#2B0B98" StrokeThickness="2" BackgroundColor="Transparent"
+                <Border Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDarkText}}" StrokeThickness="2" BackgroundColor="Transparent"
                         StrokeShape="RoundRectangle 15" HeightRequest="24" WidthRequest="24"
                         HorizontalOptions="Center" VerticalOptions="Center">
-                    <Label Text="?" TextColor="#2B0B98" FontAttributes="Bold"
+                    <Label Text="?" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDarkText}}" FontAttributes="Bold"
                            HorizontalOptions="Center" VerticalOptions="Center" />
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnPhoneInfoTapped" />
@@ -144,10 +144,10 @@
                     FontSize="16"
                     FontAttributes="Bold"
                     Margin="0,10,0,5"/>
-                <Border Stroke="#2B0B98" StrokeThickness="2" BackgroundColor="Transparent"
+                <Border Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDarkText}}" StrokeThickness="2" BackgroundColor="Transparent"
                         StrokeShape="RoundRectangle 15" HeightRequest="24" WidthRequest="24"
                         HorizontalOptions="Center" VerticalOptions="Center">
-                    <Label Text="?" TextColor="#2B0B98" FontAttributes="Bold"
+                    <Label Text="?" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDarkText}}" FontAttributes="Bold"
                            HorizontalOptions="Center" VerticalOptions="Center" />
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnBirthdayInfoTapped" />

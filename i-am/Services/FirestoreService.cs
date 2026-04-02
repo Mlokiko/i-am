@@ -234,6 +234,7 @@ namespace i_am.Services
                 SenderId = senderId,
                 SenderName = senderName,
                 ReceiverId = receiver.Id,
+                ReceiverEmail = receiverEmail,
                 IsSenderCaregiver = isSenderCaregiver,
                 Status = "Pending" // Możliwe statusy: "Pending", "Accepted", "Rejected"
             };

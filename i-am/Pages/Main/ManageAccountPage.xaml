@@ -9,27 +9,27 @@
             <Image Source="dotnet_bot.png" HeightRequest="100" HorizontalOptions="Center" Margin="0,0,0,10"/>
             <Label x:Name="HeaderNameLabel" Text="Wczytywanie..." FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" />
 
-            <BoxView HeightRequest="1" Color="LightGray" Margin="0,10"/>
+            <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}}" Margin="0,10"/>
 
 
             <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto" RowSpacing="15" ColumnSpacing="20">
 
-                <Label Grid.Row="0" Grid.Column="0" Text="Email:" FontAttributes="Bold" TextColor="Gray" VerticalOptions="Center"/>
+                <Label Grid.Row="0" Grid.Column="0" Text="Email:" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center"/>
                 <Label Grid.Row="0" Grid.Column="1" x:Name="EmailLabel" Text="..." VerticalOptions="Center"/>
 
-                <Label Grid.Row="1" Grid.Column="0" Text="Telefon:" FontAttributes="Bold" TextColor="Gray" VerticalOptions="Center"/>
+                <Label Grid.Row="1" Grid.Column="0" Text="Telefon:" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center"/>
                 <Label Grid.Row="1" Grid.Column="1" x:Name="PhoneLabel" Text="..." VerticalOptions="Center"/>
 
-                <Label Grid.Row="2" Grid.Column="0" Text="Data urodzenia:" FontAttributes="Bold" TextColor="Gray" VerticalOptions="Center"/>
+                <Label Grid.Row="2" Grid.Column="0" Text="Data urodzenia:" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center"/>
                 <Label Grid.Row="2" Grid.Column="1" x:Name="BirthDateLabel" Text="..." VerticalOptions="Center"/>
 
-                <Label Grid.Row="3" Grid.Column="0" Text="Płeć:" FontAttributes="Bold" TextColor="Gray" VerticalOptions="Center"/>
+                <Label Grid.Row="3" Grid.Column="0" Text="Płeć:" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center"/>
                 <Label Grid.Row="3" Grid.Column="1" x:Name="SexLabel" Text="..." VerticalOptions="Center"/>
 
-                <Label Grid.Row="4" Grid.Column="0" Text="Typ konta:" FontAttributes="Bold" TextColor="Gray" VerticalOptions="Center"/>
+                <Label Grid.Row="4" Grid.Column="0" Text="Typ konta:" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center"/>
                 <Label Grid.Row="4" Grid.Column="1" x:Name="RoleLabel" Text="..." VerticalOptions="Center"/>
 
-                <Label Grid.Row="5" Grid.Column="0" Text="Konto utworzono:" FontAttributes="Bold" TextColor="Gray" VerticalOptions="Center"/>
+                <Label Grid.Row="5" Grid.Column="0" Text="Konto utworzono:" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center"/>
                 <Label Grid.Row="5" Grid.Column="1" x:Name="CreatedLabel" Text="..." VerticalOptions="Center"/>
 
             </Grid>
@@ -39,7 +39,7 @@
 
             <Button Text="Usnuń konto" 
                     Clicked="OnDeleteAccountClicked" 
-                    BackgroundColor="DarkRed" 
+                    BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" 
                     TextColor="White" 
                     CornerRadius="8" 
                     FontAttributes="Bold"

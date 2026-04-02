@@ -28,8 +28,7 @@
                     x:Name="NotificationsButton"
                     Text="Powiadomienia"
                     Clicked="OnNotificationsButtonClicked" 
-                    HorizontalOptions="Fill"
-                    BackgroundColor="#FFA500" />
+                    HorizontalOptions="Fill"/>
 
                 <Button 
                     x:Name="DailyActivityButton"
@@ -59,20 +58,18 @@
 
         <!-- Stópka -->
         <VerticalStackLayout>
-            <Button 
-                x:Name="LogoutButton"
-                Text="Wyloguj sie"
-                Clicked="OnLogoutButtonClicked" 
-                HorizontalOptions="Fill"
-                BackgroundColor="#d32f2f"
-                TextColor="White"
-                Margin="0,10,0,0" />
+            <Button x:Name="LogoutButton"
+                    Text="Wyloguj sie"
+                    Clicked="OnLogoutButtonClicked" 
+                    HorizontalOptions="Fill"
+                    Style="{StaticResource DangerButtonStyle}"
+                    Margin="0,10,0,0" />
 
             <Label 
                 Text="Informacje alarmowe"
                 FontSize="12"
                 Padding="20"
-                TextColor="Grey" 
+                TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" 
                 HorizontalOptions="Center" >
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnAlarmInformationTapped" />

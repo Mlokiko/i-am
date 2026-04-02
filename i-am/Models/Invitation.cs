@@ -21,6 +21,9 @@ namespace i_am.Models
         [FirestoreProperty("receiverId")]
         public string ReceiverId { get; set; } = string.Empty;
 
+        [FirestoreProperty("receiverEmail")]
+        public string ReceiverEmail { get; set; } = string.Empty;
+
         [FirestoreProperty("status")] // "Pending", "Accepted", "Rejected"
         public string Status { get; set; } = "Pending";
 

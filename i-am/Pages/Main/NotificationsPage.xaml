@@ -4,6 +4,7 @@
              xmlns:models="clr-namespace:i_am.Models"
              x:Class="i_am.Pages.Main.NotificationsPage"
              Title="Powiadomienia">
+
     <Grid Padding="20">
 
         <CollectionView x:Name="NotificationsListView" ItemsSource="{Binding NotificationsList}">
@@ -11,20 +12,29 @@
             <CollectionView.EmptyView>
                 <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
                     <Label Text="📭" FontSize="50" HorizontalOptions="Center"/>
-                    <Label Text="Brak nowych powiadomień" FontSize="18" TextColor="Gray" HorizontalOptions="Center"/>
+                    <Label Text="Brak nowych powiadomień" 
+                           FontSize="18" 
+                           TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" 
+                           HorizontalOptions="Center"/>
                 </VerticalStackLayout>
             </CollectionView.EmptyView>
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:AppNotification">
-                    <Frame CornerRadius="10" Padding="15" Margin="0,0,0,15" BorderColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" HasShadow="True">
+
+                    <Border Margin="0,0,0,15" 
+                            Padding="15" 
+                            StrokeShape="RoundRectangle 12" 
+                            Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}">
+
                         <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="*, Auto, Auto" RowSpacing="5" ColumnSpacing="10">
 
                             <Label Grid.Row="0" Grid.Column="0" 
                                    Text="{Binding Title}" 
                                    FontSize="18" 
                                    FontAttributes="Bold" 
-                                   TextColor="{StaticResource Tertiary}"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                                    VerticalOptions="Center"/>
 
                             <Label Grid.Row="0" Grid.Column="1" 
@@ -57,6 +67,7 @@
                             <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" 
                                    Text="{Binding Message}" 
                                    FontSize="14" 
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray200}}"
                                    Margin="0,5,0,10"/>
 
                             <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
@@ -71,13 +82,13 @@
                                 <Button.Triggers>
                                     <DataTrigger TargetType="Button" Binding="{Binding Type}" Value="NewInvitation">
                                         <Setter Property="Text" Value="Przejdź do zaproszeń" />
-                                        <Setter Property="BackgroundColor" Value="{StaticResource Tertiary}" />
+                                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
                                     </DataTrigger>
                                 </Button.Triggers>
                             </Button>
 
                         </Grid>
-                    </Frame>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
 

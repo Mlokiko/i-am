@@ -8,16 +8,11 @@
     <VerticalStackLayout Spacing="20" 
                          Padding="30" 
                          VerticalOptions="Center">
-        
-        <Image Source="dotnet_bot.png" 
+
+        <Image Source="{AppThemeBinding Light=i_am_logo_black.svg, Dark=i_am_logo_white.svg}" 
                HeightRequest="150" 
                HorizontalOptions="Center" 
-               Margin="0,0,0,20"/>
-
-        <Label Text="I AM" 
-               FontSize="32" 
-               FontAttributes="Bold" 
-               HorizontalOptions="Center" />
+               Margin="0,0,0,20" />
 
         <Button Text="Logowanie" 
                 Clicked="OnLoginClicked" 

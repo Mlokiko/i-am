@@ -4,17 +4,6 @@
              x:Class="i_am.Pages.Main.InformationPage"
              Title="Informacje alarmowe">
 
-    <Shell.TitleView>
-        <Grid HorizontalOptions="Fill" VerticalOptions="Center">
-            <Label Text="Informacje alarmowe" 
-                   TextColor="White" 
-                   FontSize="30" 
-                   FontAttributes="Bold" 
-                   HorizontalOptions="Start" 
-                   VerticalOptions="Center" />
-        </Grid>
-    </Shell.TitleView>
-
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="30" HorizontalOptions="Fill">
 
@@ -30,7 +19,7 @@
                     </Border.GestureRecognizers>
                     <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
                         <Label Grid.Column="0" Text="Pogotowie ratunkowe" FontSize="16" FontAttributes="Bold" VerticalOptions="Center"/>
-                        <Label Grid.Column="1" Text="999" FontSize="24" FontAttributes="Bold" 
+                        <Label Grid.Column="1" Text="999" FontSize="20" FontAttributes="Bold" 
                                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" 
                                VerticalOptions="Center" />
                     </Grid>
@@ -45,7 +34,7 @@
                     </Border.GestureRecognizers>
                     <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
                         <Label Grid.Column="0" Text="Numer alarmowy" FontSize="16" FontAttributes="Bold" VerticalOptions="Center"/>
-                        <Label Grid.Column="1" Text="112" FontSize="24" FontAttributes="Bold" 
+                        <Label Grid.Column="1" Text="112" FontSize="20" FontAttributes="Bold" 
                                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" 
                                VerticalOptions="Center" />
                     </Grid>

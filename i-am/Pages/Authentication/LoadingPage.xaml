@@ -3,13 +3,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="i_am.Pages.Authentication.LoadingPage"
              Title="LoadingPage"
-             Shell.NavBarIsVisible="False">
-    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="20">
+             NavigationPage.HasNavigationBar="False"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#1A1C20">
+    <Grid>
+        <Image Source="i_am_logo.svg" 
+               WidthRequest="128" 
+               HeightRequest="128"
+               Aspect="AspectFit"
+               HorizontalOptions="Center" 
+               VerticalOptions="Center" />
 
-        <ActivityIndicator IsRunning="True" Color="{StaticResource Tertiary}" />
-
-        <Label Text="Wczytywanie profilu..." TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
-
-    </VerticalStackLayout>
-
+        <ActivityIndicator IsRunning="True" 
+                           Color="white"
+                           VerticalOptions="End" 
+                           Margin="0,0,0,50"/>
+    </Grid>
 </ContentPage>

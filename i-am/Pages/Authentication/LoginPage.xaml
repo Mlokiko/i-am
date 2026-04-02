@@ -2,15 +2,9 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="i_am.Pages.Authentication.LoginPage"
-             Title="LoginPage">
+             Title="Logowanie">
     <ScrollView>
         <VerticalStackLayout Spacing="20" Padding="30" VerticalOptions="Center">
-
-            <Label Text="Logowanie" 
-                   FontSize="32" 
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center" 
-                   Margin="0,0,0,20"/>
 
             <Border StrokeShape="RoundRectangle 12" Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" StrokeThickness="1" BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" Padding="12,0">
                 <Entry x:Name="EmailEntry" 

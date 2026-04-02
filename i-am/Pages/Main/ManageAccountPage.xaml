@@ -37,7 +37,7 @@
 
 
 
-            <Button Text="Usnuń konto" 
+            <Button Text="Usuń konto" 
                     Clicked="OnDeleteAccountClicked" 
                     BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" 
                     TextColor="White" 

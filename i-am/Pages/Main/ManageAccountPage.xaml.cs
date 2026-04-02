@@ -38,7 +38,7 @@ public partial class ManageAccountPage : ContentPage
         bool confirm = await DisplayAlert(
             "Usuwanie konta",
             "Jesteœ tego pewien? Tej akcji nie da siê cofn¹æ. Usuniête zostan¹ wszystkie dane zwi¹zane z twoim kontem.",
-            "Tak, usuñ je",
+            "Usuñ",
             "Anuluj");
 
         if (confirm)

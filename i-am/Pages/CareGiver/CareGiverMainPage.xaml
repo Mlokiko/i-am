@@ -1,25 +1,22 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="i_am.Pages.CareGiver.CareGiverMainPage"
-             Title="CareGiverMainPage"
-             Shell.NavBarIsVisible="False">
+             x:Class="i_am.Pages.CareGiver.CareGiverMainPage">
+
+    <Shell.TitleView>
+        <Label Text="Panel Główny" 
+               TextColor="White" 
+               FontSize="30" 
+               FontAttributes="Bold" 
+               HorizontalOptions="Center" 
+               VerticalOptions="Center" />
+    </Shell.TitleView>
+
     <VerticalStackLayout 
         VerticalOptions="Fill" 
         HorizontalOptions="Fill"
         Spacing="15"
         Padding="20">
-
-        <!-- Nagłówek -->
-        <VerticalStackLayout 
-            Spacing="5"
-            Margin="0,10,0,20">
-            <Label 
-                Text="Panel główny"
-                FontSize="32"
-                FontAttributes="Bold"
-                HorizontalOptions="Center" />
-        </VerticalStackLayout>
 
         <!-- Zawartość -->
         <ScrollView>
@@ -59,7 +56,7 @@
         <!-- Stopka -->
         <VerticalStackLayout>
             <Button x:Name="LogoutButton"
-                    Text="Wyloguj sie"
+                    Text="Wyloguj się"
                     Clicked="OnLogoutButtonClicked" 
                     HorizontalOptions="Fill"
                     Style="{StaticResource DangerButtonStyle}"

@@ -32,8 +32,7 @@ public partial class ManageCareGiversPage : ContentPage
 
         _sentListener = _firestoreService.ListenForSentInvitations(myUid, (freshList) =>
         {
-            // FIX: Dodano "Deleted", aby nadawca widzia³, ¿e po³¹czenie zosta³o zakoñczone
-            _rawSent = freshList.Where(inv => inv.Status == "Pending" || inv.Status == "Rejected" || inv.Status == "Deleted").ToList();
+            _rawSent = freshList.Where(inv => inv.Status == "Pending" || inv.Status == "Rejected").ToList();
             foreach (var inv in _rawSent) inv.IsSentByMe = true;
 
             UpdateUnifiedList();
@@ -103,8 +102,7 @@ public partial class ManageCareGiversPage : ContentPage
     {
         if (sender is Button btn && btn.CommandParameter is Invitation inv)
         {
-            if (inv.Status == "Pending") await _firestoreService.MarkInvitationAsDeletedAsync(inv.Id);
-            else await _firestoreService.DeleteInvitationPermanentlyAsync(inv.Id);
+            await _firestoreService.DeleteInvitationPermanentlyAsync(inv.Id);
         }
     }
 
@@ -121,7 +119,7 @@ public partial class ManageCareGiversPage : ContentPage
     {
         if (sender is Button btn && btn.CommandParameter is Invitation inv)
         {
-            await _firestoreService.RejectInvitationAsync(inv.Id);
+            await _firestoreService.RejectInvitationAsync(inv);
         }
     }
 

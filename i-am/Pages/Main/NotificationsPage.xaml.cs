@@ -9,7 +9,6 @@ public partial class NotificationsPage : ContentPage
     private readonly FirestoreService _firestoreService;
     private IDisposable? _notificationListener;
 
-    // Zmieniono typ z Invitation na AppNotification
     public ObservableCollection<AppNotification> NotificationsList { get; set; } = new ObservableCollection<AppNotification>();
 
     public NotificationsPage(FirestoreService firestoreService)
@@ -47,18 +46,51 @@ public partial class NotificationsPage : ContentPage
     }
 
     // Nowa metoda do usuwania/odczytywania powiadomieñ
-    private async void OnDeleteNotificationClicked(object sender, EventArgs e)
+    private async void OnNotificationActionClicked(object sender, EventArgs e)
     {
         if (sender is Button btn && btn.CommandParameter is AppNotification notification)
         {
             try
             {
-                // Usuwa powiadomienie z bazy (Listener zaktualizuje listê automatycznie)
+                // Jeœli to jest powiadomienie o nowym zaproszeniu -> Przenosimy u¿ytkownika
+                if (notification.Type == "NewInvitation")
+                {
+                    bool isCaregiver = Preferences.Default.Get("IsCaregiver", false);
+
+                    // Nawigacja na podstawie roli
+                    if (isCaregiver)
+                        await Shell.Current.GoToAsync(nameof(Pages.CareGiver.ManageCareTakersPage));
+                    else
+                        await Shell.Current.GoToAsync(nameof(Pages.CareTaker.ManageCareGiversPage));
+
+                    // Opcjonalnie: automatyczne usuniêcie powiadomienia po klikniêciu
+                    await _firestoreService.DeleteNotificationAsync(notification.Id);
+                }
+                else
+                {
+                    // Jeœli to zwyk³e powiadomienie (np. ConnectionDeleted) -> Tylko usuwamy
+                    await _firestoreService.DeleteNotificationAsync(notification.Id);
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("B³¹d", $"Wyst¹pi³ problem: {ex.Message}", "OK");
+            }
+        }
+    }
+    // Nowa metoda obs³uguj¹ca przycisk "X" (tylko zamyka powiadomienie)
+    private async void OnDismissNotificationClicked(object sender, EventArgs e)
+    {
+        if (sender is Button btn && btn.CommandParameter is AppNotification notification)
+        {
+            try
+            {
+                // Po prostu usuwamy powiadomienie z bazy (Firestore wyczyœci to z listy automatycznie)
                 await _firestoreService.DeleteNotificationAsync(notification.Id);
             }
             catch (Exception ex)
             {
-                await DisplayAlert("B³¹d", $"Nie uda³o siê usun¹æ powiadomienia: {ex.Message}", "OK");
+                await DisplayAlert("B³¹d", $"Nie uda³o siê usun¹æ: {ex.Message}", "OK");
             }
         }
     }

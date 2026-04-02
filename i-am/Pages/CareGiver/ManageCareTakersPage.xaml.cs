@@ -33,8 +33,7 @@ public partial class ManageCareTakersPage : ContentPage
 
         _sentListener = _firestoreService.ListenForSentInvitations(myUid, (freshList) =>
         {
-            // FIX: Dodano "Deleted", aby nadawca widzia³, ¿e po³¹czenie zosta³o zakoñczone
-            _rawSent = freshList.Where(inv => inv.Status == "Pending" || inv.Status == "Rejected" || inv.Status == "Deleted").ToList();
+            _rawSent = freshList.Where(inv => inv.Status == "Pending" || inv.Status == "Rejected").ToList();
             foreach (var inv in _rawSent) inv.IsSentByMe = true;
 
             UpdateUnifiedList();
@@ -104,8 +103,7 @@ public partial class ManageCareTakersPage : ContentPage
     {
         if (sender is Button btn && btn.CommandParameter is Invitation inv)
         {
-            if (inv.Status == "Pending") await _firestoreService.MarkInvitationAsDeletedAsync(inv.Id);
-            else await _firestoreService.DeleteInvitationPermanentlyAsync(inv.Id);
+            await _firestoreService.DeleteInvitationPermanentlyAsync(inv.Id);
         }
     }
     private async void OnAcceptClicked(object sender, EventArgs e)
@@ -120,23 +118,10 @@ public partial class ManageCareTakersPage : ContentPage
     {
         if (sender is Button btn && btn.CommandParameter is Invitation inv)
         {
-            await _firestoreService.RejectInvitationAsync(inv.Id);
+            await _firestoreService.RejectInvitationAsync(inv);
         }
     }
-    //private async void OnAcknowledgeDeletedClicked(object sender, EventArgs e)
-    //{
-    //    if (sender is Button btn && btn.CommandParameter is Invitation invitation)
-    //    {
-    //        try
-    //        {
-    //            await _firestoreService.DeleteInvitationPermanentlyAsync(invitation.Id);
-    //        }
-    //        catch (Exception ex)
-    //        {
-    //            await DisplayAlert("B³¹d", $"Nie uda³o siê usun¹æ powiadomienia: {ex.Message}", "OK");
-    //        }
-    //    }
-    //}
+
     // NOWE: Usuwanie aktywnego podopiecznego
     private async void OnRemoveCareTakerClicked(object sender, EventArgs e)
     {

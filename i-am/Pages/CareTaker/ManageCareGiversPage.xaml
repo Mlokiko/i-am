@@ -47,9 +47,6 @@
                                                 <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding Status}" Value="Rejected">
                                                     <Setter Property="IsVisible" Value="False" />
                                                 </DataTrigger>
-                                                <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding Status}" Value="Deleted">
-                                                    <Setter Property="IsVisible" Value="False" />
-                                                </DataTrigger>
                                             </HorizontalStackLayout.Triggers>
                                             <Button Text="Odrzuć" BackgroundColor="#FFF0F0" TextColor="DarkRed" Clicked="OnRejectClicked" CommandParameter="{Binding .}" HeightRequest="35" CornerRadius="6"/>
                                             <Button Text="Akceptuj" BackgroundColor="#28A745" TextColor="White" Clicked="OnAcceptClicked" CommandParameter="{Binding .}" HeightRequest="35" CornerRadius="6" FontAttributes="Bold"/>
@@ -80,10 +77,6 @@
                                                         <Setter Property="Text" Value="Odrzucone" />
                                                         <Setter Property="TextColor" Value="DarkRed" />
                                                     </DataTrigger>
-                                                    <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="Deleted">
-                                                        <Setter Property="Text" Value="Zakończone" />
-                                                        <Setter Property="TextColor" Value="Gray" />
-                                                    </DataTrigger>
                                                 </Label.Triggers>
                                             </Label>
                                         </VerticalStackLayout>
@@ -93,11 +86,6 @@
                                                 <DataTrigger TargetType="Button" Binding="{Binding Status}" Value="Rejected">
                                                     <Setter Property="Text" Value="Usuń" />
                                                     <Setter Property="BackgroundColor" Value="DarkRed" />
-                                                    <Setter Property="TextColor" Value="White" />
-                                                </DataTrigger>
-                                                <DataTrigger TargetType="Button" Binding="{Binding Status}" Value="Deleted">
-                                                    <Setter Property="Text" Value="Usuń" />
-                                                    <Setter Property="BackgroundColor" Value="#6C757D" />
                                                     <Setter Property="TextColor" Value="White" />
                                                 </DataTrigger>
                                             </Button.Triggers>

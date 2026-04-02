@@ -1,8 +1,9 @@
-﻿using Android.Telecom;
+﻿using Android.App.Admin;
+using Android.Telecom;
 using i_am.Models;
 using Plugin.Firebase.Auth;
-using Plugin.Firebase.Firestore;
 using Plugin.Firebase.CloudMessaging;
+using Plugin.Firebase.Firestore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace i_am.Services
             var user = await CrossFirebaseAuth.Current.CreateUserAsync(email, password);
             return user.Uid;
         }
+
         // wbudowana metoda w plugin nie działa prawidłowo... logowanie nie powinno tworzyć user (sic!), dlatego używam tutaj "własnego" kodu - gada z SDK Firebase bezpośrednio
         //public async Task<string> LoginAsync(string email, string password)
         //{
@@ -40,26 +42,30 @@ namespace i_am.Services
     return user.Uid;
 #endif
         }
+
         public async Task SignOutAsync()
         {
             await CrossFirebaseAuth.Current.SignOutAsync();
         }
+
         public bool IsUserLoggedIn()
         {
             return CrossFirebaseAuth.Current.CurrentUser != null;
         }
+
         public string? GetCurrentUserId()
         {
             return CrossFirebaseAuth.Current.CurrentUser?.Uid;
         }
+
+        // Po rejestracji, tworzymy profil użytkownika w Firestore
         public async Task CreateUserProfileAsync(string uid, User profile)
         {
             var firestore = CrossFirebaseFirestore.Current;
 
-            // Instead of AddDocumentAsync (which generates a random ID), 
-            // we GET the specific document path using the Auth UID, and then SET the data.
             await firestore.GetCollection("users").GetDocument(uid).SetDataAsync(profile);
         }
+
         // Potrzebne do odczytania czy użytkownik jest opiekunem czy podopiecznym, żeby odpowiednio przekierować go do właściwego widoku
         public async Task<User?> GetUserProfileAsync(string uid)
         {
@@ -69,10 +75,10 @@ namespace i_am.Services
                                           .GetDocument(uid)
                                           .GetDocumentSnapshotAsync<User>();
 
-            // 2. The plugin automatically returns null if the document doesn't exist, 
-            // so we can just return the Data property directly!
+            // Plugin zwraca null jeśli dokument nie istnieje
             return snapshot.Data;
         }
+
         public async Task DeleteAccountAndProfileAsync()
         {
             string? uid = CrossFirebaseAuth.Current.CurrentUser?.Uid;
@@ -99,6 +105,9 @@ namespace i_am.Services
         }
 #endif
         }
+
+        // Token odpowiedzialny za powiadomienia push
+        // Każde logowanie powinno aktualizować token FCM, żeby mieć pewność, że powiadomienia push będą docierać do właściwego urządzenia (np. jeśli ktoś się zaloguje na nowym telefonie, stary token przestaje być ważny)
         public async Task UpdateFcmTokenAsync()
         {
             string? uid = GetCurrentUserId();
@@ -111,21 +120,17 @@ namespace i_am.Services
 
                 if (status != PermissionStatus.Granted)
                 {
-                    // Wyświetla systemowe zapytanie "Czy chcesz otrzymywać powiadomienia?"
                     status = await Permissions.RequestAsync<Permissions.PostNotifications>();
                 }
 
-                // Jeśli użytkownik kliknął "Nie zgadzam się", przerywamy proces
                 if (status != PermissionStatus.Granted)
                 {
                     Console.WriteLine("[FCM] Użytkownik odmówił uprawnień do powiadomień.");
                     return;
                 }
 
-                // 2. Jeśli mamy zgodę, aktywujemy Firebase
                 await CrossFirebaseCloudMessaging.Current.CheckIfValidAsync();
 
-                // 3. Pobieramy unikalny token telefonu
                 var token = await CrossFirebaseCloudMessaging.Current.GetTokenAsync();
 
                 if (!string.IsNullOrEmpty(token))
@@ -147,14 +152,13 @@ namespace i_am.Services
         #endregion
         #region Notifications
 
-        // 1. Wysyłanie powiadomienia
         public async Task SendNotificationAsync(AppNotification notification)
         {
             var firestore = CrossFirebaseFirestore.Current;
             await firestore.GetCollection("notifications").AddDocumentAsync(notification);
         }
 
-        // 2. Nasłuchiwanie powiadomień w czasie rzeczywistym
+        // Nasłuchiwanie powiadomień w czasie rzeczywistym
         public IDisposable ListenForNotifications(string myUid, Action<List<AppNotification>> onUpdate)
         {
             var firestore = CrossFirebaseFirestore.Current;
@@ -172,7 +176,7 @@ namespace i_am.Services
                 });
         }
 
-        // 3. Usuwanie odczytanego powiadomienia
+        // Usuwanie odczytanego powiadomienia
         public async Task DeleteNotificationAsync(string notificationId)
         {
             var firestore = CrossFirebaseFirestore.Current;
@@ -186,7 +190,7 @@ namespace i_am.Services
         {
             var firestore = CrossFirebaseFirestore.Current;
 
-            // 1. Find the receiver by their email
+            // Szukanie poprzez email
             var usersQuery = await firestore.GetCollection("users")
                                             .WhereEqualsTo("email", receiverEmail.ToLower())
                                             .GetDocumentsAsync<User>();
@@ -198,13 +202,12 @@ namespace i_am.Services
                 throw new Exception("Użytkownik z podanym adresem email nie został znaleziony.");
             }
 
-            // 2. Prevent sending requests to themselves
             if (receiver.Id == senderId)
             {
                 throw new Exception("Nie możesz wysłać zaproszenia do samego siebie.");
             }
 
-            // 3. CHECK FOR SPAM/DUPLICATES: Did I already send them an invitation?
+            // Sprawdzanie dubli - czy zostało już wysłane takie zaproszenie?
             var existingSent = await firestore.GetCollection("invitations")
                                               .WhereEqualsTo("senderId", senderId)
                                               .WhereEqualsTo("receiverId", receiver.Id)
@@ -215,7 +218,7 @@ namespace i_am.Services
                 throw new Exception("Zaproszenie do tego użytkownika zostało już wysłane lub odrzucone. Usuń stare zaproszenie, aby wysłać nowe.");
             }
 
-            // 4. CHECK REVERSE SPAM: Did they already send ME an invitation?
+            // Czy druga strona już mi wysłała zaproszenie?
             var existingReceived = await firestore.GetCollection("invitations")
                                                   .WhereEqualsTo("senderId", receiver.Id)
                                                   .WhereEqualsTo("receiverId", senderId)
@@ -226,17 +229,27 @@ namespace i_am.Services
                 throw new Exception("Ten użytkownik wysłał już zaproszenie do Ciebie. Sprawdź swoje powiadomienia.");
             }
 
-            // 5. Create the request
             var request = new Invitation
             {
                 SenderId = senderId,
                 SenderName = senderName,
                 ReceiverId = receiver.Id,
                 IsSenderCaregiver = isSenderCaregiver,
-                Status = "Pending" // Możliwe statusy: "Pending", "Accepted", "Rejected", "Deleted"
+                Status = "Pending" // Możliwe statusy: "Pending", "Accepted", "Rejected"
             };
 
             await firestore.GetCollection("invitations").AddDocumentAsync(request);
+
+            var notification = new AppNotification
+            {
+                ReceiverId = receiver.Id,
+                Title = "Nowe zaproszenie",
+                Message = $"Masz nowe zaproszenie do współpracy od {senderName}.",
+                Type = "NewInvitation"
+            };
+
+            await SendNotificationAsync(notification);
+
             return true;
         }
 
@@ -271,7 +284,9 @@ namespace i_am.Services
         public async Task AcceptInvitationAsync(Invitation request)
         {
             var firestore = CrossFirebaseFirestore.Current;
+            string? myUid = GetCurrentUserId();
             var batch = firestore.CreateBatch();
+            if (string.IsNullOrEmpty(myUid)) return;
 
             var requestRef = firestore.GetCollection("invitations").GetDocument(request.Id);
 
@@ -287,15 +302,46 @@ namespace i_am.Services
             batch.UpdateData(requestRef, ("status", "Accepted"));
 
             await batch.CommitAsync();
+
+            var myProfile = await GetUserProfileAsync(myUid);
+            string myName = myProfile?.Name ?? "Użytkownik";
+
+            var notification = new AppNotification
+            {
+                ReceiverId = request.SenderId,
+                Title = "Zaproszenie zaakceptowane",
+                Message = $"{myName} zaakceptował(a) Twoje zaproszenie do współpracy.",
+                Type = "InvitationAccepted"
+            };
+
+            await SendNotificationAsync(notification);
         }
 
         // NEW: Reject the invitation (changes status, but keeps the document so the sender gets blocked from spamming)
-        public async Task RejectInvitationAsync(string invitationId)
+        public async Task RejectInvitationAsync(Invitation invitation)
         {
             var firestore = CrossFirebaseFirestore.Current;
+            string? myUid = GetCurrentUserId();
+            if (string.IsNullOrEmpty(myUid)) return;
+
+            // Aktualizacja statusu zaproszenia na "Rejected"
             await firestore.GetCollection("invitations")
-                           .GetDocument(invitationId)
+                           .GetDocument(invitation.Id) // Używamy .Id z przekazanego obiektu
                            .UpdateDataAsync(("status", "Rejected"));
+
+            // -- NOWY KOD DO POWIADOMIEŃ PUSH --
+            var myProfile = await GetUserProfileAsync(myUid);
+            string myName = myProfile?.Name ?? "Użytkownik";
+
+            var notification = new AppNotification
+            {
+                ReceiverId = invitation.SenderId, // Wysyłamy do nadawcy
+                Title = "Zaproszenie odrzucone",
+                Message = $"{myName} odrzucił(a) Twoje zaproszenie.",
+                Type = "InvitationRejected"
+            };
+
+            await SendNotificationAsync(notification);
         }
 
         // Delete the invitation entirely (Allows the sender to clear rejected invites and try again)
@@ -352,15 +398,6 @@ namespace i_am.Services
             };
 
             await SendNotificationAsync(notification);
-        }
-
-        // Zmiana statusu na "Deleted" (Miękkie usunięcie)
-        public async Task MarkInvitationAsDeletedAsync(string invitationId)
-        {
-            var firestore = CrossFirebaseFirestore.Current;
-            await firestore.GetCollection("invitations")
-                           .GetDocument(invitationId)
-                           .UpdateDataAsync(("status", "Deleted"));
         }
 
         // Ostateczne usunięcie z bazy

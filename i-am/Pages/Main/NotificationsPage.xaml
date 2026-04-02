@@ -18,13 +18,14 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:AppNotification">
                     <Frame CornerRadius="10" Padding="15" Margin="0,0,0,15" BorderColor="LightGray" HasShadow="True">
-                        <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="*, Auto" RowSpacing="5">
+                        <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="*, Auto, Auto" RowSpacing="5" ColumnSpacing="10">
 
                             <Label Grid.Row="0" Grid.Column="0" 
                                    Text="{Binding Title}" 
                                    FontSize="18" 
                                    FontAttributes="Bold" 
-                                   TextColor="#2B0B98"/>
+                                   TextColor="#2B0B98"
+                                   VerticalOptions="Center"/>
 
                             <Label Grid.Row="0" Grid.Column="1" 
                                    Text="{Binding CreatedAt, StringFormat='{0:dd.MM.yyyy HH:mm}'}" 
@@ -32,20 +33,48 @@
                                    TextColor="Gray" 
                                    VerticalOptions="Center"/>
 
-                            <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
+                            <Button Grid.Row="0" Grid.Column="2"
+                                    Text="✕"
+                                    BackgroundColor="Transparent"
+                                    TextColor="Gray"
+                                    WidthRequest="30"
+                                    HeightRequest="30"
+                                    Padding="0"
+                                    FontSize="16"
+                                    FontAttributes="Bold"
+                                    VerticalOptions="Start"
+                                    HorizontalOptions="End"
+                                    Clicked="OnDismissNotificationClicked"
+                                    CommandParameter="{Binding .}"
+                                    IsVisible="False">
+                                <Button.Triggers>
+                                    <DataTrigger TargetType="Button" Binding="{Binding Type}" Value="NewInvitation">
+                                        <Setter Property="IsVisible" Value="True" />
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
+
+                            <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" 
                                    Text="{Binding Message}" 
                                    FontSize="14" 
                                    Margin="0,5,0,10"/>
 
-                            <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                                    Text="Zrozumiałem (Usuń powiadomienie)" 
+                            <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
+                                    Text="OK" 
                                     BackgroundColor="#6C757D" 
                                     TextColor="White"
-                                    Clicked="OnDeleteNotificationClicked"
+                                    Clicked="OnNotificationActionClicked"
                                     CommandParameter="{Binding .}" 
                                     HeightRequest="40" 
                                     CornerRadius="8"
-                                    HorizontalOptions="End"/>
+                                    HorizontalOptions="End">
+                                <Button.Triggers>
+                                    <DataTrigger TargetType="Button" Binding="{Binding Type}" Value="NewInvitation">
+                                        <Setter Property="Text" Value="Przejdź do zaproszeń" />
+                                        <Setter Property="BackgroundColor" Value="#2B0B98" />
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
 
                         </Grid>
                     </Frame>

@@ -5,6 +5,7 @@ using i_am.Pages.Main;
 using i_am.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
+using CommunityToolkit.Maui;
 #if IOS
 using Plugin.Firebase.Core.Platforms.iOS;
 #elif ANDROID
@@ -20,7 +21,9 @@ namespace i_am
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .RegisterFirebaseServices()
+
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -34,7 +37,9 @@ namespace i_am
 
             builder.Services.AddTransient<LoadingPage>();
             builder.Services.AddTransient<LandingPage>();
+            builder.Services.AddTransient<i_am.ViewModels.LoginViewModel>();
             builder.Services.AddTransient<LoginPage>();
+            builder.Services.AddTransient<i_am.ViewModels.RegisterViewModel>();
             builder.Services.AddTransient<RegisterPage>();
             builder.Services.AddTransient<ManageAccountPage>();
             builder.Services.AddTransient<InformationPage>();

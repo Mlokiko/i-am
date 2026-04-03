@@ -1,35 +1,39 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="i_am.Pages.Authentication.LoadingPage"
-             Title="LoadingPage"
-             NavigationPage.HasNavigationBar="False"
-             Shell.NavBarIsVisible="False"
-             BackgroundColor="#1A1C20">
+<ContentPage
+    x:Class="i_am.Pages.Authentication.LoadingPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="LoadingPage"
+    BackgroundColor="#1A1C20"
+    NavigationPage.HasNavigationBar="False"
+    Shell.NavBarIsVisible="False">
 
     <Grid>
-        <VerticalStackLayout 
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" 
-            Spacing="30">
+        <VerticalStackLayout
+            HorizontalOptions="Center"
+            Spacing="30"
+            VerticalOptions="Center">
 
-            <Image Source="i_am_logo.svg" 
-                   WidthRequest="200" 
-                   HeightRequest="200"
-                   Aspect="AspectFit"
-                   HorizontalOptions="Center" />
+            <Image
+                Aspect="AspectFit"
+                HeightRequest="200"
+                HorizontalOptions="Center"
+                Source="i_am_logo.svg"
+                WidthRequest="200" />
 
-            <ActivityIndicator IsRunning="True" 
-                               Color="White"
-                               HeightRequest="50"
-                               WidthRequest="50"
-                               HorizontalOptions="Center" />
+            <ActivityIndicator
+                HeightRequest="50"
+                HorizontalOptions="Center"
+                IsRunning="True"
+                WidthRequest="50"
+                Color="White" />
 
-            <Label Text="Wczytywanie..." 
-                   TextColor="White" 
-                   FontSize="14" 
-                   HorizontalOptions="Center" 
-                   Opacity="0.6" />
+            <Label
+                FontSize="14"
+                HorizontalOptions="Center"
+                Opacity="0.6"
+                Text="Wczytywanie..."
+                TextColor="White" />
 
         </VerticalStackLayout>
     </Grid>

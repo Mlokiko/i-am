@@ -1,135 +1,305 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="i_am.Pages.Authentication.RegisterPage"
-             Title="Rejestracja">
+<ContentPage
+    x:Class="i_am.Pages.Authentication.RegisterPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Rejestracja">
     <ScrollView>
-        <VerticalStackLayout Spacing="15" Padding="30">
+        <VerticalStackLayout Padding="30" Spacing="15">
 
-            <Label 
-                Text="Email"
-                FontSize="16"
+            <Label
+                Margin="0,15,0,5"
                 FontAttributes="Bold"
-                Margin="0,15,0,5"/>
-            <Border x:Name="EmailBorder" StrokeShape="RoundRectangle 12" Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" StrokeThickness="1" BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" Padding="12,0">
-                <Entry x:Name="EmailEntry"
-       Placeholder="np. example@example.com"
-       Keyboard="Email"
-       Unfocused="OnEmailUnfocused"
-       TextChanged="OnFieldTextChanged"/>
+                FontSize="16"
+                Text="Email" />
+            <Border
+                x:Name="EmailBorder"
+                Padding="12,0"
+                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                  Dark={StaticResource SurfaceDark}}"
+                Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                         Dark={StaticResource Gray500}}"
+                StrokeShape="RoundRectangle 12"
+                StrokeThickness="1">
+                <Entry
+                    x:Name="EmailEntry"
+                    Keyboard="Email"
+                    Placeholder="np. example@example.com"
+                    TextChanged="OnFieldTextChanged"
+                    Unfocused="OnEmailUnfocused" />
             </Border>
-            <Label x:Name="EmailErrorLabel" Text="Niepoprawny format email" TextColor="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" FontSize="12" Margin="5,-10,0,0" IsVisible="False" />
+            <Label
+                x:Name="EmailErrorLabel"
+                Margin="5,-10,0,0"
+                FontSize="12"
+                IsVisible="False"
+                Text="Niepoprawny format email"
+                TextColor="{AppThemeBinding Light={StaticResource DangerLight},
+                                            Dark={StaticResource DangerDark}}" />
 
 
-            <HorizontalStackLayout Spacing="8" Margin="0,10,0,5" VerticalOptions="End">
-                <Label 
-                    Text="Hasło"
-                    FontSize="16"
+            <HorizontalStackLayout
+                Margin="0,10,0,5"
+                Spacing="8"
+                VerticalOptions="End">
+                <Label
+                    Margin="0,10,0,5"
                     FontAttributes="Bold"
-                    Margin="0,10,0,5"/>
-                <Border Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" StrokeThickness="2" BackgroundColor="Transparent"
-                        StrokeShape="RoundRectangle 15" HeightRequest="24" WidthRequest="24"
-                        HorizontalOptions="Center" VerticalOptions="Center">
-                    <Label Text="?" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" FontAttributes="Bold"
-                           HorizontalOptions="Center" VerticalOptions="Center" />
+                    FontSize="16"
+                    Text="Hasło" />
+                <Border
+                    BackgroundColor="Transparent"
+                    HeightRequest="24"
+                    HorizontalOptions="Center"
+                    Stroke="{AppThemeBinding Light={StaticResource Primary},
+                                             Dark={StaticResource PrimaryDark}}"
+                    StrokeShape="RoundRectangle 15"
+                    StrokeThickness="2"
+                    VerticalOptions="Center"
+                    WidthRequest="24">
+                    <Label
+                        FontAttributes="Bold"
+                        HorizontalOptions="Center"
+                        Text="?"
+                        TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                    Dark={StaticResource PrimaryDark}}"
+                        VerticalOptions="Center" />
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnPasswordInfoTapped" />
                     </Border.GestureRecognizers>
                 </Border>
             </HorizontalStackLayout>
-            <Border x:Name="PasswordBorder" StrokeShape="RoundRectangle 12" Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" StrokeThickness="1" BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" Padding="12,0">
+            <Border
+                x:Name="PasswordBorder"
+                Padding="12,0"
+                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                  Dark={StaticResource SurfaceDark}}"
+                Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                         Dark={StaticResource Gray500}}"
+                StrokeShape="RoundRectangle 12"
+                StrokeThickness="1">
                 <Grid>
-                    <Entry x:Name="PasswordEntry"
-       Placeholder="np. MojeB@rdzoSiln3HaSlO"
-       IsPassword="True" 
-       Unfocused="OnPasswordUnfocused"
-       TextChanged="OnFieldTextChanged"/>
+                    <Entry
+                        x:Name="PasswordEntry"
+                        IsPassword="True"
+                        Placeholder="np. MojeB@rdzoSiln3HaSlO"
+                        TextChanged="OnFieldTextChanged"
+                        Unfocused="OnPasswordUnfocused" />
 
-                    <Label 
+                    <Label
                         x:Name="TogglePasswordLabel"
-                        Text="Pokaż" 
-                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" 
-                        FontAttributes="Bold" 
-                        VerticalOptions="Center" 
-                        HorizontalOptions="End" 
-                        Margin="0,0,15,0">
+                        Margin="0,0,15,0"
+                        FontAttributes="Bold"
+                        HorizontalOptions="End"
+                        Text="Pokaż"
+                        TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                    Dark={StaticResource PrimaryDark}}"
+                        VerticalOptions="Center">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnTogglePasswordTapped" />
                         </Label.GestureRecognizers>
                     </Label>
                 </Grid>
             </Border>
-            <Label x:Name="PasswordErrorLabel" Text="Hasło musi mieć minimum 6 znaków" TextColor="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" FontSize="12" Margin="5,-10,0,0" IsVisible="False" />
+            <Label
+                x:Name="PasswordErrorLabel"
+                Margin="5,-10,0,0"
+                FontSize="12"
+                IsVisible="False"
+                Text="Hasło musi mieć minimum 6 znaków"
+                TextColor="{AppThemeBinding Light={StaticResource DangerLight},
+                                            Dark={StaticResource DangerDark}}" />
 
 
-            <Label 
-                Text="Potwierdź hasło"
-                FontSize="16"
+            <Label
+                Margin="0,10,0,5"
                 FontAttributes="Bold"
-                Margin="0,10,0,5"/>
-            <Border x:Name="ConfirmPasswordBorder" StrokeShape="RoundRectangle 12" Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" StrokeThickness="1" BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" Padding="12,0">
+                FontSize="16"
+                Text="Potwierdź hasło" />
+            <Border
+                x:Name="ConfirmPasswordBorder"
+                Padding="12,0"
+                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                  Dark={StaticResource SurfaceDark}}"
+                Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                         Dark={StaticResource Gray500}}"
+                StrokeShape="RoundRectangle 12"
+                StrokeThickness="1">
                 <Grid>
-                    <Entry x:Name="ConfirmPasswordEntry"
-       Placeholder="Powtórz hasło"
-       IsPassword="True" 
-       Unfocused="OnConfirmPasswordUnfocused"
-       TextChanged="OnFieldTextChanged"/>
+                    <Entry
+                        x:Name="ConfirmPasswordEntry"
+                        IsPassword="True"
+                        Placeholder="Powtórz hasło"
+                        TextChanged="OnFieldTextChanged"
+                        Unfocused="OnConfirmPasswordUnfocused" />
 
-                    <Label 
+                    <Label
                         x:Name="ToggleConfirmPasswordLabel"
-                        Text="Pokaż" 
-                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" 
-                        FontAttributes="Bold" 
-                        VerticalOptions="Center" 
-                        HorizontalOptions="End" 
-                        Margin="0,0,15,0">
+                        Margin="0,0,15,0"
+                        FontAttributes="Bold"
+                        HorizontalOptions="End"
+                        Text="Pokaż"
+                        TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                    Dark={StaticResource PrimaryDark}}"
+                        VerticalOptions="Center">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnTogglePasswordTapped" />
                         </Label.GestureRecognizers>
                     </Label>
                 </Grid>
             </Border>
-            <Label x:Name="ConfirmPasswordErrorLabel" Text="Hasła nie są identyczne" TextColor="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" FontSize="12" Margin="5,-10,0,0" IsVisible="False" />
+            <Label
+                x:Name="ConfirmPasswordErrorLabel"
+                Margin="5,-10,0,0"
+                FontSize="12"
+                IsVisible="False"
+                Text="Hasła nie są identyczne"
+                TextColor="{AppThemeBinding Light={StaticResource DangerLight},
+                                            Dark={StaticResource DangerDark}}" />
 
 
-            <HorizontalStackLayout Spacing="8" Margin="0,10,0,5" VerticalOptions="End">
-                <Label Text="Nazwa użytkownika" FontSize="16" FontAttributes="Bold" VerticalOptions="Center"/>
-                <Border Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" StrokeThickness="2" BackgroundColor="Transparent" StrokeShape="RoundRectangle 15" HeightRequest="24" WidthRequest="24" HorizontalOptions="Center" VerticalOptions="Center">
-                    <Label Text="?" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+            <HorizontalStackLayout
+                Margin="0,10,0,5"
+                Spacing="8"
+                VerticalOptions="End">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    Text="Nazwa użytkownika"
+                    VerticalOptions="Center" />
+                <Border
+                    BackgroundColor="Transparent"
+                    HeightRequest="24"
+                    HorizontalOptions="Center"
+                    Stroke="{AppThemeBinding Light={StaticResource Primary},
+                                             Dark={StaticResource PrimaryDark}}"
+                    StrokeShape="RoundRectangle 15"
+                    StrokeThickness="2"
+                    VerticalOptions="Center"
+                    WidthRequest="24">
+                    <Label
+                        FontAttributes="Bold"
+                        HorizontalOptions="Center"
+                        Text="?"
+                        TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                    Dark={StaticResource PrimaryDark}}"
+                        VerticalOptions="Center" />
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnNameInfoTapped" />
                     </Border.GestureRecognizers>
                 </Border>
             </HorizontalStackLayout>
-            <Border x:Name="NameBorder" StrokeShape="RoundRectangle 12" Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" StrokeThickness="1" BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" Padding="12,0">
-                <Entry x:Name="NameEntry" Placeholder="np. Andrju" Unfocused="OnNameUnfocused" TextChanged="OnFieldTextChanged"/>
+            <Border
+                x:Name="NameBorder"
+                Padding="12,0"
+                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                  Dark={StaticResource SurfaceDark}}"
+                Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                         Dark={StaticResource Gray500}}"
+                StrokeShape="RoundRectangle 12"
+                StrokeThickness="1">
+                <Entry
+                    x:Name="NameEntry"
+                    Placeholder="np. Andrju"
+                    TextChanged="OnFieldTextChanged"
+                    Unfocused="OnNameUnfocused" />
             </Border>
 
-            <Label x:Name="NameErrorLabel" Text="Nazwa musi mieć minimum 3 znaki" TextColor="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" FontSize="12" Margin="5,-10,0,0" IsVisible="False" />
+            <Label
+                x:Name="NameErrorLabel"
+                Margin="5,-10,0,0"
+                FontSize="12"
+                IsVisible="False"
+                Text="Nazwa musi mieć minimum 3 znaki"
+                TextColor="{AppThemeBinding Light={StaticResource DangerLight},
+                                            Dark={StaticResource DangerDark}}" />
 
-            <HorizontalStackLayout Spacing="8" Margin="0,10,0,5" VerticalOptions="End">
-                <Label Text="Numer telefonu" FontSize="16" FontAttributes="Bold" VerticalOptions="Center"/>
-                <Border Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" StrokeThickness="2" BackgroundColor="Transparent" StrokeShape="RoundRectangle 15" HeightRequest="24" WidthRequest="24" HorizontalOptions="Center" VerticalOptions="Center">
-                    <Label Text="?" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+            <HorizontalStackLayout
+                Margin="0,10,0,5"
+                Spacing="8"
+                VerticalOptions="End">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    Text="Numer telefonu"
+                    VerticalOptions="Center" />
+                <Border
+                    BackgroundColor="Transparent"
+                    HeightRequest="24"
+                    HorizontalOptions="Center"
+                    Stroke="{AppThemeBinding Light={StaticResource Primary},
+                                             Dark={StaticResource PrimaryDark}}"
+                    StrokeShape="RoundRectangle 15"
+                    StrokeThickness="2"
+                    VerticalOptions="Center"
+                    WidthRequest="24">
+                    <Label
+                        FontAttributes="Bold"
+                        HorizontalOptions="Center"
+                        Text="?"
+                        TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                    Dark={StaticResource PrimaryDark}}"
+                        VerticalOptions="Center" />
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnPhoneInfoTapped" />
                     </Border.GestureRecognizers>
                 </Border>
             </HorizontalStackLayout>
             <Grid ColumnDefinitions="Auto, *" ColumnSpacing="10">
-                <Border Grid.Column="0" StrokeShape="RoundRectangle 12" Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" StrokeThickness="1" BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" Padding="12,0">
-                    <Entry x:Name="PhonePrefixEntry" Text="+48" WidthRequest="50" Keyboard="Telephone" />
+                <Border
+                    Grid.Column="0"
+                    Padding="12,0"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                      Dark={StaticResource SurfaceDark}}"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                             Dark={StaticResource Gray500}}"
+                    StrokeShape="RoundRectangle 12"
+                    StrokeThickness="1">
+                    <Entry
+                        x:Name="PhonePrefixEntry"
+                        Keyboard="Telephone"
+                        Text="+48"
+                        WidthRequest="50" />
                 </Border>
-                <Border x:Name="PhoneBorder" Grid.Column="1" StrokeShape="RoundRectangle 12" Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" StrokeThickness="1" BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" Padding="12,0">
-                    <Entry x:Name="PhoneEntry" Placeholder="np. 111 222 333" Keyboard="Telephone" Unfocused="OnPhoneUnfocused" TextChanged="OnFieldTextChanged" />
+                <Border
+                    x:Name="PhoneBorder"
+                    Grid.Column="1"
+                    Padding="12,0"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                      Dark={StaticResource SurfaceDark}}"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                             Dark={StaticResource Gray500}}"
+                    StrokeShape="RoundRectangle 12"
+                    StrokeThickness="1">
+                    <Entry
+                        x:Name="PhoneEntry"
+                        Keyboard="Telephone"
+                        Placeholder="np. 111 222 333"
+                        TextChanged="OnFieldTextChanged"
+                        Unfocused="OnPhoneUnfocused" />
                 </Border>
             </Grid>
-            <Label x:Name="PhoneErrorLabel" Text="Podaj poprawny numer (min. 9 cyfr)" TextColor="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" FontSize="12" Margin="5,5,0,0" IsVisible="False" />
+            <Label
+                x:Name="PhoneErrorLabel"
+                Margin="5,5,0,0"
+                FontSize="12"
+                IsVisible="False"
+                Text="Podaj poprawny numer (min. 9 cyfr)"
+                TextColor="{AppThemeBinding Light={StaticResource DangerLight},
+                                            Dark={StaticResource DangerDark}}" />
 
-            <Label Text="Data urodzenia" FontSize="16" FontAttributes="Bold" Margin="0,10,0,5"/>
+            <Label
+                Margin="0,10,0,5"
+                FontAttributes="Bold"
+                FontSize="16"
+                Text="Data urodzenia" />
             <DatePicker x:Name="BirthdatePicker" Format="dd/MM/yyyy" />
 
-            <Label Text="Płeć" FontSize="16" FontAttributes="Bold" Margin="0,10,0,5"/>
+            <Label
+                Margin="0,10,0,5"
+                FontAttributes="Bold"
+                FontSize="16"
+                Text="Płeć" />
             <Picker x:Name="SexPicker" Title="Kliknij aby wybrać z listy">
                 <Picker.ItemsSource>
                     <x:Array Type="{x:Type x:String}">
@@ -140,21 +310,39 @@
                 </Picker.ItemsSource>
             </Picker>
 
-            <HorizontalStackLayout Spacing="10" VerticalOptions="Center" Margin="0,10,0,0">
+            <HorizontalStackLayout
+                Margin="0,10,0,0"
+                Spacing="10"
+                VerticalOptions="Center">
                 <Label Text="Jesteś opiekunem?" VerticalOptions="Center" />
                 <Switch x:Name="CaregiverSwitch" VerticalOptions="Center" />
             </HorizontalStackLayout>
 
-            <Button 
+            <Button
                 x:Name="RegisterButton"
-                Text="Stwórz konto" 
-                Clicked="OnRegisterClicked" 
-                IsEnabled="False" />
+                Clicked="OnRegisterClicked"
+                IsEnabled="False"
+                Text="Stwórz konto" />
 
-            <ActivityIndicator x:Name="LoadingSpinner" IsRunning="False" IsVisible="False" Color="white" HorizontalOptions="Center" Margin="0,10,0,0" />
+            <ActivityIndicator
+                x:Name="LoadingSpinner"
+                Margin="0,10,0,0"
+                HorizontalOptions="Center"
+                IsRunning="False"
+                IsVisible="False"
+                Color="white" />
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
-                <Label Text="Masz już konto?" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center"/>
-                <Label Text="Zaloguj się." TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" FontAttributes="Bold" VerticalOptions="Center">
+                <Label
+                    Text="Masz już konto?"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                Dark={StaticResource Gray400}}"
+                    VerticalOptions="Center" />
+                <Label
+                    FontAttributes="Bold"
+                    Text="Zaloguj się."
+                    TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                Dark={StaticResource PrimaryDark}}"
+                    VerticalOptions="Center">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnLoginClicked" />
                     </Label.GestureRecognizers>

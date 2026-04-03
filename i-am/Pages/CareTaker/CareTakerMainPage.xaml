@@ -1,71 +1,75 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="i_am.Pages.CareTaker.CareTakerMainPage">
+<ContentPage
+    x:Class="i_am.Pages.CareTaker.CareTakerMainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Shell.TitleView>
-        <Label Text="Panel Główny" 
-               TextColor="White" 
-               FontSize="30" 
-               FontAttributes="Bold" 
-               HorizontalOptions="Center" 
-               VerticalOptions="Center" />
+        <Label
+            FontAttributes="Bold"
+            FontSize="30"
+            HorizontalOptions="Center"
+            Text="Panel Główny"
+            TextColor="White"
+            VerticalOptions="Center" />
     </Shell.TitleView>
 
     <Grid Padding="20">
-        <VerticalStackLayout 
-            VerticalOptions="Center" 
+        <VerticalStackLayout
             HorizontalOptions="Fill"
-            Spacing="25">
+            Spacing="25"
+            VerticalOptions="Center">
 
             <ScrollView>
                 <VerticalStackLayout Spacing="10">
-                    <Button 
-                    x:Name="NotificationsButton"
-                    Text="Powiadomienia"
-                    Clicked="OnNotificationsButtonClicked" 
-                    HorizontalOptions="Fill"/>
+                    <Button
+                        x:Name="NotificationsButton"
+                        Clicked="OnNotificationsButtonClicked"
+                        HorizontalOptions="Fill"
+                        Text="Powiadomienia" />
 
-                    <Button 
-                    x:Name="DailyActivityButton"
-                    Text="Codzienna aktywność"
-                    Clicked="OnDailyActivityButtonClicked" 
-                    HorizontalOptions="Fill" />
+                    <Button
+                        x:Name="DailyActivityButton"
+                        Clicked="OnDailyActivityButtonClicked"
+                        HorizontalOptions="Fill"
+                        Text="Codzienna aktywność" />
 
-                    <Button 
-                    x:Name="MyCalendarButton"
-                    Text="Kalendarz"
-                    Clicked="OnCalendarButtonClicked" 
-                    HorizontalOptions="Fill" />
+                    <Button
+                        x:Name="MyCalendarButton"
+                        Clicked="OnCalendarButtonClicked"
+                        HorizontalOptions="Fill"
+                        Text="Kalendarz" />
 
-                    <Button 
-                    x:Name="ManageCareGiversButton"
-                    Text="Zarządzaj Opiekunami"
-                    Clicked="OnManageCaregiversButtonClicked" 
-                    HorizontalOptions="Fill" />
+                    <Button
+                        x:Name="ManageCareGiversButton"
+                        Clicked="OnManageCaregiversButtonClicked"
+                        HorizontalOptions="Fill"
+                        Text="Zarządzaj Opiekunami" />
 
-                    <Button 
-                    x:Name="ManageAccountButton"
-                    Text="Zarządzaj swoim kontem"
-                    Clicked="OnManageAccountButtonClicked" 
-                    HorizontalOptions="Fill" />
+                    <Button
+                        x:Name="ManageAccountButton"
+                        Clicked="OnManageAccountButtonClicked"
+                        HorizontalOptions="Fill"
+                        Text="Zarządzaj swoim kontem" />
                 </VerticalStackLayout>
             </ScrollView>
 
             <VerticalStackLayout>
-                <Button x:Name="LogoutButton"
-                    Text="Wyloguj się"
-                    Clicked="OnLogoutButtonClicked" 
+                <Button
+                    x:Name="LogoutButton"
+                    Margin="0,10,0,0"
+                    Clicked="OnLogoutButtonClicked"
                     HorizontalOptions="Fill"
                     Style="{StaticResource DangerButtonStyle}"
-                    Margin="0,10,0,0" />
+                    Text="Wyloguj się" />
 
-                <Label 
-                Text="Informacje alarmowe"
-                FontSize="12"
-                Padding="20"
-                TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" 
-                HorizontalOptions="Center" >
+                <Label
+                    Padding="20"
+                    FontSize="12"
+                    HorizontalOptions="Center"
+                    Text="Informacje alarmowe"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                Dark={StaticResource Gray400}}">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnAlarmInformationTapped" />
                     </Label.GestureRecognizers>
@@ -74,5 +78,5 @@
             </VerticalStackLayout>
         </VerticalStackLayout>
     </Grid>
-    
+
 </ContentPage>

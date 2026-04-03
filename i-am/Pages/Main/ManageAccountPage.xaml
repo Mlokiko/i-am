@@ -1,49 +1,137 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="i_am.Pages.Main.ManageAccountPage"
-             Title="Zarządzanie kontem">
+<ContentPage
+    x:Class="i_am.Pages.Main.ManageAccountPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Zarządzanie kontem">
     <ScrollView>
         <VerticalStackLayout Padding="30" Spacing="20">
 
-            <Image Source="dotnet_bot.png" HeightRequest="100" HorizontalOptions="Center" Margin="0,0,0,10"/>
-            <Label x:Name="HeaderNameLabel" Text="Wczytywanie..." FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" />
+            <Image
+                Margin="0,0,0,10"
+                HeightRequest="100"
+                HorizontalOptions="Center"
+                Source="dotnet_bot.png" />
+            <Label
+                x:Name="HeaderNameLabel"
+                FontAttributes="Bold"
+                FontSize="24"
+                HorizontalOptions="Center"
+                Text="Wczytywanie..." />
 
-            <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}}" Margin="0,10"/>
+            <BoxView
+                Margin="0,10"
+                HeightRequest="1"
+                Color="{AppThemeBinding Light={StaticResource Gray200},
+                                        Dark={StaticResource Gray500}}" />
 
+            <Grid
+                ColumnDefinitions="Auto, *"
+                ColumnSpacing="20"
+                RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto"
+                RowSpacing="15">
 
-            <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto" RowSpacing="15" ColumnSpacing="20">
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    FontAttributes="Bold"
+                    Text="Email:"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                Dark={StaticResource Gray400}}"
+                    VerticalOptions="Center" />
+                <Label
+                    x:Name="EmailLabel"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Text="..."
+                    VerticalOptions="Center" />
 
-                <Label Grid.Row="0" Grid.Column="0" Text="Email:" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center"/>
-                <Label Grid.Row="0" Grid.Column="1" x:Name="EmailLabel" Text="..." VerticalOptions="Center"/>
+                <Label
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    FontAttributes="Bold"
+                    Text="Telefon:"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                Dark={StaticResource Gray400}}"
+                    VerticalOptions="Center" />
+                <Label
+                    x:Name="PhoneLabel"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Text="..."
+                    VerticalOptions="Center" />
 
-                <Label Grid.Row="1" Grid.Column="0" Text="Telefon:" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center"/>
-                <Label Grid.Row="1" Grid.Column="1" x:Name="PhoneLabel" Text="..." VerticalOptions="Center"/>
+                <Label
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    FontAttributes="Bold"
+                    Text="Data urodzenia:"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                Dark={StaticResource Gray400}}"
+                    VerticalOptions="Center" />
+                <Label
+                    x:Name="BirthDateLabel"
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Text="..."
+                    VerticalOptions="Center" />
 
-                <Label Grid.Row="2" Grid.Column="0" Text="Data urodzenia:" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center"/>
-                <Label Grid.Row="2" Grid.Column="1" x:Name="BirthDateLabel" Text="..." VerticalOptions="Center"/>
+                <Label
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    FontAttributes="Bold"
+                    Text="Płeć:"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                Dark={StaticResource Gray400}}"
+                    VerticalOptions="Center" />
+                <Label
+                    x:Name="SexLabel"
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    Text="..."
+                    VerticalOptions="Center" />
 
-                <Label Grid.Row="3" Grid.Column="0" Text="Płeć:" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center"/>
-                <Label Grid.Row="3" Grid.Column="1" x:Name="SexLabel" Text="..." VerticalOptions="Center"/>
+                <Label
+                    Grid.Row="4"
+                    Grid.Column="0"
+                    FontAttributes="Bold"
+                    Text="Typ konta:"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                Dark={StaticResource Gray400}}"
+                    VerticalOptions="Center" />
+                <Label
+                    x:Name="RoleLabel"
+                    Grid.Row="4"
+                    Grid.Column="1"
+                    Text="..."
+                    VerticalOptions="Center" />
 
-                <Label Grid.Row="4" Grid.Column="0" Text="Typ konta:" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center"/>
-                <Label Grid.Row="4" Grid.Column="1" x:Name="RoleLabel" Text="..." VerticalOptions="Center"/>
-
-                <Label Grid.Row="5" Grid.Column="0" Text="Konto utworzono:" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center"/>
-                <Label Grid.Row="5" Grid.Column="1" x:Name="CreatedLabel" Text="..." VerticalOptions="Center"/>
+                <Label
+                    Grid.Row="5"
+                    Grid.Column="0"
+                    FontAttributes="Bold"
+                    Text="Konto utworzono:"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                Dark={StaticResource Gray400}}"
+                    VerticalOptions="Center" />
+                <Label
+                    x:Name="CreatedLabel"
+                    Grid.Row="5"
+                    Grid.Column="1"
+                    Text="..."
+                    VerticalOptions="Center" />
 
             </Grid>
 
-
-
-
-            <Button Text="Usuń konto" 
-                    Clicked="OnDeleteAccountClicked" 
-                    BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" 
-                    TextColor="White" 
-                    CornerRadius="8" 
-                    FontAttributes="Bold"
-                    Margin="0,10,0,30"/>
+            <Button
+                Margin="0,10,0,30"
+                BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight},
+                                                  Dark={StaticResource DangerDark}}"
+                Clicked="OnDeleteAccountClicked"
+                CornerRadius="8"
+                FontAttributes="Bold"
+                Text="Usuń konto"
+                TextColor="White" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

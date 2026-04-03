@@ -1,28 +1,36 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="i_am.Pages.Authentication.LandingPage"
-             Title="LandingPage"
-             Shell.NavBarIsVisible="False">
+<ContentPage
+        x:Class="i_am.Pages.Authentication.LandingPage"
+        xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+        Title="LandingPage"
+        Shell.NavBarIsVisible="False">
 
-    <VerticalStackLayout Spacing="20" 
-                         Padding="30" 
-                         VerticalOptions="Center">
+        <VerticalStackLayout
+                Padding="30"
+                Spacing="20"
+                VerticalOptions="Center">
 
-        <Image Source="{AppThemeBinding Light=i_am_logo_black.svg, Dark=i_am_logo_white.svg}" 
-               HeightRequest="150" 
-               HorizontalOptions="Center" 
-               Margin="0,0,0,20" />
+                <Image
+                        Margin="0,0,0,20"
+                        HeightRequest="150"
+                        HorizontalOptions="Center"
+                        Source="{AppThemeBinding Light=i_am_logo_black.svg,
+                                                 Dark=i_am_logo_white.svg}" />
 
-        <Button Text="Logowanie" 
-                Clicked="OnLoginClicked" 
-                Margin="0,0,0,10" />
+                <Button
+                        Margin="0,0,0,10"
+                        Clicked="OnLoginClicked"
+                        Text="Logowanie" />
 
-        <Button Text="Rejestracja" 
-                Clicked="OnRegisterClicked" 
-                BackgroundColor="Transparent" 
-                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDarkText}}" 
-                BorderColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" 
-                BorderWidth="2" />
-    </VerticalStackLayout>
+                <Button
+                        BackgroundColor="Transparent"
+                        BorderColor="{AppThemeBinding Light={StaticResource Primary},
+                                                      Dark={StaticResource PrimaryDark}}"
+                        BorderWidth="2"
+                        Clicked="OnRegisterClicked"
+                        Text="Rejestracja"
+                        TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                    Dark={StaticResource PrimaryDarkText}}" />
+        </VerticalStackLayout>
 </ContentPage>

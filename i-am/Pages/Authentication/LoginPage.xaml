@@ -1,32 +1,62 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="i_am.Pages.Authentication.LoginPage"
-             Title="Logowanie">
+<ContentPage
+    x:Class="i_am.Pages.Authentication.LoginPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Logowanie">
     <ScrollView>
-        <VerticalStackLayout Spacing="20" Padding="30" VerticalOptions="Center">
+        <VerticalStackLayout
+            Padding="30"
+            Spacing="20"
+            VerticalOptions="Center">
 
-            <Border StrokeShape="RoundRectangle 12" Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" StrokeThickness="1" BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" Padding="12,0">
-                <Entry x:Name="EmailEntry" 
-                       Placeholder="Email" 
-                       Keyboard="Email"
-                       ClearButtonVisibility="WhileEditing"/>
+            <Border
+                Padding="12,0"
+                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                  Dark={StaticResource SurfaceDark}}"
+                Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                         Dark={StaticResource Gray500}}"
+                StrokeShape="RoundRectangle 12"
+                StrokeThickness="1">
+                <Entry
+                    x:Name="EmailEntry"
+                    ClearButtonVisibility="WhileEditing"
+                    Keyboard="Email"
+                    Placeholder="Email" />
             </Border>
 
-            <Border StrokeShape="RoundRectangle 12" Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" StrokeThickness="1" BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" Padding="12,0">
-                <Entry x:Name="PasswordEntry" 
-                       Placeholder="Hasło" 
-                       IsPassword="True" 
-                       ClearButtonVisibility="WhileEditing"/>
+            <Border
+                Padding="12,0"
+                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                  Dark={StaticResource SurfaceDark}}"
+                Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                         Dark={StaticResource Gray500}}"
+                StrokeShape="RoundRectangle 12"
+                StrokeThickness="1">
+                <Entry
+                    x:Name="PasswordEntry"
+                    ClearButtonVisibility="WhileEditing"
+                    IsPassword="True"
+                    Placeholder="Hasło" />
             </Border>
 
-            <Button Text="Login" 
-                    Clicked="OnLoginClicked" 
-                    Margin="0,20,0,0"/>
+            <Button
+                Margin="0,20,0,0"
+                Clicked="OnLoginClicked"
+                Text="Login" />
 
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
-                <Label Text="Nie masz konta?" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center"/>
-                <Label Text="Zarejestruj." TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" FontAttributes="Bold" VerticalOptions="Center">
+                <Label
+                    Text="Nie masz konta?"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                Dark={StaticResource Gray400}}"
+                    VerticalOptions="Center" />
+                <Label
+                    FontAttributes="Bold"
+                    Text="Zarejestruj."
+                    TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                Dark={StaticResource PrimaryDark}}"
+                    VerticalOptions="Center">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnGoToRegisterTapped" />
                     </Label.GestureRecognizers>

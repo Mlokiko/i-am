@@ -1,88 +1,127 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:models="clr-namespace:i_am.Models"
-             xmlns:pages="clr-namespace:i_am.Pages.Main"
-             x:Class="i_am.Pages.Main.NotificationsPage"
-             x:DataType="pages:NotificationsPage"
-             Title="Powiadomienia">
+<ContentPage
+    x:Class="i_am.Pages.Main.NotificationsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:i_am.Models"
+    xmlns:pages="clr-namespace:i_am.Pages.Main"
+    Title="Powiadomienia"
+    x:DataType="pages:NotificationsPage">
 
     <Grid Padding="20">
 
         <CollectionView x:Name="NotificationsListView" ItemsSource="{Binding NotificationsList}">
 
             <CollectionView.EmptyView>
-                <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="10">
-                    <Label Text="📭" FontSize="50" HorizontalOptions="Center"/>
-                    <Label Text="Brak nowych powiadomień" 
-                           FontSize="18" 
-                           TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" 
-                           HorizontalOptions="Center"/>
+                <VerticalStackLayout
+                    HorizontalOptions="Center"
+                    Spacing="10"
+                    VerticalOptions="Center">
+                    <Label
+                        FontSize="50"
+                        HorizontalOptions="Center"
+                        Text="📭" />
+                    <Label
+                        FontSize="18"
+                        HorizontalOptions="Center"
+                        Text="Brak nowych powiadomień"
+                        TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                    Dark={StaticResource Gray400}}" />
                 </VerticalStackLayout>
             </CollectionView.EmptyView>
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:AppNotification">
 
-                    <Border Margin="0,0,0,15" 
-                            Padding="15" 
-                            StrokeShape="RoundRectangle 12" 
-                            Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
-                            BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}">
+                    <Border
+                        Margin="0,0,0,15"
+                        Padding="15"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                          Dark={StaticResource SurfaceDark}}"
+                        Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                                 Dark={StaticResource Gray600}}"
+                        StrokeShape="RoundRectangle 12">
 
-                        <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="*, Auto, Auto" RowSpacing="5" ColumnSpacing="10">
+                        <Grid
+                            ColumnDefinitions="*, Auto, Auto"
+                            ColumnSpacing="10"
+                            RowDefinitions="Auto, Auto, Auto"
+                            RowSpacing="5">
 
-                            <Label Grid.Row="0" Grid.Column="0" 
-                                   Text="{Binding Title}" 
-                                   FontSize="18" 
-                                   FontAttributes="Bold" 
-                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
-                                   VerticalOptions="Center"/>
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                FontAttributes="Bold"
+                                FontSize="18"
+                                Text="{Binding Title}"
+                                TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                            Dark={StaticResource PrimaryDark}}"
+                                VerticalOptions="Center" />
 
-                            <Label Grid.Row="0" Grid.Column="1" 
-                                   Text="{Binding CreatedAt, StringFormat='{0:dd.MM.yyyy HH:mm}'}" 
-                                   FontSize="12" 
-                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" 
-                                   VerticalOptions="Center"/>
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                FontSize="12"
+                                Text="{Binding CreatedAt, StringFormat='{0:dd.MM.yyyy HH:mm}'}"
+                                TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                            Dark={StaticResource Gray400}}"
+                                VerticalOptions="Center" />
 
-                            <Button Grid.Row="0" Grid.Column="2"
-                                    Text="✕"
-                                    BackgroundColor="Transparent"
-                                    TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}"
-                                    WidthRequest="30"
-                                    HeightRequest="30"
-                                    Padding="0"
-                                    FontSize="16"
-                                    FontAttributes="Bold"
-                                    VerticalOptions="Start"
-                                    HorizontalOptions="End"
-                                    Clicked="OnDismissNotificationClicked"
-                                    CommandParameter="{Binding .}"
-                                    IsVisible="False">
+                            <Button
+                                Grid.Row="0"
+                                Grid.Column="2"
+                                Padding="0"
+                                BackgroundColor="Transparent"
+                                Clicked="OnDismissNotificationClicked"
+                                CommandParameter="{Binding .}"
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                HeightRequest="30"
+                                HorizontalOptions="End"
+                                IsVisible="False"
+                                Text="✕"
+                                TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                            Dark={StaticResource Gray400}}"
+                                VerticalOptions="Start"
+                                WidthRequest="30">
                                 <Button.Triggers>
-                                    <DataTrigger TargetType="Button" Binding="{Binding Type}" Value="NewInvitation">
+                                    <DataTrigger
+                                        Binding="{Binding Type}"
+                                        TargetType="Button"
+                                        Value="NewInvitation">
                                         <Setter Property="IsVisible" Value="True" />
                                     </DataTrigger>
                                 </Button.Triggers>
                             </Button>
 
-                            <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" 
-                                   Text="{Binding Message}" 
-                                   FontSize="14" 
-                                   TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray200}}"
-                                   Margin="0,5,0,10"/>
+                            <Label
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                Margin="0,5,0,10"
+                                FontSize="14"
+                                Text="{Binding Message}"
+                                TextColor="{AppThemeBinding Light={StaticResource Gray600},
+                                                            Dark={StaticResource Gray200}}" />
 
-                            <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
-                                    Text="OK" 
-                                    BackgroundColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray600}}" 
-                                    TextColor="White"
-                                    Clicked="OnNotificationActionClicked"
-                                    CommandParameter="{Binding .}" 
-                                    HeightRequest="40" 
-                                    CornerRadius="8"
-                                    HorizontalOptions="End">
+                            <Button
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                                  Dark={StaticResource Gray600}}"
+                                Clicked="OnNotificationActionClicked"
+                                CommandParameter="{Binding .}"
+                                CornerRadius="8"
+                                HeightRequest="40"
+                                HorizontalOptions="End"
+                                Text="OK"
+                                TextColor="White">
                                 <Button.Triggers>
-                                    <DataTrigger TargetType="Button" Binding="{Binding Type}" Value="NewInvitation">
+                                    <DataTrigger
+                                        Binding="{Binding Type}"
+                                        TargetType="Button"
+                                        Value="NewInvitation">
                                         <Setter Property="Text" Value="Przejdź do zaproszeń" />
                                         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
                                     </DataTrigger>

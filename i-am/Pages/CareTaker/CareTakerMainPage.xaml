@@ -40,7 +40,7 @@
 
                     <Button 
                     x:Name="ManageCareGiversButton"
-                    Text="Zarzadzaj Opiekunami"
+                    Text="Zarządzaj Opiekunami"
                     Clicked="OnManageCaregiversButtonClicked" 
                     HorizontalOptions="Fill" />
 

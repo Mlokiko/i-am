@@ -34,13 +34,13 @@
 
             <Button 
                 x:Name="EditCareTakerQuestionsButton"
-                Text="Edytuj pytania podpiecznego"
+                Text="Edytuj pytania Podopiecznego"
                 Clicked="OnEditCareTakerQuestionsButtonClicked" 
                 HorizontalOptions="Fill" />
 
             <Button 
                 x:Name="ManageCareTakersButton"
-                Text="Zarzadzaj Podopiecznymi"
+                Text="Zarządzaj Podopiecznymi"
                 Clicked="OnManageCareTakersButtonClicked" 
                 HorizontalOptions="Fill" />
 

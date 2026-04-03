@@ -13,9 +13,9 @@
                     Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
                     BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}">
                 <VerticalStackLayout Spacing="10">
-                    <Label Text="Zaproś nowego podopiecznego" FontSize="18" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDarkText}}"/>
-                    <Entry x:Name="EmailEntry" Placeholder="Adres email podopiecznego" Keyboard="Email" ClearButtonVisibility="WhileEditing"/>
-                    <Button Text="Wyślij Zaproszenie" Clicked="OnSendInviteClicked" />
+                    <Label Text="Zaproś Podopiecznego" FontSize="18" FontAttributes="Bold" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDarkText}}"/>
+                    <Entry x:Name="EmailEntry" Placeholder="Adres email Podopiecznego" Keyboard="Email" ClearButtonVisibility="WhileEditing"/>
+                    <Button Text="Wyślij zaproszenie" Clicked="OnSendInviteClicked" />
                 </VerticalStackLayout>
             </Border>
 
@@ -115,7 +115,7 @@
                 <CollectionView ItemsSource="{Binding CareTakers}">
 
                     <CollectionView.EmptyView>
-                        <Label Text="Nie masz jeszcze podopiecznych." FontSize="14" HorizontalOptions="Center" Margin="0,20,0,0"
+                        <Label Text="Nie masz jeszcze Podopiecznych." FontSize="14" HorizontalOptions="Center" Margin="0,20,0,0"
                                TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}"/>
                     </CollectionView.EmptyView>
 

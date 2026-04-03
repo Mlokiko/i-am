@@ -24,7 +24,7 @@ namespace i_am.ViewModels
         private async Task GoToDailyActivityAsync() => await Shell.Current.GoToAsync(nameof(DailyActivityPage));
 
         [RelayCommand]
-        private async Task GoToCalendarAsync() => await Shell.Current.GoToAsync(nameof(InformationPage)); // Zastąp w przyszłości nameof(CalendarPage)
+        private async Task GoToCalendarAsync() => await Shell.Current.GoToAsync(nameof(CalendarPage));
 
         [RelayCommand]
         private async Task GoToManageCareGiversAsync() => await Shell.Current.GoToAsync(nameof(ManageCareGiversPage));

@@ -45,6 +45,8 @@ namespace i_am
             builder.Services.AddTransient<InformationPage>();
             builder.Services.AddTransient<i_am.ViewModels.NotificationsViewModel>();
             builder.Services.AddTransient<NotificationsPage>();
+            builder.Services.AddTransient<i_am.ViewModels.CalendarViewModel>();
+            builder.Services.AddTransient<i_am.Pages.Main.CalendarPage>();
 
             builder.Services.AddTransient<i_am.ViewModels.CareGiverMainViewModel>();
             builder.Services.AddTransient<CareGiverMainPage>();

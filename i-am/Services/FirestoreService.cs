@@ -686,6 +686,28 @@ namespace i_am.Services
             return questions;
         }
 
+        // Pobiera wszystkie historyczne raporty podopiecznego
+        public async Task<List<DailyResponse>> GetAllDailyResponsesAsync(string careTakerId)
+        {
+            try
+            {
+                var firestore = CrossFirebaseFirestore.Current;
+                var snapshot = await firestore.GetCollection("users")
+                                              .GetDocument(careTakerId)
+                                              .GetCollection("daily_responses")
+                                              .GetDocumentsAsync<DailyResponse>();
+
+                return snapshot.Documents
+                               .Where(d => d.Data != null)
+                               .Select(d => d.Data)
+                               .ToList();
+            }
+            catch (Exception)
+            {
+                return new List<DailyResponse>();
+            }
+        }
+
         #endregion
     }
 }

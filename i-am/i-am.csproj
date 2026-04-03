@@ -9,6 +9,12 @@
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net9.0-tizen</TargetFrameworks> -->
 
+		<!-- Ponoć w kompilatorze.NET MAUI jest znany bug który powoduje false positivy, dlatego wykomentowywuje te błędy
+		
+		<MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>
+		-->
+		<NoWarn>$(NoWarn);XC0025</NoWarn>
+
 		<TargetFrameworks>net9.0-android</TargetFrameworks>
 
 		<OutputType>Exe</OutputType>
@@ -79,7 +85,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="CommunityToolkit.Maui" Version="12.3.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.9" />

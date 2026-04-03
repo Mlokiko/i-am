@@ -4,13 +4,13 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:i_am.Models"
-    xmlns:pages="clr-namespace:i_am.Pages.Main"
+    xmlns:vm="clr-namespace:i_am.ViewModels"
     Title="Powiadomienia"
-    x:DataType="pages:NotificationsPage">
+    x:DataType="vm:NotificationsViewModel">
 
     <Grid Padding="20">
 
-        <CollectionView x:Name="NotificationsListView" ItemsSource="{Binding NotificationsList}">
+        <CollectionView ItemsSource="{Binding NotificationsList}">
 
             <CollectionView.EmptyView>
                 <VerticalStackLayout
@@ -36,92 +36,50 @@
                     <Border
                         Margin="0,0,0,15"
                         Padding="15"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                          Dark={StaticResource SurfaceDark}}"
-                        Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                                 Dark={StaticResource Gray600}}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}"
+                        Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
                         StrokeShape="RoundRectangle 12">
 
-                        <Grid
-                            ColumnDefinitions="*, Auto, Auto"
-                            ColumnSpacing="10"
-                            RowDefinitions="Auto, Auto, Auto"
-                            RowSpacing="5">
+                        <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
+
+                            <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="5">
+                                <Label FontAttributes="Bold" FontSize="16" Text="{Binding Title}" />
+                                <Label FontSize="14" Text="{Binding Message}" 
+                                       TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+
+                                <Label FontSize="12" 
+                                       Text="{Binding CreatedAt, StringFormat='{0:dd.MM.yyyy HH:mm}'}" 
+                                       TextColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}" />
+                            </VerticalStackLayout>
 
                             <Label
-                                Grid.Row="0"
-                                Grid.Column="0"
-                                FontAttributes="Bold"
-                                FontSize="18"
-                                Text="{Binding Title}"
-                                TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                            Dark={StaticResource PrimaryDark}}"
-                                VerticalOptions="Center" />
-
-                            <Label
-                                Grid.Row="0"
-                                Grid.Column="1"
-                                FontSize="12"
-                                Text="{Binding CreatedAt, StringFormat='{0:dd.MM.yyyy HH:mm}'}"
-                                TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                            Dark={StaticResource Gray400}}"
-                                VerticalOptions="Center" />
-
-                            <Button
-                                Grid.Row="0"
-                                Grid.Column="2"
-                                Padding="0"
-                                BackgroundColor="Transparent"
-                                Clicked="OnDismissNotificationClicked"
-                                CommandParameter="{Binding .}"
-                                FontAttributes="Bold"
-                                FontSize="16"
-                                HeightRequest="30"
-                                HorizontalOptions="End"
-                                IsVisible="False"
+                                Grid.Row="0" Grid.Column="1"
                                 Text="✕"
-                                TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                            Dark={StaticResource Gray400}}"
+                                FontAttributes="Bold"
+                                FontSize="20"
+                                HorizontalOptions="End"
                                 VerticalOptions="Start"
-                                WidthRequest="30">
-                                <Button.Triggers>
-                                    <DataTrigger
-                                        Binding="{Binding Type}"
-                                        TargetType="Button"
-                                        Value="NewInvitation">
-                                        <Setter Property="IsVisible" Value="True" />
-                                    </DataTrigger>
-                                </Button.Triggers>
-                            </Button>
-
-                            <Label
-                                Grid.Row="1"
-                                Grid.Column="0"
-                                Grid.ColumnSpan="3"
-                                Margin="0,5,0,10"
-                                FontSize="14"
-                                Text="{Binding Message}"
-                                TextColor="{AppThemeBinding Light={StaticResource Gray600},
-                                                            Dark={StaticResource Gray200}}" />
+                                TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer 
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NotificationsViewModel}}, Path=DismissNotificationCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Label.GestureRecognizers>
+                            </Label>
 
                             <Button
-                                Grid.Row="2"
-                                Grid.Column="0"
-                                Grid.ColumnSpan="3"
-                                BackgroundColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                                  Dark={StaticResource Gray600}}"
-                                Clicked="OnNotificationActionClicked"
+                                Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                Margin="0,15,0,0"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray600}}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NotificationsViewModel}}, Path=NotificationActionCommand}"
                                 CommandParameter="{Binding .}"
                                 CornerRadius="8"
                                 HeightRequest="40"
                                 HorizontalOptions="End"
-                                Text="OK"
+                                Text="Zrozumiałem"
                                 TextColor="White">
                                 <Button.Triggers>
-                                    <DataTrigger
-                                        Binding="{Binding Type}"
-                                        TargetType="Button"
-                                        Value="NewInvitation">
+                                    <DataTrigger TargetType="Button" Binding="{Binding Type}" Value="NewInvitation">
                                         <Setter Property="Text" Value="Przejdź do zaproszeń" />
                                         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
                                     </DataTrigger>

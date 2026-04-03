@@ -2,7 +2,9 @@
 <ContentPage
     x:Class="i_am.Pages.CareTaker.CareTakerMainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:i_am.ViewModels"
+    x:DataType="vm:CareTakerMainViewModel">
 
     <Shell.TitleView>
         <Label
@@ -23,32 +25,27 @@
             <ScrollView>
                 <VerticalStackLayout Spacing="10">
                     <Button
-                        x:Name="NotificationsButton"
-                        Clicked="OnNotificationsButtonClicked"
+                        Command="{Binding GoToNotificationsCommand}"
                         HorizontalOptions="Fill"
                         Text="Powiadomienia" />
 
                     <Button
-                        x:Name="DailyActivityButton"
-                        Clicked="OnDailyActivityButtonClicked"
+                        Command="{Binding GoToDailyActivityCommand}"
                         HorizontalOptions="Fill"
                         Text="Codzienna aktywność" />
 
                     <Button
-                        x:Name="MyCalendarButton"
-                        Clicked="OnCalendarButtonClicked"
+                        Command="{Binding GoToCalendarCommand}"
                         HorizontalOptions="Fill"
                         Text="Kalendarz" />
 
                     <Button
-                        x:Name="ManageCareGiversButton"
-                        Clicked="OnManageCaregiversButtonClicked"
+                        Command="{Binding GoToManageCareGiversCommand}"
                         HorizontalOptions="Fill"
                         Text="Zarządzaj Opiekunami" />
 
                     <Button
-                        x:Name="ManageAccountButton"
-                        Clicked="OnManageAccountButtonClicked"
+                        Command="{Binding GoToManageAccountCommand}"
                         HorizontalOptions="Fill"
                         Text="Zarządzaj swoim kontem" />
                 </VerticalStackLayout>
@@ -56,9 +53,8 @@
 
             <VerticalStackLayout>
                 <Button
-                    x:Name="LogoutButton"
                     Margin="0,10,0,0"
-                    Clicked="OnLogoutButtonClicked"
+                    Command="{Binding LogoutCommand}"
                     HorizontalOptions="Fill"
                     Style="{StaticResource DangerButtonStyle}"
                     Text="Wyloguj się" />
@@ -68,10 +64,9 @@
                     FontSize="12"
                     HorizontalOptions="Center"
                     Text="Informacje alarmowe"
-                    TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                Dark={StaticResource Gray400}}">
+                    TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}">
                     <Label.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnAlarmInformationTapped" />
+                        <TapGestureRecognizer Command="{Binding GoToInformationCommand}" />
                     </Label.GestureRecognizers>
                 </Label>
 

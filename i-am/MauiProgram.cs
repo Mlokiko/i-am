@@ -5,7 +5,6 @@ using i_am.Pages.Main;
 using i_am.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
-using CommunityToolkit.Maui;
 #if IOS
 using Plugin.Firebase.Core.Platforms.iOS;
 #elif ANDROID
@@ -21,7 +20,6 @@ namespace i_am
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                .UseMauiCommunityToolkit()
                 .RegisterFirebaseServices()
 
                 .ConfigureFonts(fonts =>
@@ -41,14 +39,21 @@ namespace i_am
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<i_am.ViewModels.RegisterViewModel>();
             builder.Services.AddTransient<RegisterPage>();
+            builder.Services.AddTransient<i_am.ViewModels.ManageAccountViewModel>();
             builder.Services.AddTransient<ManageAccountPage>();
+            builder.Services.AddTransient<i_am.ViewModels.InformationViewModel>();
             builder.Services.AddTransient<InformationPage>();
+            builder.Services.AddTransient<i_am.ViewModels.NotificationsViewModel>();
             builder.Services.AddTransient<NotificationsPage>();
 
+            builder.Services.AddTransient<i_am.ViewModels.CareGiverMainViewModel>();
             builder.Services.AddTransient<CareGiverMainPage>();
+            builder.Services.AddTransient<i_am.ViewModels.ManageCareTakersViewModel>();
             builder.Services.AddTransient<ManageCareTakersPage>();
 
+            builder.Services.AddTransient<i_am.ViewModels.CareTakerMainViewModel>();
             builder.Services.AddTransient<CareTakerMainPage>();
+            builder.Services.AddTransient<i_am.ViewModels.ManageCareGiversViewModel>();
             builder.Services.AddTransient<ManageCareGiversPage>();
             
 
@@ -71,7 +76,7 @@ namespace i_am
                 events.AddAndroid(android => android.OnCreate((activity, state) =>
                 {
                     // 3. In the newest versions, Android requires a locator function for the Activity
-                    CrossFirebase.Initialize(activity, () => Platform.CurrentActivity);
+                    CrossFirebase.Initialize(activity, () => Platform.CurrentActivity!);
                 }));
 #endif
             });

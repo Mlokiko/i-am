@@ -32,7 +32,7 @@ namespace i_am.Services
         {
 #if ANDROID
             var result = await Firebase.Auth.FirebaseAuth.Instance.SignInWithEmailAndPasswordAsync(email, password);
-            return result.User.Uid;
+            return result.User?.Uid ?? throw new Exception("Nie udało się pobrać danych autoryzacji z Firebase.");
 #elif IOS
     var result = await Firebase.Auth.Auth.DefaultInstance.SignInWithEmailAndPasswordAsync(email, password);
     return result.User.Uid;

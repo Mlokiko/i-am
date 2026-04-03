@@ -4,205 +4,96 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:i_am.Models"
-    xmlns:pages="clr-namespace:i_am.Pages.CareGiver"
+    xmlns:vm="clr-namespace:i_am.ViewModels"
     Title="Zarządzaj Podopiecznymi"
-    x:DataType="pages:ManageCareTakersPage">
+    x:DataType="vm:ManageCareTakersViewModel">
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="25">
 
             <Border
                 Padding="15"
-                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                  Dark={StaticResource SurfaceDark}}"
-                Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                         Dark={StaticResource Gray600}}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}"
+                Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
                 StrokeShape="RoundRectangle 12">
                 <VerticalStackLayout Spacing="10">
                     <Label
                         FontAttributes="Bold"
                         FontSize="18"
                         Text="Zaproś Podopiecznego"
-                        TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                    Dark={StaticResource PrimaryDarkText}}" />
+                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDarkText}}" />
                     <Entry
-                        x:Name="EmailEntry"
+                        Text="{Binding InviteEmail}"
                         ClearButtonVisibility="WhileEditing"
                         Keyboard="Email"
-                        Placeholder="Adres email Podopiecznego" />
-                    <Button Clicked="OnSendInviteClicked" Text="Wyślij zaproszenie" />
+                        Placeholder="Adres email podopiecznego" />
+                    <Button
+                        Command="{Binding InviteCommand}"
+                        Text="Wyślij Zaproszenie" />
                 </VerticalStackLayout>
             </Border>
 
             <VerticalStackLayout Spacing="10">
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="18"
-                    Text="Zaproszenia"
-                    TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                Dark={StaticResource PrimaryDarkText}}" />
-
+                <Label FontAttributes="Bold" FontSize="16" Text="Aktywne zaproszenia" />
                 <CollectionView ItemsSource="{Binding AllInvitations}">
-
                     <CollectionView.EmptyView>
-                        <Label
-                            Margin="0,5,0,10"
-                            FontAttributes="Italic"
-                            FontSize="14"
-                            Text="Brak oczekujących zaproszeń."
-                            TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                        Dark={StaticResource Gray400}}" />
+                        <Label Padding="20" HorizontalOptions="Center" Text="Brak aktywnych zaproszeń." 
+                               TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
                     </CollectionView.EmptyView>
-
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:Invitation">
-
-                            <Border
-                                Margin="0,0,0,10"
-                                Padding="15"
-                                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                                  Dark={StaticResource SurfaceDark}}"
-                                Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                                         Dark={StaticResource Gray600}}"
-                                StrokeShape="RoundRectangle 10">
-                                <Grid>
-
-                                    <Grid
-                                        ColumnDefinitions="*, Auto, Auto"
-                                        ColumnSpacing="10"
-                                        IsVisible="False"
-                                        RowDefinitions="Auto, Auto"
-                                        RowSpacing="10">
-                                        <Grid.Triggers>
-                                            <DataTrigger
-                                                Binding="{Binding IsSentByMe}"
-                                                TargetType="Grid"
-                                                Value="False">
-                                                <Setter Property="IsVisible" Value="True" />
-                                            </DataTrigger>
-                                        </Grid.Triggers>
-
-                                        <VerticalStackLayout
-                                            Grid.Row="0"
-                                            Grid.Column="0"
-                                            Grid.ColumnSpan="3">
-                                            <Label
-                                                FontAttributes="Bold"
-                                                FontSize="16"
-                                                Text="{Binding SenderName}" />
-                                            <Label
-                                                FontSize="12"
-                                                Text="Chce zostać Twoim podopiecznym."
-                                                TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                                            Dark={StaticResource Gray400}}" />
-                                        </VerticalStackLayout>
-
-                                        <HorizontalStackLayout
-                                            Grid.Row="1"
-                                            Grid.Column="0"
-                                            Grid.ColumnSpan="3"
-                                            HorizontalOptions="End"
-                                            Spacing="10">
-                                            <HorizontalStackLayout.Triggers>
-                                                <DataTrigger
-                                                    Binding="{Binding Status}"
-                                                    TargetType="HorizontalStackLayout"
-                                                    Value="Rejected">
-                                                    <Setter Property="IsVisible" Value="False" />
-                                                </DataTrigger>
-                                            </HorizontalStackLayout.Triggers>
-                                            <Button
-                                                Clicked="OnRejectClicked"
-                                                CommandParameter="{Binding .}"
-                                                HeightRequest="35"
-                                                Style="{StaticResource DangerButtonStyle}"
-                                                Text="Odrzuć" />
-                                            <Button
-                                                BackgroundColor="{AppThemeBinding Light={StaticResource Secondary},
-                                                                                  Dark={StaticResource SecondaryDarkText}}"
-                                                Clicked="OnAcceptClicked"
-                                                CommandParameter="{Binding .}"
-                                                CornerRadius="6"
-                                                FontAttributes="Bold"
-                                                HeightRequest="35"
-                                                Text="Akceptuj"
-                                                TextColor="White" />
-                                        </HorizontalStackLayout>
-
-                                        <Label
-                                            Grid.Row="1"
-                                            Grid.Column="0"
-                                            Grid.ColumnSpan="3"
-                                            IsVisible="False"
-                                            Text="Odrzuciłeś zaproszenie."
-                                            TextColor="{AppThemeBinding Light={StaticResource DangerLight},
-                                                                        Dark={StaticResource DangerDark}}">
+                            <Border Margin="0,0,0,10" Padding="12" StrokeShape="RoundRectangle 8"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}"
+                                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}">
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                                        <Label FontAttributes="Bold" FontSize="14">
                                             <Label.Triggers>
-                                                <DataTrigger
-                                                    Binding="{Binding Status}"
-                                                    TargetType="Label"
-                                                    Value="Rejected">
-                                                    <Setter Property="IsVisible" Value="True" />
+                                                <DataTrigger TargetType="Label" Binding="{Binding IsSentByMe}" Value="True">
+                                                    <Setter Property="Text" Value="{Binding ReceiverEmail, StringFormat='Do: {0}'}" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Label" Binding="{Binding IsSentByMe}" Value="False">
+                                                    <Setter Property="Text" Value="{Binding SenderName, StringFormat='Od: {0}'}" />
                                                 </DataTrigger>
                                             </Label.Triggers>
                                         </Label>
-                                    </Grid>
-
-                                    <Grid ColumnDefinitions="*, Auto" IsVisible="False">
-                                        <Grid.Triggers>
-                                            <DataTrigger
-                                                Binding="{Binding IsSentByMe}"
-                                                TargetType="Grid"
-                                                Value="True">
-                                                <Setter Property="IsVisible" Value="True" />
-                                            </DataTrigger>
-                                        </Grid.Triggers>
-
-                                        <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
-                                            <Label
-                                                FontAttributes="Bold"
-                                                FontSize="14"
-                                                Text="{Binding ReceiverEmail, StringFormat='Wysłano do: {0}'}" />
-
-                                            <Label
-                                                FontSize="14"
-                                                Text="Czeka na akceptację..."
-                                                TextColor="{AppThemeBinding Light={StaticResource Secondary},
-                                                                            Dark={StaticResource SecondaryDarkText}}">
-                                                <Label.Triggers>
-                                                    <DataTrigger
-                                                        Binding="{Binding Status}"
-                                                        TargetType="Label"
-                                                        Value="Rejected">
-                                                        <Setter Property="Text" Value="Odrzucone" />
-                                                        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" />
-                                                    </DataTrigger>
-                                                </Label.Triggers>
-                                            </Label>
-                                        </VerticalStackLayout>
-
-                                        <Button
-                                            Grid.Column="1"
-                                            BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight},
-                                                                              Dark={StaticResource DangerDark}}"
-                                            Clicked="OnCancelInvitationClicked"
-                                            CommandParameter="{Binding .}"
-                                            CornerRadius="6"
-                                            HeightRequest="35"
-                                            Text="Anuluj"
-                                            TextColor="White">
-                                            <Button.Triggers>
-                                                <DataTrigger
-                                                    Binding="{Binding Status}"
-                                                    TargetType="Button"
-                                                    Value="Rejected">
-                                                    <Setter Property="Text" Value="Usuń" />
-                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" />
+                                        <Label FontSize="12">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="Pending">
+                                                    <Setter Property="Text" Value="Oczekujące..." />
+                                                    <Setter Property="TextColor" Value="{StaticResource Warning}" />
                                                 </DataTrigger>
-                                            </Button.Triggers>
-                                        </Button>
-                                    </Grid>
+                                                <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="Rejected">
+                                                    <Setter Property="Text" Value="Odrzucone" />
+                                                    <Setter Property="TextColor" Value="{StaticResource Danger}" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </VerticalStackLayout>
 
+                                    <Button Grid.Column="1" Text="Usuń" HeightRequest="35" CornerRadius="6" TextColor="White"
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageCareTakersViewModel}}, Path=CancelInvitationCommand}"
+                                            CommandParameter="{Binding .}"
+                                            IsVisible="{Binding IsSentByMe}" VerticalOptions="Center" />
+
+                                    <HorizontalStackLayout Grid.Column="1" Spacing="10">
+                                        <HorizontalStackLayout.Triggers>
+                                            <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding IsSentByMe}" Value="True">
+                                                <Setter Property="IsVisible" Value="False" />
+                                            </DataTrigger>
+                                        </HorizontalStackLayout.Triggers>
+
+                                        <Button Text="Akceptuj" HeightRequest="35" CornerRadius="6" TextColor="White"
+                                                BackgroundColor="{StaticResource Success}"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageCareTakersViewModel}}, Path=AcceptCommand}"
+                                                CommandParameter="{Binding .}" />
+
+                                        <Button Text="Odrzuć" HeightRequest="35" CornerRadius="6" TextColor="White"
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageCareTakersViewModel}}, Path=RejectCommand}"
+                                                CommandParameter="{Binding .}" />
+                                    </HorizontalStackLayout>
                                 </Grid>
                             </Border>
                         </DataTemplate>
@@ -210,74 +101,28 @@
                 </CollectionView>
             </VerticalStackLayout>
 
-            <BoxView
-                Margin="0,5"
-                HeightRequest="1"
-                Color="{AppThemeBinding Light={StaticResource Gray200},
-                                        Dark={StaticResource Gray500}}" />
-
             <VerticalStackLayout Spacing="10">
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="18"
-                    Text="Twoi Podopieczni"
-                    TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                Dark={StaticResource PrimaryDarkText}}" />
-
+                <Label FontAttributes="Bold" FontSize="16" Text="Moi Podopieczni" />
                 <CollectionView ItemsSource="{Binding CareTakers}">
-
                     <CollectionView.EmptyView>
-                        <Label
-                            Margin="0,20,0,0"
-                            FontSize="14"
-                            HorizontalOptions="Center"
-                            Text="Nie masz jeszcze Podopiecznych."
-                            TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                        Dark={StaticResource Gray400}}" />
+                        <Label Padding="20" HorizontalOptions="Center" Text="Nie masz jeszcze żadnych podopiecznych." 
+                               TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
                     </CollectionView.EmptyView>
-
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:User">
-
-                            <Border
-                                Margin="0,0,0,10"
-                                Padding="15"
-                                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                                  Dark={StaticResource SurfaceDark}}"
-                                Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                                         Dark={StaticResource Gray600}}"
-                                StrokeShape="RoundRectangle 10">
-                                <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="15">
-                                    <Image
-                                        Grid.Column="0"
-                                        HeightRequest="40"
-                                        Source="dotnet_bot.png"
-                                        VerticalOptions="Center"
-                                        WidthRequest="40" />
-
-                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
-                                        <Label
-                                            FontAttributes="Bold"
-                                            FontSize="16"
-                                            Text="{Binding Name}" />
-                                        <Label
-                                            FontSize="12"
-                                            Text="{Binding Email}"
-                                            TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                                        Dark={StaticResource Gray400}}" />
+                            <Border Margin="0,0,0,10" Padding="15" StrokeShape="RoundRectangle 12"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}"
+                                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}">
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                                        <Label FontAttributes="Bold" FontSize="16" Text="{Binding Name}" />
+                                        <Label FontSize="13" Text="{Binding Email}" 
+                                               TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
                                     </VerticalStackLayout>
-
-                                    <Button
-                                        Grid.Column="2"
-                                        BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight},
-                                                                          Dark={StaticResource DangerDark}}"
-                                        Clicked="OnRemoveCareTakerClicked"
-                                        CommandParameter="{Binding .}"
-                                        CornerRadius="6"
-                                        HeightRequest="35"
-                                        Text="Usuń"
-                                        TextColor="White"
-                                        VerticalOptions="Center" />
+                                    <Button Grid.Column="1" Text="Usuń" HeightRequest="35" CornerRadius="6" TextColor="White"
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageCareTakersViewModel}}, Path=RemoveCareTakerCommand}"
+                                            CommandParameter="{Binding .}" VerticalOptions="Center" />
                                 </Grid>
                             </Border>
                         </DataTemplate>

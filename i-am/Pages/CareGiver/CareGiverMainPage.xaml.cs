@@ -1,67 +1,12 @@
-using i_am.Pages.Authentication;
-using i_am.Models;
-using i_am.Services;
-using System.Collections.ObjectModel;
-using i_am.Pages.Main;
+using i_am.ViewModels;
 
 namespace i_am.Pages.CareGiver;
 
 public partial class CareGiverMainPage : ContentPage
 {
-    private readonly FirestoreService _firestoreService;
-    public ObservableCollection<User> UsersList { get; set; } = new ObservableCollection<User>();
-    public CareGiverMainPage(FirestoreService firestoreService)
-	{
-		InitializeComponent();
-        _firestoreService = firestoreService;
-    }
-   
-    private async void OnNotificationsButtonClicked(object sender, EventArgs e)
+    public CareGiverMainPage(CareGiverMainViewModel viewModel)
     {
-        await Shell.Current.GoToAsync(nameof(NotificationsPage));
-    }
-    private async void OnCalendarButtonClicked(object sender, EventArgs e)
-    {
-        //await Shell.Current.GoToAsync(nameof(CalendarPage));
-        await Shell.Current.GoToAsync(nameof(InformationPage));
-    }
-    private async void OnEditCareTakerQuestionsButtonClicked(object sender, EventArgs e)
-    {
-        //await Shell.Current.GoToAsync(nameof(EditCareTakerQuestionsPage));
-        await Shell.Current.GoToAsync(nameof(InformationPage));
-    }
-    private async void OnManageCareTakersButtonClicked(object sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync(nameof(ManageCareTakersPage));
-    }
-    private async void OnManageAccountButtonClicked(object sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync(nameof(ManageAccountPage));
-    }
-    private async void OnLogoutButtonClicked(object sender, EventArgs e)
-    {
-        try
-        {
-            bool confirm = await DisplayAlert("Wyloguj", "Jesteœ pewien ¿e chcesz siê wylogowaæ?", "Tak", "Nie");
-
-            if (confirm)
-            {
-                // Usuwa lokalny cache
-                Preferences.Default.Remove("IsCaregiver");
-
-                // Firebase czyœci sesje
-                await _firestoreService.SignOutAsync();
-
-                await Shell.Current.GoToAsync($"//{nameof(LandingPage)}");
-            }
-        }
-        catch (Exception ex)
-        {
-            await DisplayAlert("B³¹d", $"Problem z wylogowaniem: {ex.Message}", "OK");
-        }
-    }
-    private async void OnAlarmInformationTapped(object sender, TappedEventArgs e)
-    {
-        await Shell.Current.GoToAsync(nameof(InformationPage));
+        InitializeComponent();
+        BindingContext = viewModel;
     }
 }

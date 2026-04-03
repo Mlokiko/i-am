@@ -48,7 +48,7 @@ namespace i_am.ViewModels
         private DateTime birthdate;
 
         [ObservableProperty]
-        private string selectedSex;
+        private string? selectedSex;
 
         [ObservableProperty]
         private bool isCaregiver;

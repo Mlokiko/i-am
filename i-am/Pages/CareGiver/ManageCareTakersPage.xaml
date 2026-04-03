@@ -13,57 +13,82 @@
 
             <Border
                 Padding="15"
-                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}"
-                Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                  Dark={StaticResource SurfaceDark}}"
+                Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                         Dark={StaticResource Gray600}}"
                 StrokeShape="RoundRectangle 12">
                 <VerticalStackLayout Spacing="10">
                     <Label
                         FontAttributes="Bold"
                         FontSize="18"
                         Text="Zaproś Podopiecznego"
-                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDarkText}}" />
+                        TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                    Dark={StaticResource PrimaryDarkText}}" />
                     <Entry
-                        Text="{Binding InviteEmail}"
                         ClearButtonVisibility="WhileEditing"
                         Keyboard="Email"
-                        Placeholder="Adres email podopiecznego" />
-                    <Button
-                        Command="{Binding InviteCommand}"
-                        Text="Wyślij Zaproszenie" />
+                        Placeholder="Adres email podopiecznego"
+                        Text="{Binding InviteEmail}" />
+                    <Button Command="{Binding InviteCommand}" Text="Wyślij Zaproszenie" />
                 </VerticalStackLayout>
             </Border>
 
             <VerticalStackLayout Spacing="10">
-                <Label FontAttributes="Bold" FontSize="16" Text="Aktywne zaproszenia" />
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    Text="Aktywne zaproszenia" />
                 <CollectionView ItemsSource="{Binding AllInvitations}">
                     <CollectionView.EmptyView>
-                        <Label Padding="20" HorizontalOptions="Center" Text="Brak aktywnych zaproszeń." 
-                               TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+                        <Label
+                            Padding="20"
+                            HorizontalOptions="Center"
+                            Text="Brak aktywnych zaproszeń."
+                            TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                        Dark={StaticResource Gray400}}" />
                     </CollectionView.EmptyView>
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:Invitation">
-                            <Border Margin="0,0,0,10" Padding="12" StrokeShape="RoundRectangle 8"
-                                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}"
-                                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}">
+                            <Border
+                                Margin="0,0,0,10"
+                                Padding="12"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                                  Dark={StaticResource SurfaceDark}}"
+                                Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                                         Dark={StaticResource Gray600}}"
+                                StrokeShape="RoundRectangle 8">
                                 <Grid ColumnDefinitions="*, Auto">
                                     <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
                                         <Label FontAttributes="Bold" FontSize="14">
                                             <Label.Triggers>
-                                                <DataTrigger TargetType="Label" Binding="{Binding IsSentByMe}" Value="True">
+                                                <DataTrigger
+                                                    Binding="{Binding IsSentByMe}"
+                                                    TargetType="Label"
+                                                    Value="True">
                                                     <Setter Property="Text" Value="{Binding ReceiverEmail, StringFormat='Do: {0}'}" />
                                                 </DataTrigger>
-                                                <DataTrigger TargetType="Label" Binding="{Binding IsSentByMe}" Value="False">
+                                                <DataTrigger
+                                                    Binding="{Binding IsSentByMe}"
+                                                    TargetType="Label"
+                                                    Value="False">
                                                     <Setter Property="Text" Value="{Binding SenderName, StringFormat='Od: {0}'}" />
                                                 </DataTrigger>
                                             </Label.Triggers>
                                         </Label>
                                         <Label FontSize="12">
                                             <Label.Triggers>
-                                                <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="Pending">
+                                                <DataTrigger
+                                                    Binding="{Binding Status}"
+                                                    TargetType="Label"
+                                                    Value="Pending">
                                                     <Setter Property="Text" Value="Oczekujące..." />
                                                     <Setter Property="TextColor" Value="{StaticResource Warning}" />
                                                 </DataTrigger>
-                                                <DataTrigger TargetType="Label" Binding="{Binding Status}" Value="Rejected">
+                                                <DataTrigger
+                                                    Binding="{Binding Status}"
+                                                    TargetType="Label"
+                                                    Value="Rejected">
                                                     <Setter Property="Text" Value="Odrzucone" />
                                                     <Setter Property="TextColor" Value="{StaticResource Danger}" />
                                                 </DataTrigger>
@@ -71,28 +96,47 @@
                                         </Label>
                                     </VerticalStackLayout>
 
-                                    <Button Grid.Column="1" Text="Usuń" HeightRequest="35" CornerRadius="6" TextColor="White"
-                                            BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageCareTakersViewModel}}, Path=CancelInvitationCommand}"
-                                            CommandParameter="{Binding .}"
-                                            IsVisible="{Binding IsSentByMe}" VerticalOptions="Center" />
+                                    <Button
+                                        Grid.Column="1"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight},
+                                                                          Dark={StaticResource DangerDark}}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageCareTakersViewModel}}, Path=CancelInvitationCommand}"
+                                        CommandParameter="{Binding .}"
+                                        CornerRadius="6"
+                                        HeightRequest="35"
+                                        IsVisible="{Binding IsSentByMe}"
+                                        Text="Usuń"
+                                        TextColor="White"
+                                        VerticalOptions="Center" />
 
                                     <HorizontalStackLayout Grid.Column="1" Spacing="10">
                                         <HorizontalStackLayout.Triggers>
-                                            <DataTrigger TargetType="HorizontalStackLayout" Binding="{Binding IsSentByMe}" Value="True">
+                                            <DataTrigger
+                                                Binding="{Binding IsSentByMe}"
+                                                TargetType="HorizontalStackLayout"
+                                                Value="True">
                                                 <Setter Property="IsVisible" Value="False" />
                                             </DataTrigger>
                                         </HorizontalStackLayout.Triggers>
 
-                                        <Button Text="Akceptuj" HeightRequest="35" CornerRadius="6" TextColor="White"
-                                                BackgroundColor="{StaticResource Success}"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageCareTakersViewModel}}, Path=AcceptCommand}"
-                                                CommandParameter="{Binding .}" />
+                                        <Button
+                                            BackgroundColor="{StaticResource Success}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageCareTakersViewModel}}, Path=AcceptCommand}"
+                                            CommandParameter="{Binding .}"
+                                            CornerRadius="6"
+                                            HeightRequest="35"
+                                            Text="Akceptuj"
+                                            TextColor="White" />
 
-                                        <Button Text="Odrzuć" HeightRequest="35" CornerRadius="6" TextColor="White"
-                                                BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageCareTakersViewModel}}, Path=RejectCommand}"
-                                                CommandParameter="{Binding .}" />
+                                        <Button
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight},
+                                                                              Dark={StaticResource DangerDark}}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageCareTakersViewModel}}, Path=RejectCommand}"
+                                            CommandParameter="{Binding .}"
+                                            CornerRadius="6"
+                                            HeightRequest="35"
+                                            Text="Odrzuć"
+                                            TextColor="White" />
                                     </HorizontalStackLayout>
                                 </Grid>
                             </Border>
@@ -102,27 +146,52 @@
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="10">
-                <Label FontAttributes="Bold" FontSize="16" Text="Moi Podopieczni" />
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    Text="Moi Podopieczni" />
                 <CollectionView ItemsSource="{Binding CareTakers}">
                     <CollectionView.EmptyView>
-                        <Label Padding="20" HorizontalOptions="Center" Text="Nie masz jeszcze żadnych podopiecznych." 
-                               TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+                        <Label
+                            Padding="20"
+                            HorizontalOptions="Center"
+                            Text="Nie masz jeszcze żadnych podopiecznych."
+                            TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                        Dark={StaticResource Gray400}}" />
                     </CollectionView.EmptyView>
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:User">
-                            <Border Margin="0,0,0,10" Padding="15" StrokeShape="RoundRectangle 12"
-                                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}"
-                                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}">
+                            <Border
+                                Margin="0,0,0,10"
+                                Padding="15"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                                  Dark={StaticResource SurfaceDark}}"
+                                Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                                         Dark={StaticResource Gray600}}"
+                                StrokeShape="RoundRectangle 12">
                                 <Grid ColumnDefinitions="*, Auto">
                                     <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
-                                        <Label FontAttributes="Bold" FontSize="16" Text="{Binding Name}" />
-                                        <Label FontSize="13" Text="{Binding Email}" 
-                                               TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="16"
+                                            Text="{Binding Name}" />
+                                        <Label
+                                            FontSize="13"
+                                            Text="{Binding Email}"
+                                            TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                                        Dark={StaticResource Gray400}}" />
                                     </VerticalStackLayout>
-                                    <Button Grid.Column="1" Text="Usuń" HeightRequest="35" CornerRadius="6" TextColor="White"
-                                            BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageCareTakersViewModel}}, Path=RemoveCareTakerCommand}"
-                                            CommandParameter="{Binding .}" VerticalOptions="Center" />
+                                    <Button
+                                        Grid.Column="1"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight},
+                                                                          Dark={StaticResource DangerDark}}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageCareTakersViewModel}}, Path=RemoveCareTakerCommand}"
+                                        CommandParameter="{Binding .}"
+                                        CornerRadius="6"
+                                        HeightRequest="35"
+                                        Text="Usuń"
+                                        TextColor="White"
+                                        VerticalOptions="Center" />
                                 </Grid>
                             </Border>
                         </DataTemplate>

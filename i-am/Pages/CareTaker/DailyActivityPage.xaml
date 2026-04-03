@@ -4,59 +4,113 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:viewmodels="clr-namespace:i_am.ViewModels"
-    x:DataType="viewmodels:DailyActivityViewModel"
-    Title="Codzienna Ankieta">
+    Title="Codzienna Ankieta"
+    x:DataType="viewmodels:DailyActivityViewModel">
 
     <Grid>
-        <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}" HorizontalOptions="Center" VerticalOptions="Center" />
+        <ActivityIndicator
+            HorizontalOptions="Center"
+            IsRunning="{Binding IsLoading}"
+            IsVisible="{Binding IsLoading}"
+            VerticalOptions="Center" />
 
-        <VerticalStackLayout 
-            IsVisible="{Binding HasAlreadySubmitted}" 
-            HorizontalOptions="Center" VerticalOptions="Center" Spacing="20" Padding="30">
-            <Label Text="🎉" FontSize="60" HorizontalOptions="Center" />
-            <Label Text="Dziękujemy!" FontAttributes="Bold" FontSize="24" HorizontalOptions="Center" />
-            <Label Text="Twój dzisiejszy raport został już wysłany do opiekuna. Wróć tu jutro!" 
-                   FontSize="16" HorizontalTextAlignment="Center" 
-                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+        <VerticalStackLayout
+            Padding="30"
+            HorizontalOptions="Center"
+            IsVisible="{Binding HasAlreadySubmitted}"
+            Spacing="20"
+            VerticalOptions="Center">
+            <Label
+                FontSize="60"
+                HorizontalOptions="Center"
+                Text="🎉" />
+            <Label
+                FontAttributes="Bold"
+                FontSize="24"
+                HorizontalOptions="Center"
+                Text="Dziękujemy!" />
+            <Label
+                FontSize="16"
+                HorizontalTextAlignment="Center"
+                Text="Twój dzisiejszy raport został już wysłany do opiekuna. Wróć tu jutro!"
+                TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                            Dark={StaticResource Gray400}}" />
         </VerticalStackLayout>
 
         <ScrollView>
             <ScrollView.Triggers>
-                <DataTrigger TargetType="ScrollView" Binding="{Binding HasAlreadySubmitted}" Value="True">
+                <DataTrigger
+                    Binding="{Binding HasAlreadySubmitted}"
+                    TargetType="ScrollView"
+                    Value="True">
                     <Setter Property="IsVisible" Value="False" />
                 </DataTrigger>
-                <DataTrigger TargetType="ScrollView" Binding="{Binding IsLoading}" Value="True">
+                <DataTrigger
+                    Binding="{Binding IsLoading}"
+                    TargetType="ScrollView"
+                    Value="True">
                     <Setter Property="IsVisible" Value="False" />
                 </DataTrigger>
             </ScrollView.Triggers>
 
             <VerticalStackLayout Padding="20" Spacing="20">
-                <Label Text="Jak się dzisiaj masz?" FontAttributes="Bold" FontSize="22" HorizontalOptions="Center" Margin="0,0,0,10" />
+                <Label
+                    Margin="0,0,0,10"
+                    FontAttributes="Bold"
+                    FontSize="22"
+                    HorizontalOptions="Center"
+                    Text="Jak się dzisiaj masz?" />
 
                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding FormItems}" Spacing="25">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="viewmodels:AnswerFormItem">
                             <VerticalStackLayout Spacing="10">
 
-                                <Label Text="{Binding Question.Text}" FontAttributes="Bold" FontSize="16" />
-                                <Label Text="{Binding SelectionHint}" IsVisible="{Binding IsClosed}" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" FontAttributes="Italic" Margin="0,-5,0,5"/>
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="16"
+                                    Text="{Binding Question.Text}" />
+                                <Label
+                                    Margin="0,-5,0,5"
+                                    FontAttributes="Italic"
+                                    FontSize="12"
+                                    IsVisible="{Binding IsClosed}"
+                                    Text="{Binding SelectionHint}"
+                                    TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                                Dark={StaticResource PrimaryDark}}" />
 
-                                <FlexLayout IsVisible="{Binding IsClosed}" BindableLayout.ItemsSource="{Binding SelectableOptions}" Wrap="Wrap" Direction="Row" AlignItems="Start" AlignContent="Start">
+                                <FlexLayout
+                                    AlignContent="Start"
+                                    AlignItems="Start"
+                                    BindableLayout.ItemsSource="{Binding SelectableOptions}"
+                                    Direction="Row"
+                                    IsVisible="{Binding IsClosed}"
+                                    Wrap="Wrap">
                                     <BindableLayout.ItemTemplate>
                                         <DataTemplate x:DataType="viewmodels:OptionItem">
 
-                                            <Border Margin="0,0,10,10" Padding="15,10" StrokeShape="RoundRectangle 8" StrokeThickness="2">
+                                            <Border
+                                                Margin="0,0,10,10"
+                                                Padding="15,10"
+                                                StrokeShape="RoundRectangle 8"
+                                                StrokeThickness="2">
 
                                                 <Border.GestureRecognizers>
                                                     <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AnswerFormItem}}, Path=ToggleOptionCommand}" CommandParameter="{Binding .}" />
                                                 </Border.GestureRecognizers>
 
                                                 <Border.Triggers>
-                                                    <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="False">
+                                                    <DataTrigger
+                                                        Binding="{Binding IsSelected}"
+                                                        TargetType="Border"
+                                                        Value="False">
                                                         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" />
                                                         <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" />
                                                     </DataTrigger>
-                                                    <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
+                                                    <DataTrigger
+                                                        Binding="{Binding IsSelected}"
+                                                        TargetType="Border"
+                                                        Value="True">
                                                         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryDark}}" />
                                                         <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Primary}}" />
                                                     </DataTrigger>
@@ -64,7 +118,10 @@
 
                                                 <Label Text="{Binding Option.Text}">
                                                     <Label.Triggers>
-                                                        <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
+                                                        <DataTrigger
+                                                            Binding="{Binding IsSelected}"
+                                                            TargetType="Label"
+                                                            Value="True">
                                                             <Setter Property="FontAttributes" Value="Bold" />
                                                             <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark=White}" />
                                                         </DataTrigger>
@@ -77,8 +134,19 @@
                                     </BindableLayout.ItemTemplate>
                                 </FlexLayout>
 
-                                <Border IsVisible="{Binding IsOpen}" Padding="10" StrokeShape="RoundRectangle 8" BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}">
-                                    <Editor Placeholder="Twoja odpowiedź..." Text="{Binding OpenText}" AutoSize="TextChanges" MinimumHeightRequest="80" />
+                                <Border
+                                    Padding="10"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                                      Dark={StaticResource SurfaceDark}}"
+                                    IsVisible="{Binding IsOpen}"
+                                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                                             Dark={StaticResource Gray600}}"
+                                    StrokeShape="RoundRectangle 8">
+                                    <Editor
+                                        AutoSize="TextChanges"
+                                        MinimumHeightRequest="80"
+                                        Placeholder="Twoja odpowiedź..."
+                                        Text="{Binding OpenText}" />
                                 </Border>
 
                             </VerticalStackLayout>
@@ -86,7 +154,12 @@
                     </BindableLayout.ItemTemplate>
                 </VerticalStackLayout>
 
-                <Button Text="Wyślij Raport" Command="{Binding SubmitAnswersCommand}" Margin="0,20,0,40" HeightRequest="50" FontAttributes="Bold" />
+                <Button
+                    Margin="0,20,0,40"
+                    Command="{Binding SubmitAnswersCommand}"
+                    FontAttributes="Bold"
+                    HeightRequest="50"
+                    Text="Wyślij Raport" />
 
             </VerticalStackLayout>
         </ScrollView>

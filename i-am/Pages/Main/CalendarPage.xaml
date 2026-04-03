@@ -3,13 +3,18 @@
     x:Class="i_am.Pages.Main.CalendarPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:vm="clr-namespace:i_am.ViewModels"
     xmlns:models="clr-namespace:i_am.Models"
-    x:DataType="vm:CalendarViewModel"
-    Title="Kalendarz">
+    xmlns:vm="clr-namespace:i_am.ViewModels"
+    Title="Kalendarz"
+    x:DataType="vm:CalendarViewModel">
 
     <Grid>
-        <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}" HorizontalOptions="Center" VerticalOptions="Center" ZIndex="10"/>
+        <ActivityIndicator
+            HorizontalOptions="Center"
+            IsRunning="{Binding IsLoading}"
+            IsVisible="{Binding IsLoading}"
+            VerticalOptions="Center"
+            ZIndex="10" />
 
         <ScrollView>
             <VerticalStackLayout Padding="20" Spacing="20">
@@ -17,60 +22,151 @@
                 <VerticalStackLayout IsVisible="{Binding IsCareGiver}" Spacing="10">
                     <Label FontAttributes="Bold" Text="Wybierz podopiecznego:" />
                     <Border Padding="10,0" StrokeShape="RoundRectangle 8">
-                        <Picker ItemsSource="{Binding CareTakers}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedCareTaker}" Title="Wybierz..." />
+                        <Picker
+                            Title="Wybierz..."
+                            ItemDisplayBinding="{Binding Name}"
+                            ItemsSource="{Binding CareTakers}"
+                            SelectedItem="{Binding SelectedCareTaker}" />
                     </Border>
                 </VerticalStackLayout>
 
                 <VerticalStackLayout IsVisible="{Binding HasCareTakerSelected}" Spacing="15">
 
                     <Grid ColumnDefinitions="Auto, *, Auto" VerticalOptions="Center">
-                        <Button Grid.Column="0" Text="&lt;" Command="{Binding ChangeMonthCommand}" CommandParameter="Prev" WidthRequest="40" Padding="0"/>
-                        <Label Grid.Column="1" Text="{Binding CurrentMonthName}" FontAttributes="Bold" FontSize="18" HorizontalOptions="Center" VerticalOptions="Center"/>
-                        <Button Grid.Column="2" Text="&gt;" Command="{Binding ChangeMonthCommand}" CommandParameter="Next" WidthRequest="40" Padding="0"/>
+                        <Button
+                            Grid.Column="0"
+                            Padding="0"
+                            Command="{Binding ChangeMonthCommand}"
+                            CommandParameter="Prev"
+                            Text="&lt;"
+                            WidthRequest="40" />
+                        <Label
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            HorizontalOptions="Center"
+                            Text="{Binding CurrentMonthName}"
+                            VerticalOptions="Center" />
+                        <Button
+                            Grid.Column="2"
+                            Padding="0"
+                            Command="{Binding ChangeMonthCommand}"
+                            CommandParameter="Next"
+                            Text="&gt;"
+                            WidthRequest="40" />
                     </Grid>
 
-                    <Grid ColumnDefinitions="*,*,*,*,*,*,*" Margin="0,10,0,5">
-                        <Label Grid.Column="0" Text="Pn" HorizontalOptions="Center" FontAttributes="Bold" TextColor="{StaticResource Gray500}"/>
-                        <Label Grid.Column="1" Text="Wt" HorizontalOptions="Center" FontAttributes="Bold" TextColor="{StaticResource Gray500}"/>
-                        <Label Grid.Column="2" Text="Śr" HorizontalOptions="Center" FontAttributes="Bold" TextColor="{StaticResource Gray500}"/>
-                        <Label Grid.Column="3" Text="Cz" HorizontalOptions="Center" FontAttributes="Bold" TextColor="{StaticResource Gray500}"/>
-                        <Label Grid.Column="4" Text="Pt" HorizontalOptions="Center" FontAttributes="Bold" TextColor="{StaticResource Gray500}"/>
-                        <Label Grid.Column="5" Text="Sb" HorizontalOptions="Center" FontAttributes="Bold" TextColor="{StaticResource Gray500}"/>
-                        <Label Grid.Column="6" Text="Nd" HorizontalOptions="Center" FontAttributes="Bold" TextColor="{StaticResource Gray500}"/>
+                    <Grid Margin="0,10,0,5" ColumnDefinitions="*,*,*,*,*,*,*">
+                        <Label
+                            Grid.Column="0"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            Text="Pn"
+                            TextColor="{StaticResource Gray500}" />
+                        <Label
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            Text="Wt"
+                            TextColor="{StaticResource Gray500}" />
+                        <Label
+                            Grid.Column="2"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            Text="Śr"
+                            TextColor="{StaticResource Gray500}" />
+                        <Label
+                            Grid.Column="3"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            Text="Cz"
+                            TextColor="{StaticResource Gray500}" />
+                        <Label
+                            Grid.Column="4"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            Text="Pt"
+                            TextColor="{StaticResource Gray500}" />
+                        <Label
+                            Grid.Column="5"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            Text="Sb"
+                            TextColor="{StaticResource Gray500}" />
+                        <Label
+                            Grid.Column="6"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            Text="Nd"
+                            TextColor="{StaticResource Gray500}" />
                     </Grid>
 
-                    <FlexLayout BindableLayout.ItemsSource="{Binding Days}" Wrap="Wrap" Direction="Row" JustifyContent="Start">
+                    <FlexLayout
+                        BindableLayout.ItemsSource="{Binding Days}"
+                        Direction="Row"
+                        JustifyContent="Start"
+                        Wrap="Wrap">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="vm:CalendarDayItem">
 
-                                <Border WidthRequest="45" HeightRequest="45" Margin="2" StrokeThickness="2" StrokeShape="RoundRectangle 8">
+                                <Border
+                                    Margin="2"
+                                    HeightRequest="45"
+                                    StrokeShape="RoundRectangle 8"
+                                    StrokeThickness="2"
+                                    WidthRequest="45">
                                     <Border.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CalendarViewModel}}, Path=SelectDayCommand}" CommandParameter="{Binding .}"/>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CalendarViewModel}}, Path=SelectDayCommand}" CommandParameter="{Binding .}" />
                                     </Border.GestureRecognizers>
 
                                     <Border.Triggers>
-                                        <DataTrigger TargetType="Border" Binding="{Binding IsEmpty}" Value="True">
-                                            <Setter Property="IsVisible" Value="False"/>
+                                        <DataTrigger
+                                            Binding="{Binding IsEmpty}"
+                                            TargetType="Border"
+                                            Value="True">
+                                            <Setter Property="IsVisible" Value="False" />
                                         </DataTrigger>
-                                        <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
-                                            <Setter Property="Stroke" Value="{StaticResource Primary}"/>
-                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryDark}}"/>
+                                        <DataTrigger
+                                            Binding="{Binding IsSelected}"
+                                            TargetType="Border"
+                                            Value="True">
+                                            <Setter Property="Stroke" Value="{StaticResource Primary}" />
+                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryDark}}" />
                                         </DataTrigger>
-                                        <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="False">
-                                            <Setter Property="Stroke" Value="Transparent"/>
-                                            <Setter Property="BackgroundColor" Value="Transparent"/>
+                                        <DataTrigger
+                                            Binding="{Binding IsSelected}"
+                                            TargetType="Border"
+                                            Value="False">
+                                            <Setter Property="Stroke" Value="Transparent" />
+                                            <Setter Property="BackgroundColor" Value="Transparent" />
                                         </DataTrigger>
                                     </Border.Triggers>
 
                                     <Grid RowDefinitions="*, Auto">
-                                        <Label Grid.Row="0" Text="{Binding DayText}" HorizontalOptions="Center" VerticalOptions="Center" FontAttributes="Bold">
+                                        <Label
+                                            Grid.Row="0"
+                                            FontAttributes="Bold"
+                                            HorizontalOptions="Center"
+                                            Text="{Binding DayText}"
+                                            VerticalOptions="Center">
                                             <Label.Triggers>
-                                                <DataTrigger TargetType="Label" Binding="{Binding HasData}" Value="False">
-                                                    <Setter Property="TextColor" Value="{StaticResource Gray400}"/>
+                                                <DataTrigger
+                                                    Binding="{Binding HasData}"
+                                                    TargetType="Label"
+                                                    Value="False">
+                                                    <Setter Property="TextColor" Value="{StaticResource Gray400}" />
                                                 </DataTrigger>
                                             </Label.Triggers>
                                         </Label>
-                                        <BoxView Grid.Row="1" IsVisible="{Binding HasData}" Color="{Binding StatusColor}" HeightRequest="6" WidthRequest="6" CornerRadius="3" HorizontalOptions="Center" Margin="0,0,0,5"/>
+                                        <BoxView
+                                            Grid.Row="1"
+                                            Margin="0,0,0,5"
+                                            CornerRadius="3"
+                                            HeightRequest="6"
+                                            HorizontalOptions="Center"
+                                            IsVisible="{Binding HasData}"
+                                            WidthRequest="6"
+                                            Color="{Binding StatusColor}" />
                                     </Grid>
                                 </Border>
 
@@ -79,38 +175,77 @@
                     </FlexLayout>
                 </VerticalStackLayout>
 
-                <BoxView HeightRequest="400" IsVisible="{Binding IsDayDetailsVisible}" Color="Transparent"/>
+                <BoxView
+                    HeightRequest="400"
+                    IsVisible="{Binding IsDayDetailsVisible}"
+                    Color="Transparent" />
             </VerticalStackLayout>
         </ScrollView>
 
-        <Border 
+        <Border
+            BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                              Dark={StaticResource SurfaceDark}}"
             IsVisible="{Binding IsDayDetailsVisible}"
-            VerticalOptions="End"
-            BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" 
-            Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" 
+            Shadow="{Shadow Brush=Black,
+                            Offset='0,-5',
+                            Radius=15,
+                            Opacity=0.1}"
+            Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                     Dark={StaticResource Gray600}}"
             StrokeShape="RoundRectangle 20,20,0,0"
-            Shadow="{Shadow Brush=Black, Offset='0,-5', Radius=15, Opacity=0.1}">
+            VerticalOptions="End">
 
             <Grid RowDefinitions="Auto, *">
-                <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Padding="20">
+                <Grid
+                    Grid.Row="0"
+                    Padding="20"
+                    ColumnDefinitions="*, Auto">
                     <VerticalStackLayout Grid.Column="0">
-                        <Label Text="{Binding SelectedDay.Date, StringFormat='{0:dd MMMM yyyy}'}" FontAttributes="Bold" FontSize="18"/>
-                        <Label Text="{Binding SelectedDay.Response.EvaluationStatus, StringFormat='Status: {0}'}" FontSize="14" TextColor="{StaticResource Primary}"/>
-                        <Label Text="{Binding SelectedDay.Response.TotalScore, StringFormat='Suma punktów: {0}'}" FontSize="14" FontAttributes="Bold" IsVisible="{Binding IsCareGiver}"/>
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            Text="{Binding SelectedDay.Date, StringFormat='{0:dd MMMM yyyy}'}" />
+                        <Label
+                            FontSize="14"
+                            Text="{Binding SelectedDay.Response.EvaluationStatus, StringFormat='Status: {0}'}"
+                            TextColor="{StaticResource Primary}" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="14"
+                            IsVisible="{Binding IsCareGiver}"
+                            Text="{Binding SelectedDay.Response.TotalScore, StringFormat='Suma punktów: {0}'}" />
                     </VerticalStackLayout>
-                    <Button Grid.Column="1" Text="Zamknij" Command="{Binding CloseDetailsCommand}" BackgroundColor="{StaticResource Gray500}" HeightRequest="35" Padding="10,0"/>
+                    <Button
+                        Grid.Column="1"
+                        Padding="10,0"
+                        BackgroundColor="{StaticResource Gray500}"
+                        Command="{Binding CloseDetailsCommand}"
+                        HeightRequest="35"
+                        Text="Zamknij" />
                 </Grid>
 
-                <ScrollView Grid.Row="1" MaximumHeightRequest="300" IsVisible="{Binding IsCareGiver}">
-                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding SelectedDayAnswers}" Padding="20,0,20,20" Spacing="15">
+                <ScrollView
+                    Grid.Row="1"
+                    IsVisible="{Binding IsCareGiver}"
+                    MaximumHeightRequest="300">
+                    <VerticalStackLayout
+                        Padding="20,0,20,20"
+                        BindableLayout.ItemsSource="{Binding SelectedDayAnswers}"
+                        Spacing="15">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="models:GivenAnswer">
                                 <Border Padding="10" StrokeShape="RoundRectangle 8">
                                     <VerticalStackLayout Spacing="5">
-                                        <Label Text="{Binding QuestionText}" FontAttributes="Bold" FontSize="14"/>
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontSize="14"
+                                            Text="{Binding QuestionText}" />
                                         <Label Text="{Binding SelectedOptionText}" TextColor="{StaticResource Primary}" />
-                                        <Label Text="{Binding OpenTextResponse}" FontAttributes="Italic" />
-                                        <Label Text="{Binding PointsAwarded, StringFormat='Punkty: {0}'}" FontSize="12" TextColor="{StaticResource Gray500}"/>
+                                        <Label FontAttributes="Italic" Text="{Binding OpenTextResponse}" />
+                                        <Label
+                                            FontSize="12"
+                                            Text="{Binding PointsAwarded, StringFormat='Punkty: {0}'}"
+                                            TextColor="{StaticResource Gray500}" />
                                     </VerticalStackLayout>
                                 </Border>
                             </DataTemplate>

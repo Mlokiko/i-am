@@ -4,8 +4,8 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:i_am.ViewModels"
-    x:DataType="vm:InformationViewModel"
-    Title="Informacje alarmowe">
+    Title="Informacje alarmowe"
+    x:DataType="vm:InformationViewModel">
 
     <ScrollView>
         <VerticalStackLayout
@@ -22,55 +22,111 @@
 
                 <Border
                     Padding="15"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                      Dark={StaticResource SurfaceDark}}"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                             Dark={StaticResource Gray600}}"
                     StrokeShape="RoundRectangle 12">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding OpenPhoneDialerCommand}" CommandParameter="999" />
                     </Border.GestureRecognizers>
                     <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
-                        <Label Grid.Column="0" FontAttributes="Bold" FontSize="16" Text="Pogotowie ratunkowe" VerticalOptions="Center" />
-                        <Label Grid.Column="1" FontAttributes="Bold" FontSize="20" Text="999" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" VerticalOptions="Center" />
+                        <Label
+                            Grid.Column="0"
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            Text="Pogotowie ratunkowe"
+                            VerticalOptions="Center" />
+                        <Label
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            FontSize="20"
+                            Text="999"
+                            TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                        Dark={StaticResource PrimaryDark}}"
+                            VerticalOptions="Center" />
                     </Grid>
                 </Border>
 
                 <Border
                     Padding="15"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                      Dark={StaticResource SurfaceDark}}"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                             Dark={StaticResource Gray600}}"
                     StrokeShape="RoundRectangle 12">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding OpenPhoneDialerCommand}" CommandParameter="112" />
                     </Border.GestureRecognizers>
                     <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
-                        <Label Grid.Column="0" FontAttributes="Bold" FontSize="16" Text="Numer alarmowy" VerticalOptions="Center" />
-                        <Label Grid.Column="1" FontAttributes="Bold" FontSize="20" Text="112" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" VerticalOptions="Center" />
+                        <Label
+                            Grid.Column="0"
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            Text="Numer alarmowy"
+                            VerticalOptions="Center" />
+                        <Label
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            FontSize="20"
+                            Text="112"
+                            TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                        Dark={StaticResource PrimaryDark}}"
+                            VerticalOptions="Center" />
                     </Grid>
                 </Border>
 
                 <Border
                     Padding="15"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                      Dark={StaticResource SurfaceDark}}"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                             Dark={StaticResource Gray600}}"
                     StrokeShape="RoundRectangle 12">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding OpenPhoneDialerCommand}" CommandParameter="800012005" />
                     </Border.GestureRecognizers>
                     <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
-                        <Label Grid.Column="0" FontAttributes="Bold" FontSize="16" Text="Telefon Pogadania" VerticalOptions="Center" />
-                        <Label Grid.Column="1" FontAttributes="Bold" FontSize="20" Text="800 012 005" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" VerticalOptions="Center" />
+                        <Label
+                            Grid.Column="0"
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            Text="Telefon Pogadania"
+                            VerticalOptions="Center" />
+                        <Label
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            FontSize="20"
+                            Text="800 012 005"
+                            TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                        Dark={StaticResource PrimaryDark}}"
+                            VerticalOptions="Center" />
                     </Grid>
                 </Border>
 
                 <Border
                     Padding="15"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                      Dark={StaticResource SurfaceDark}}"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                             Dark={StaticResource Gray600}}"
                     StrokeShape="RoundRectangle 12">
                     <VerticalStackLayout Spacing="12">
                         <Grid ColumnDefinitions="*, Auto">
-                            <Label Grid.Column="0" FontAttributes="Bold" FontSize="16" Text="Wsparcie dla Dorosłych" VerticalOptions="Center" />
-                            <Label Grid.Column="1" FontAttributes="Bold" FontSize="20" Text="800 702 222" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" VerticalOptions="Center">
+                            <Label
+                                Grid.Column="0"
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                Text="Wsparcie dla Dorosłych"
+                                VerticalOptions="Center" />
+                            <Label
+                                Grid.Column="1"
+                                FontAttributes="Bold"
+                                FontSize="20"
+                                Text="800 702 222"
+                                TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                            Dark={StaticResource PrimaryDark}}"
+                                VerticalOptions="Center">
                                 <Label.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding OpenPhoneDialerCommand}" CommandParameter="800702222" />
                                 </Label.GestureRecognizers>
@@ -80,8 +136,19 @@
                         <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" />
 
                         <HorizontalStackLayout HorizontalOptions="End" Spacing="5">
-                            <Label FontSize="14" Text="Czat:" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center" />
-                            <Label FontAttributes="Bold" FontSize="14" Text="centrumwsparcia.pl" TextColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource SecondaryDarkText}}" TextDecorations="Underline">
+                            <Label
+                                FontSize="14"
+                                Text="Czat:"
+                                TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                            Dark={StaticResource Gray400}}"
+                                VerticalOptions="Center" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="14"
+                                Text="centrumwsparcia.pl"
+                                TextColor="{AppThemeBinding Light={StaticResource Secondary},
+                                                            Dark={StaticResource SecondaryDarkText}}"
+                                TextDecorations="Underline">
                                 <Label.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding OpenWebsiteCommand}" CommandParameter="https://centrumwsparcia.pl" />
                                 </Label.GestureRecognizers>
@@ -92,13 +159,27 @@
 
                 <Border
                     Padding="15"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                      Dark={StaticResource SurfaceDark}}"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                             Dark={StaticResource Gray600}}"
                     StrokeShape="RoundRectangle 12">
                     <VerticalStackLayout Spacing="12">
                         <Grid ColumnDefinitions="*, Auto">
-                            <Label Grid.Column="0" FontAttributes="Bold" FontSize="16" Text="Telefon Zaufania Dzieci" VerticalOptions="Center" />
-                            <Label Grid.Column="1" FontAttributes="Bold" FontSize="20" Text="116 111" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" VerticalOptions="Center">
+                            <Label
+                                Grid.Column="0"
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                Text="Telefon Zaufania Dzieci"
+                                VerticalOptions="Center" />
+                            <Label
+                                Grid.Column="1"
+                                FontAttributes="Bold"
+                                FontSize="20"
+                                Text="116 111"
+                                TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                            Dark={StaticResource PrimaryDark}}"
+                                VerticalOptions="Center">
                                 <Label.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding OpenPhoneDialerCommand}" CommandParameter="116111" />
                                 </Label.GestureRecognizers>
@@ -108,8 +189,19 @@
                         <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" />
 
                         <HorizontalStackLayout HorizontalOptions="End" Spacing="5">
-                            <Label FontSize="14" Text="Czat:" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center" />
-                            <Label FontAttributes="Bold" FontSize="14" Text="116111.pl/czatuj" TextColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource SecondaryDarkText}}" TextDecorations="Underline">
+                            <Label
+                                FontSize="14"
+                                Text="Czat:"
+                                TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                            Dark={StaticResource Gray400}}"
+                                VerticalOptions="Center" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="14"
+                                Text="116111.pl/czatuj"
+                                TextColor="{AppThemeBinding Light={StaticResource Secondary},
+                                                            Dark={StaticResource SecondaryDarkText}}"
+                                TextDecorations="Underline">
                                 <Label.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding OpenWebsiteCommand}" CommandParameter="https://116111.pl/czatuj" />
                                 </Label.GestureRecognizers>
@@ -120,13 +212,27 @@
 
                 <Border
                     Padding="15"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                      Dark={StaticResource SurfaceDark}}"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                             Dark={StaticResource Gray600}}"
                     StrokeShape="RoundRectangle 12">
                     <VerticalStackLayout Spacing="12">
                         <Grid ColumnDefinitions="*, Auto">
-                            <Label Grid.Column="0" FontAttributes="Bold" FontSize="16" Text="Telefon Zaufania Dorosłych" VerticalOptions="Center" />
-                            <Label Grid.Column="1" FontAttributes="Bold" FontSize="20" Text="116 123" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" VerticalOptions="Center">
+                            <Label
+                                Grid.Column="0"
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                Text="Telefon Zaufania Dorosłych"
+                                VerticalOptions="Center" />
+                            <Label
+                                Grid.Column="1"
+                                FontAttributes="Bold"
+                                FontSize="20"
+                                Text="116 123"
+                                TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                            Dark={StaticResource PrimaryDark}}"
+                                VerticalOptions="Center">
                                 <Label.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding OpenPhoneDialerCommand}" CommandParameter="116123" />
                                 </Label.GestureRecognizers>
@@ -136,8 +242,19 @@
                         <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" />
 
                         <HorizontalStackLayout HorizontalOptions="End" Spacing="5">
-                            <Label FontSize="14" Text="Strona:" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center" />
-                            <Label FontAttributes="Bold" FontSize="14" Text="116sos.pl" TextColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource SecondaryDarkText}}" TextDecorations="Underline">
+                            <Label
+                                FontSize="14"
+                                Text="Strona:"
+                                TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                            Dark={StaticResource Gray400}}"
+                                VerticalOptions="Center" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="14"
+                                Text="116sos.pl"
+                                TextColor="{AppThemeBinding Light={StaticResource Secondary},
+                                                            Dark={StaticResource SecondaryDarkText}}"
+                                TextDecorations="Underline">
                                 <Label.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding OpenWebsiteCommand}" CommandParameter="https://116sos.pl" />
                                 </Label.GestureRecognizers>
@@ -149,18 +266,40 @@
             </VerticalStackLayout>
 
             <VerticalStackLayout Margin="0,10,0,30" Spacing="15">
-                <Label FontAttributes="Bold" FontSize="22" HorizontalOptions="Center" Text="O depresji" />
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="22"
+                    HorizontalOptions="Center"
+                    Text="O depresji" />
 
                 <Border
                     Padding="20"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                      Dark={StaticResource SurfaceDark}}"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                             Dark={StaticResource Gray600}}"
                     StrokeShape="RoundRectangle 12">
                     <VerticalStackLayout Spacing="15">
-                        <Label FontSize="15" HorizontalTextAlignment="Start" LineHeight="1.3" Text="• Depresja to choroba, a nie chwilowy smutek ani oznaka słabości. Może trwać tygodniami lub miesiącami i nie mija sama z siebie. Wpływa na sposób myślenia, odczuwania emocji oraz na codzienne funkcjonowanie." />
-                        <Label FontSize="15" HorizontalTextAlignment="Start" LineHeight="1.3" Text="• Objawy depresji mogą być różne u każdej osoby. Często pojawia się długotrwały smutek, brak energii lub zainteresowania rzeczami, które wcześniej sprawiały radość. Mogą też występować problemy ze snem, koncentracją lub apetytem." />
-                        <Label FontSize="15" HorizontalTextAlignment="Start" LineHeight="1.3" Text="• Depresja utrudnia codzienne życie i wykonywanie nawet prostych czynności. Osoba chora może mieć trudność z wstawaniem z łóżka, pracą lub kontaktami z innymi ludźmi. Z czasem może to prowadzić do poczucia bezradności i izolacji." />
-                        <Label FontSize="15" HorizontalTextAlignment="Start" LineHeight="1.3" Text="• Wsparcie i szybka reakcja otoczenia są bardzo ważne w leczeniu depresji. Regularne monitorowanie samopoczucia pomaga zauważyć pogorszenie stanu psychicznego. Dzięki temu osoba bliska może szybciej zareagować i zapewnić potrzebną pomoc." />
+                        <Label
+                            FontSize="15"
+                            HorizontalTextAlignment="Start"
+                            LineHeight="1.3"
+                            Text="• Depresja to choroba, a nie chwilowy smutek ani oznaka słabości. Może trwać tygodniami lub miesiącami i nie mija sama z siebie. Wpływa na sposób myślenia, odczuwania emocji oraz na codzienne funkcjonowanie." />
+                        <Label
+                            FontSize="15"
+                            HorizontalTextAlignment="Start"
+                            LineHeight="1.3"
+                            Text="• Objawy depresji mogą być różne u każdej osoby. Często pojawia się długotrwały smutek, brak energii lub zainteresowania rzeczami, które wcześniej sprawiały radość. Mogą też występować problemy ze snem, koncentracją lub apetytem." />
+                        <Label
+                            FontSize="15"
+                            HorizontalTextAlignment="Start"
+                            LineHeight="1.3"
+                            Text="• Depresja utrudnia codzienne życie i wykonywanie nawet prostych czynności. Osoba chora może mieć trudność z wstawaniem z łóżka, pracą lub kontaktami z innymi ludźmi. Z czasem może to prowadzić do poczucia bezradności i izolacji." />
+                        <Label
+                            FontSize="15"
+                            HorizontalTextAlignment="Start"
+                            LineHeight="1.3"
+                            Text="• Wsparcie i szybka reakcja otoczenia są bardzo ważne w leczeniu depresji. Regularne monitorowanie samopoczucia pomaga zauważyć pogorszenie stanu psychicznego. Dzięki temu osoba bliska może szybciej zareagować i zapewnić potrzebną pomoc." />
                     </VerticalStackLayout>
                 </Border>
             </VerticalStackLayout>

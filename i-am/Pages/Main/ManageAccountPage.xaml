@@ -34,29 +34,96 @@
                 RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto"
                 RowSpacing="15">
 
-                <Label Grid.Row="0" Grid.Column="0" FontAttributes="Bold" Text="Email:" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center" />
-                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Email}" VerticalOptions="Center" />
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    FontAttributes="Bold"
+                    Text="Email:"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                Dark={StaticResource Gray400}}"
+                    VerticalOptions="Center" />
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Text="{Binding Email}"
+                    VerticalOptions="Center" />
 
-                <Label Grid.Row="1" Grid.Column="0" FontAttributes="Bold" Text="Telefon:" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center" />
-                <Label Grid.Row="1" Grid.Column="1" Text="{Binding PhoneNumber}" VerticalOptions="Center" />
+                <Label
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    FontAttributes="Bold"
+                    Text="Telefon:"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                Dark={StaticResource Gray400}}"
+                    VerticalOptions="Center" />
+                <Label
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Text="{Binding PhoneNumber}"
+                    VerticalOptions="Center" />
 
-                <Label Grid.Row="2" Grid.Column="0" FontAttributes="Bold" Text="Data ur.:" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center" />
-                <Label Grid.Row="2" Grid.Column="1" Text="{Binding BirthDate}" VerticalOptions="Center" />
+                <Label
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    FontAttributes="Bold"
+                    Text="Data ur.:"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                Dark={StaticResource Gray400}}"
+                    VerticalOptions="Center" />
+                <Label
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Text="{Binding BirthDate}"
+                    VerticalOptions="Center" />
 
-                <Label Grid.Row="3" Grid.Column="0" FontAttributes="Bold" Text="Płeć:" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center" />
-                <Label Grid.Row="3" Grid.Column="1" Text="{Binding Sex}" VerticalOptions="Center" />
+                <Label
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    FontAttributes="Bold"
+                    Text="Płeć:"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                Dark={StaticResource Gray400}}"
+                    VerticalOptions="Center" />
+                <Label
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    Text="{Binding Sex}"
+                    VerticalOptions="Center" />
 
-                <Label Grid.Row="4" Grid.Column="0" FontAttributes="Bold" Text="Rola:" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center" />
-                <Label Grid.Row="4" Grid.Column="1" Text="{Binding Role}" VerticalOptions="Center" />
+                <Label
+                    Grid.Row="4"
+                    Grid.Column="0"
+                    FontAttributes="Bold"
+                    Text="Rola:"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                Dark={StaticResource Gray400}}"
+                    VerticalOptions="Center" />
+                <Label
+                    Grid.Row="4"
+                    Grid.Column="1"
+                    Text="{Binding Role}"
+                    VerticalOptions="Center" />
 
-                <Label Grid.Row="5" Grid.Column="0" FontAttributes="Bold" Text="Konto utworzono:" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center" />
-                <Label Grid.Row="5" Grid.Column="1" Text="{Binding CreatedAt}" VerticalOptions="Center" />
+                <Label
+                    Grid.Row="5"
+                    Grid.Column="0"
+                    FontAttributes="Bold"
+                    Text="Konto utworzono:"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                Dark={StaticResource Gray400}}"
+                    VerticalOptions="Center" />
+                <Label
+                    Grid.Row="5"
+                    Grid.Column="1"
+                    Text="{Binding CreatedAt}"
+                    VerticalOptions="Center" />
 
             </Grid>
 
             <Button
                 Margin="0,10,0,30"
-                BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight},
+                                                  Dark={StaticResource DangerDark}}"
                 Command="{Binding DeleteAccountCommand}"
                 CornerRadius="8"
                 FontAttributes="Bold"

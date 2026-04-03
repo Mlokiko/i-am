@@ -111,6 +111,7 @@ public partial class RegisterPage : ContentPage
             RegisterButton.IsEnabled = true;
         }
     }
+
     #region Przyciski, znaki zapytania
     
     private async void OnLoginClicked(object sender, EventArgs e)
@@ -185,6 +186,7 @@ public partial class RegisterPage : ContentPage
         var passwordRegex = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$");
         return passwordRegex.IsMatch(password);
     }
+
     private int CalculateAge(DateTime birthdate)
     {
         DateTime today = DateTime.Today;
@@ -196,6 +198,103 @@ public partial class RegisterPage : ContentPage
         }
 
         return age;
+    }
+
+    // Pobieramy kolory z motywu systemowego
+    private Color DangerColor => AppInfo.RequestedTheme == AppTheme.Light ? Colors.IndianRed : Colors.DarkRed;
+    private Color NormalColor => AppInfo.RequestedTheme == AppTheme.Light ? Colors.LightGray : Colors.DimGray;
+
+    // 1. Zdarzenia odpalane, gdy u¿ytkownik "WYCHODZI" z pola
+    private void OnEmailUnfocused(object sender, FocusEventArgs e) => ValidateEmail(showVisualError: true);
+    private void OnPasswordUnfocused(object sender, FocusEventArgs e) => ValidatePassword(showVisualError: true);
+    private void OnConfirmPasswordUnfocused(object sender, FocusEventArgs e) => ValidateConfirmPassword(showVisualError: true);
+    private void OnNameUnfocused(object sender, FocusEventArgs e) => ValidateName(showVisualError: true);
+    private void OnPhoneUnfocused(object sender, FocusEventArgs e) => ValidatePhone(showVisualError: true); // DODANO
+
+    // 2. Zdarzenie odpalane w trakcie pisania (Ukrywa b³êdy i sprawdza czy w³¹czyæ przycisk)
+    private void OnFieldTextChanged(object sender, TextChangedEventArgs e)
+    {
+        ValidateEmail(showVisualError: false);
+        ValidatePassword(showVisualError: false);
+        ValidateConfirmPassword(showVisualError: false);
+        ValidateName(showVisualError: false);
+        ValidatePhone(showVisualError: false); // DODANO
+
+        CheckFormValidity();
+    }
+
+    // 3. Funkcje sprawdzaj¹ce poszczególne pola
+    private void ValidateEmail(bool showVisualError)
+    {
+        bool isValid = !string.IsNullOrEmpty(EmailEntry.Text) && EmailEntry.Text.Contains("@") && EmailEntry.Text.Contains(".");
+        SetFieldVisualState(isValid, showVisualError, EmailEntry.Text, EmailBorder, EmailErrorLabel);
+    }
+
+    private void ValidatePassword(bool showVisualError)
+    {
+        bool isValid = !string.IsNullOrEmpty(PasswordEntry.Text) && PasswordEntry.Text.Length >= 6;
+        SetFieldVisualState(isValid, showVisualError, PasswordEntry.Text, PasswordBorder, PasswordErrorLabel);
+    }
+
+    private void ValidateConfirmPassword(bool showVisualError)
+    {
+        bool isValid = !string.IsNullOrEmpty(ConfirmPasswordEntry.Text) && ConfirmPasswordEntry.Text == PasswordEntry.Text;
+        SetFieldVisualState(isValid, showVisualError, ConfirmPasswordEntry.Text, ConfirmPasswordBorder, ConfirmPasswordErrorLabel);
+    }
+
+    private void ValidateName(bool showVisualError)
+    {
+        bool isValid = !string.IsNullOrEmpty(NameEntry.Text) && NameEntry.Text.Length >= 3;
+        SetFieldVisualState(isValid, showVisualError, NameEntry.Text, NameBorder, NameErrorLabel);
+    }
+
+    // NOWA FUNKCJA WALIDACJI TELEFONU
+    private void ValidatePhone(bool showVisualError)
+    {
+        // Usuwamy spacje (jeœli u¿ytkownik wpisa³ "111 222 333"), aby prawid³owo policzyæ cyfry
+        string cleanPhone = PhoneEntry.Text?.Replace(" ", "") ?? "";
+
+        // Sprawdzamy czy nie jest pusty, czy ma min. 9 znaków i czy sk³ada siê tylko z cyfr
+        bool isValid = !string.IsNullOrEmpty(cleanPhone) && cleanPhone.Length >= 9 && cleanPhone.All(char.IsDigit);
+
+        SetFieldVisualState(isValid, showVisualError, PhoneEntry.Text, PhoneBorder, PhoneErrorLabel);
+    }
+
+    // 4. Mened¿er wygl¹du
+    private void SetFieldVisualState(bool isValid, bool showVisualError, string text, Border border, Label errorLabel)
+    {
+        if (isValid)
+        {
+            border.Stroke = NormalColor;
+            border.StrokeThickness = 1;
+            if (errorLabel != null) errorLabel.IsVisible = false;
+        }
+        else if (showVisualError && !string.IsNullOrEmpty(text))
+        {
+            border.Stroke = DangerColor;
+            border.StrokeThickness = 2;
+            if (errorLabel != null) errorLabel.IsVisible = true;
+        }
+        else if (!showVisualError)
+        {
+            border.Stroke = NormalColor;
+            border.StrokeThickness = 1;
+            if (errorLabel != null) errorLabel.IsVisible = false;
+        }
+    }
+
+    // 5. Ostateczna aktywacja przycisku
+    private void CheckFormValidity()
+    {
+        bool isEmailValid = !string.IsNullOrEmpty(EmailEntry.Text) && EmailEntry.Text.Contains("@") && EmailEntry.Text.Contains(".");
+        bool isPasswordValid = !string.IsNullOrEmpty(PasswordEntry.Text) && PasswordEntry.Text.Length >= 6;
+        bool isConfirmPasswordValid = !string.IsNullOrEmpty(ConfirmPasswordEntry.Text) && ConfirmPasswordEntry.Text == PasswordEntry.Text;
+        bool isNameValid = !string.IsNullOrEmpty(NameEntry.Text) && NameEntry.Text.Length >= 3;
+
+        string cleanPhone = PhoneEntry.Text?.Replace(" ", "") ?? "";
+        bool isPhoneValid = !string.IsNullOrEmpty(cleanPhone) && cleanPhone.Length >= 9 && cleanPhone.All(char.IsDigit);
+
+        RegisterButton.IsEnabled = isEmailValid && isPasswordValid && isConfirmPasswordValid && isNameValid && isPhoneValid;
     }
     #endregion
 }

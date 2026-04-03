@@ -153,6 +153,11 @@ namespace i_am.ViewModels
                 Preferences.Default.Set("IsCaregiver", userProfile.IsCaregiver);
                 await _firestoreService.CreateUserProfileAsync(uid, userProfile);
                 await _firestoreService.UpdateFcmTokenAsync();
+                if (!IsCaregiver)
+                {
+                    // Generuje startowe pytania dla nowo utworzonego podopiecznego
+                    await _firestoreService.InitializeDefaultQuestionsAsync(uid);
+                }
 
                 await Shell.Current.DisplayAlert("Sukces", "Konto zostało pomyślnie stworzone!", "OK");
 

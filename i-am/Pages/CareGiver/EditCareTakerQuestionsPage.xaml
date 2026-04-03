@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="i_am.Pages.CareGiver.EditCareTakerQuestionsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:i_am.Models"
+    xmlns:vm="clr-namespace:i_am.ViewModels"
+    x:DataType="vm:EditCareTakerQuestionsViewModel"
+    Title="Pytania Podopiecznego">
+
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="20" Spacing="20">
+
+                <Label FontAttributes="Bold" FontSize="16" Text="1. Wybierz podopiecznego:" />
+                <Border Padding="10,0" BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" StrokeShape="RoundRectangle 12">
+                    <Picker
+                        ItemDisplayBinding="{Binding Name}"
+                        ItemsSource="{Binding CareTakers}"
+                        SelectedItem="{Binding SelectedCareTaker}"
+                        Title="Kliknij, aby wybrać..." />
+                </Border>
+
+                <VerticalStackLayout IsVisible="{Binding IsQuestionsVisible}" Spacing="15">
+
+                    <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                        <Label Grid.Column="0" FontAttributes="Bold" FontSize="16" Text="Aktualne Pytania" VerticalOptions="Center" />
+                        <Button Grid.Column="1" Command="{Binding OpenNewQuestionEditorCommand}" Text="+ Dodaj" HeightRequest="35" CornerRadius="6" />
+                    </Grid>
+
+                    <CollectionView ItemsSource="{Binding Questions}">
+                        <CollectionView.EmptyView>
+                            <Label HorizontalOptions="Center" Padding="20" Text="Ten podopieczny nie ma jeszcze pytań." TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" />
+                        </CollectionView.EmptyView>
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:QuestionTemplate">
+                                <Border Margin="0,0,0,10" Padding="15" BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" StrokeShape="RoundRectangle 8">
+                                    <Grid ColumnDefinitions="*, Auto">
+                                        <VerticalStackLayout Grid.Column="0" VerticalOptions="Center" Spacing="5">
+                                            <Label FontAttributes="Bold" FontSize="15" Text="{Binding Text}" />
+                                            <Label FontSize="12" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}">
+                                                <Label.Triggers>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding Type}" Value="Open">
+                                                        <Setter Property="Text" Value="Typ: Otwarte (tekstowe)" />
+                                                    </DataTrigger>
+                                                    <DataTrigger TargetType="Label" Binding="{Binding Type}" Value="Closed">
+                                                        <Setter Property="Text" Value="Typ: Zamknięte (punktowane)" />
+                                                    </DataTrigger>
+                                                </Label.Triggers>
+                                            </Label>
+                                        </VerticalStackLayout>
+
+                                        <HorizontalStackLayout Grid.Column="1" Spacing="10">
+                                            <Button Text="Edytuj" HeightRequest="35" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EditCareTakerQuestionsViewModel}}, Path=OpenEditQuestionEditorCommand}" CommandParameter="{Binding .}" />
+                                            <Button Text="Usuń" HeightRequest="35" BackgroundColor="{StaticResource Danger}" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EditCareTakerQuestionsViewModel}}, Path=DeleteQuestionCommand}" CommandParameter="{Binding .}" />
+                                        </HorizontalStackLayout>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+                <BoxView HeightRequest="400" IsVisible="{Binding IsEditorVisible}" Color="Transparent"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Border 
+            IsVisible="{Binding IsEditorVisible}"
+            VerticalOptions="End"
+            BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" 
+            Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" 
+            StrokeShape="RoundRectangle 20,20,0,0"
+            Shadow="{Shadow Brush=Black, Offset='0,-5', Radius=15, Opacity=0.1}">
+
+            <VerticalStackLayout Padding="20" Spacing="15">
+                <Label FontAttributes="Bold" FontSize="18" Text="{Binding EditorTitle}" HorizontalOptions="Center"/>
+
+                <Label FontAttributes="Bold" Text="Treść pytania:" />
+                <Border Padding="10,0" StrokeShape="RoundRectangle 8">
+                    <Entry Text="{Binding EditorQuestionText}" Placeholder="np. Jak się dzisiaj czujesz?" />
+                </Border>
+
+                <Label FontAttributes="Bold" Text="Typ pytania:" />
+                <Border Padding="10,0" StrokeShape="RoundRectangle 8">
+                    <Picker ItemsSource="{Binding AvailableTypes}" SelectedItem="{Binding EditorQuestionType}" />
+                </Border>
+
+                <VerticalStackLayout Spacing="10">
+                    <VerticalStackLayout.Triggers>
+                        <DataTrigger TargetType="VerticalStackLayout" Binding="{Binding EditorQuestionType}" Value="Otwarte">
+                            <Setter Property="IsVisible" Value="False" />
+                        </DataTrigger>
+                    </VerticalStackLayout.Triggers>
+
+                    <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                        <Label Grid.Column="0" FontAttributes="Bold" Text="Warianty odpowiedzi i punkty:" VerticalOptions="Center"/>
+                        <Button Grid.Column="1" Text="+ Wariant" Command="{Binding AddOptionCommand}" HeightRequest="30" Padding="10,0" />
+                    </Grid>
+
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding EditorOptions}" Spacing="5">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:QuestionOption">
+                                <Grid ColumnDefinitions="*, 80, Auto" ColumnSpacing="10">
+                                    <Entry Grid.Column="0" Text="{Binding Text}" Placeholder="Odpowiedź" />
+                                    <Entry Grid.Column="1" Text="{Binding Points}" Keyboard="Numeric" Placeholder="Pkt" HorizontalTextAlignment="Center" />
+                                    <Button Grid.Column="2" Text="X" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EditCareTakerQuestionsViewModel}}, Path=RemoveOptionCommand}" CommandParameter="{Binding .}" BackgroundColor="{StaticResource Danger}" WidthRequest="40" Padding="0"/>
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+
+                <Grid ColumnDefinitions="*, *" ColumnSpacing="15" Margin="0,15,0,0">
+                    <Button Grid.Column="0" Text="Anuluj" Command="{Binding CancelEditCommand}" BackgroundColor="{StaticResource Gray500}" />
+                    <Button Grid.Column="1" Text="Zapisz" Command="{Binding SaveQuestionCommand}" BackgroundColor="{StaticResource Success}" />
+                </Grid>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentPage>

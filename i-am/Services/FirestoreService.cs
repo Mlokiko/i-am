@@ -1,14 +1,7 @@
-﻿using Android.App.Admin;
-using Android.Telecom;
-using i_am.Models;
+﻿using i_am.Models;
 using Plugin.Firebase.Auth;
 using Plugin.Firebase.CloudMessaging;
 using Plugin.Firebase.Firestore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace i_am.Services
 {
@@ -150,7 +143,7 @@ namespace i_am.Services
 
 
         #endregion
-        #region Notifications
+        #region Powiadomienia (Notifications)
 
         public async Task SendNotificationAsync(AppNotification notification)
         {
@@ -428,6 +421,271 @@ namespace i_am.Services
             }
             return users;
         }
+        #endregion
+        #region Pytania i odpowiedzi (Questions & Answers)
+
+        // --- ZARZĄDZANIE SZABLONAMI PYTAŃ ---
+
+        // Zwraca dzisiejszą datę raportowania (doba trwa od 4:00 do 4:00 następnego dnia)
+        public string GetReportingDateString()
+        {
+            var now = DateTime.Now;
+            if (now.Hour < 4)
+            {
+                // Jeśli jest np. 2:00 w nocy w środę, to raport zaliczamy jeszcze do wtorku
+                return now.AddDays(-1).ToString("yyyy-MM-dd");
+            }
+            return now.ToString("yyyy-MM-dd");
+        }
+
+        // Pobieranie listy pytań dla konkretnego podopiecznego
+        public async Task<List<QuestionTemplate>> GetQuestionTemplatesAsync(string careTakerId)
+        {
+            var firestore = CrossFirebaseFirestore.Current;
+            var snapshot = await firestore.GetCollection("users")
+                                          .GetDocument(careTakerId)
+                                          .GetCollection("question_templates")
+                                          .GetDocumentsAsync<QuestionTemplate>(); // <-- DODANY TYP TUTAJ
+
+            // Skoro snapshot jest już zmapowany, wystarczy wyciągnąć właściwość Data
+            var templates = snapshot.Documents.Select(d => d.Data).ToList();
+
+            return templates.OrderBy(q => q.OrderIndex).ToList();
+        }
+
+        // Zapisywanie lub aktualizacja konkretnego pytania (Dla Opiekuna)
+        public async Task SaveQuestionTemplateAsync(string careTakerId, QuestionTemplate template)
+        {
+            var firestore = CrossFirebaseFirestore.Current;
+            var collectionRef = firestore.GetCollection("users").GetDocument(careTakerId).GetCollection("question_templates");
+
+            if (string.IsNullOrEmpty(template.Id))
+            {
+                // Nowe pytanie - Firebase sam wygeneruje ID dokumentu
+                await collectionRef.AddDocumentAsync(template);
+            }
+            else
+            {
+                // Aktualizacja - używamy SetDataAsync do nadpisania istniejącego dokumentu naszym modelem
+                await collectionRef.GetDocument(template.Id).SetDataAsync(template);
+            }
+        }
+
+        // Usuwanie pytania (Dla Opiekuna)
+        public async Task DeleteQuestionTemplateAsync(string careTakerId, string templateId)
+        {
+            var firestore = CrossFirebaseFirestore.Current;
+            await firestore.GetCollection("users")
+                           .GetDocument(careTakerId)
+                           .GetCollection("question_templates")
+                           .GetDocument(templateId)
+                           .DeleteDocumentAsync();
+        }
+
+        // --- WYPEŁNIANIE ANKIET ---
+
+        // Sprawdza czy podopieczny wypełnił już dziś ankietę
+        public async Task<bool> HasSubmittedDailyResponseAsync(string careTakerId, string dateString)
+        {
+            try
+            {
+                var firestore = CrossFirebaseFirestore.Current;
+                var snapshot = await firestore.GetCollection("users")
+                                         .GetDocument(careTakerId)
+                                         .GetCollection("daily_responses")
+                                         .GetDocument(dateString)
+                                         .GetDocumentSnapshotAsync<DailyResponse>();
+
+                // 'snapshot' to opakowanie z Firebase. 
+                // Nasz rzeczywisty obiekt (DailyResponse) znajduje się we właściwości '.Data'.
+                if (snapshot != null && snapshot.Data != null && !string.IsNullOrEmpty(snapshot.Data.EvaluationStatus))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception)
+            {
+                // W razie jakichkolwiek problemów (np. braku podkolekcji), pozwalamy wypełnić ankietę
+                return false;
+            }
+        }
+
+        // Zapisuje odpowiedź podopiecznego i wysyła powiadomienia do opiekunów
+        public async Task SaveDailyResponseAsync(string careTakerId, DailyResponse response)
+        {
+            var firestore = CrossFirebaseFirestore.Current;
+
+            // 1. Zapis do podkolekcji 'daily_responses' podopiecznego
+            await firestore.GetCollection("users")
+                           .GetDocument(careTakerId)
+                           .GetCollection("daily_responses")
+                           .GetDocument(response.Id) // Id to będzie data np. "2024-05-14"
+                           .SetDataAsync(response);
+
+            // 2. Pobranie danych podopiecznego, żeby wiedzieć komu wysłać powiadomienie
+            var careTakerProfile = await GetUserProfileAsync(careTakerId);
+            if (careTakerProfile != null && careTakerProfile.CaregiversID.Any())
+            {
+                // 3. Wysłanie powiadomień do wszystkich przypisanych opiekunów
+                foreach (var giverId in careTakerProfile.CaregiversID)
+                {
+                    var notification = new AppNotification
+                    {
+                        ReceiverId = giverId,
+                        Title = $"Nowy raport dzienny: {careTakerProfile.Name}",
+                        Message = $"Wynik: {response.TotalScore} pkt. Status: {response.EvaluationStatus}.",
+                        Type = "DailyReportAlert"
+                    };
+                    await SendNotificationAsync(notification);
+                }
+            }
+        }
+
+        // --- METODY POMOCNICZE ---
+
+        // Generowanie domyślnego zestawu pytań
+        public async Task<List<QuestionTemplate>> InitializeDefaultQuestionsAsync(string careTakerId)
+        {
+            var questions = new List<QuestionTemplate>();
+            int order = 0;
+
+            // WSPÓLNA LISTA EMOCJI DO WYKORZYSTANIA W PYTANIACH
+            var emotionOptions = new List<QuestionOption>
+            {
+                new QuestionOption { Text = "Radość", Points = 0 },
+                new QuestionOption { Text = "Spokój", Points = 0 },
+                new QuestionOption { Text = "Zmotywowanie", Points = 0 },
+                new QuestionOption { Text = "Obojętność", Points = -1 },
+                new QuestionOption { Text = "Zmęczenie", Points = -1 },
+                new QuestionOption { Text = "Smutek", Points = -2 },
+                new QuestionOption { Text = "Lęk / Niepokój", Points = -2 },
+                new QuestionOption { Text = "Stres", Points = -2 },
+                new QuestionOption { Text = "Złość", Points = -2 }
+            };
+
+            // --- 1. PYTANIA CODZIENNE (ZAMKNIĘTE) ---
+            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = false, Type = "Closed", MaxSelections = 2, Text = "Jakie emocje czułeś na ROZPOCZĘCIE dnia? (max. 2)", Options = new List<QuestionOption>(emotionOptions) });
+            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = false, Type = "Closed", MaxSelections = 5, Text = "Jakie emocje czułeś w ŚRODKU dnia? (max. 5)", Options = new List<QuestionOption>(emotionOptions) });
+            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = false, Type = "Closed", MaxSelections = 2, Text = "Jakie emocje czułeś na ZAKOŃCZENIE dnia? (max. 2)", Options = new List<QuestionOption>(emotionOptions) });
+
+            questions.Add(new QuestionTemplate
+            {
+                OrderIndex = order++,
+                IsRandomPool = false,
+                Type = "Closed",
+                MaxSelections = 1,
+                Text = "Ile posiłków dzisiaj zjadłeś?",
+                Options = new List<QuestionOption> {
+                    new QuestionOption { Text = "0", Points = -2 },
+                    new QuestionOption { Text = "1", Points = -1 },
+                    new QuestionOption { Text = "2", Points = 0 },
+                    new QuestionOption { Text = "3", Points = 0 },
+                    new QuestionOption { Text = "4", Points = 0 },
+                    new QuestionOption { Text = "5", Points = 0 },
+                    new QuestionOption { Text = "Więcej niż 5", Points = 0 }
+                }
+            });
+
+            questions.Add(new QuestionTemplate
+            {
+                OrderIndex = order++,
+                IsRandomPool = false,
+                Type = "Closed",
+                MaxSelections = 1,
+                Text = "Czy zjadłeś dzisiaj chociaż jeden pełnowartościowy posiłek?",
+                Options = new List<QuestionOption> {
+                    new QuestionOption { Text = "TAK", Points = 0 },
+                    new QuestionOption { Text = "NIE", Points = -1 }
+                }
+            });
+
+            questions.Add(new QuestionTemplate
+            {
+                OrderIndex = order++,
+                IsRandomPool = false,
+                Type = "Closed",
+                MaxSelections = 1,
+                Text = "Ile godzin spałeś?",
+                Options = new List<QuestionOption> {
+                    new QuestionOption { Text = "Poniżej 3 godzin", Points = -2 },
+                    new QuestionOption { Text = "3-5 godzin", Points = -1 },
+                    new QuestionOption { Text = "6-8 godzin", Points = 0 },
+                    new QuestionOption { Text = "9-11 godzin", Points = 0 },
+                    new QuestionOption { Text = "12 lub więcej", Points = -2 }
+                }
+            });
+
+            questions.Add(new QuestionTemplate
+            {
+                OrderIndex = order++,
+                IsRandomPool = false,
+                Type = "Closed",
+                MaxSelections = 1,
+                Text = "Zaznacz na skali jak się dzisiaj czujesz:",
+                Options = new List<QuestionOption> {
+                    new QuestionOption { Text = "Przemęczony", Points = -2 },
+                    new QuestionOption { Text = "Bardzo zmęczony", Points = -1 },
+                    new QuestionOption { Text = "Zmęczony", Points = -1 },
+                    new QuestionOption { Text = "W sam raz", Points = 0 },
+                    new QuestionOption { Text = "Pełen energii", Points = 1 }
+                }
+            });
+
+            // --- 2. PYTANIA CODZIENNE (OTWARTE) ---
+            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = false, Type = "Open", Text = "Czy zdarzyło się dziś coś, co wywarło w tobie silne emocje? Co to było, jak się czułeś i jak zachowałeś?" });
+            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = false, Type = "Open", Text = "Co dzisiaj udało ci się zrobić?" });
+
+            // --- 3. PULOWA LOSOWA (ZAMKNIĘTE) ---
+            questions.Add(new QuestionTemplate
+            {
+                OrderIndex = order++,
+                IsRandomPool = true,
+                Type = "Closed",
+                MaxSelections = 1,
+                Text = "Czy czerpałeś dziś przyjemność chociaż z jednej wykonywanej czynności bądź odczuwałeś przynajmniej niewielkie zainteresowanie nią?",
+                Options = new List<QuestionOption> { new QuestionOption { Text = "TAK", Points = 0 }, new QuestionOption { Text = "NIE", Points = -3 } }
+            });
+
+            questions.Add(new QuestionTemplate
+            {
+                OrderIndex = order++,
+                IsRandomPool = true,
+                Type = "Closed",
+                MaxSelections = 1,
+                Text = "Czy miałeś problem ze skupieniem się podczas wykonywania podstawowych czynności (np. oglądanie TV, czytanie)?",
+                Options = new List<QuestionOption> { new QuestionOption { Text = "TAK", Points = -1 }, new QuestionOption { Text = "NIE", Points = 0 } }
+            });
+
+            questions.Add(new QuestionTemplate
+            {
+                OrderIndex = order++,
+                IsRandomPool = true,
+                Type = "Closed",
+                MaxSelections = 1,
+                Text = "Czy zdarzyło ci się dzisiaj ruszać lub mówić tak wolno, że zauważyli to inni (lub przeciwnie, nie mogłeś usiedzieć w miejscu)?",
+                Options = new List<QuestionOption> { new QuestionOption { Text = "TAK", Points = -3 }, new QuestionOption { Text = "NIE", Points = 0 } }
+            });
+
+            // --- 4. PULOWA LOSOWA (OTWARTE) ---
+            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = true, Type = "Open", Text = "O czym pomyślałeś jak się obudziłeś?" });
+            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = true, Type = "Open", Text = "Co byś chciał dzisiaj zrobić?" });
+            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = true, Type = "Open", Text = "Kiedy ostatni raz czułeś radość?" });
+            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = true, Type = "Open", Text = "Co sprawiłoby Ci radość?" });
+            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = true, Type = "Open", Text = "Podaj choć jedną rzecz z której byłeś dzisiaj dumny." });
+
+            var firestore = CrossFirebaseFirestore.Current;
+            var collectionRef = firestore.GetCollection("users").GetDocument(careTakerId).GetCollection("question_templates");
+
+            foreach (var q in questions)
+            {
+                await collectionRef.AddDocumentAsync(q);
+            }
+
+            return questions;
+        }
+
         #endregion
     }
 }

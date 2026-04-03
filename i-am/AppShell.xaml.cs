@@ -17,6 +17,8 @@ namespace i_am
             Routing.RegisterRoute(nameof(NotificationsPage), typeof(NotificationsPage));
             Routing.RegisterRoute(nameof(ManageCareTakersPage), typeof(ManageCareTakersPage));
             Routing.RegisterRoute(nameof(ManageCareGiversPage), typeof(ManageCareGiversPage));
+            Routing.RegisterRoute(nameof(EditCareTakerQuestionsPage), typeof(EditCareTakerQuestionsPage));
+            Routing.RegisterRoute(nameof(DailyActivityPage), typeof(DailyActivityPage));
 
         }
     }

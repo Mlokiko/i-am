@@ -25,7 +25,11 @@ namespace i_am.ViewModels
         [ObservableProperty] private bool isEditorVisible;
         [ObservableProperty] private string editorTitle = string.Empty;
         [ObservableProperty] private string editorQuestionText = string.Empty;
-        [ObservableProperty] private string editorQuestionType = "Zamknięte"; // "Zamknięte" lub "Otwarte"
+        [ObservableProperty] private string editorQuestionType = "Zamknięte";
+
+        // NOWE POLA DLA ZAAWANSOWANYCH PYTAŃ
+        [ObservableProperty] private bool editorIsRandomPool;
+        [ObservableProperty] private double editorMaxSelections = 1; // Double bo MAUI Stepper operuje na double
 
         public ObservableCollection<string> AvailableTypes { get; } = new(new[] { "Zamknięte", "Otwarte" });
         public ObservableCollection<QuestionOption> EditorOptions { get; } = new();
@@ -52,7 +56,6 @@ namespace i_am.ViewModels
             }
         }
 
-        // Gdy opiekun wybierze podopiecznego z listy (Pickera)
         partial void OnSelectedCareTakerChanged(User? value)
         {
             if (value != null)
@@ -77,15 +80,16 @@ namespace i_am.ViewModels
             });
         }
 
-        // --- KOMENDY ZARZĄDZANIA PYTANIAMI ---
-
         [RelayCommand]
         private void OpenNewQuestionEditor()
         {
-            _editingTemplate = new QuestionTemplate { OrderIndex = Questions.Count }; // Nowe pytanie na koniec
+            _editingTemplate = new QuestionTemplate { OrderIndex = Questions.Count };
             EditorTitle = "Dodaj nowe pytanie";
             EditorQuestionText = string.Empty;
             EditorQuestionType = "Zamknięte";
+            EditorIsRandomPool = false; // Domyślnie codzienne
+            EditorMaxSelections = 1;    // Domyślnie 1 wybór
+
             EditorOptions.Clear();
             EditorOptions.Add(new QuestionOption { Text = "Tak", Points = 5 });
             EditorOptions.Add(new QuestionOption { Text = "Nie", Points = 0 });
@@ -102,6 +106,8 @@ namespace i_am.ViewModels
             EditorTitle = "Edytuj pytanie";
             EditorQuestionText = template.Text;
             EditorQuestionType = template.Type == "Open" ? "Otwarte" : "Zamknięte";
+            EditorIsRandomPool = template.IsRandomPool;
+            EditorMaxSelections = template.MaxSelections < 1 ? 1 : template.MaxSelections;
 
             EditorOptions.Clear();
             if (template.Options != null)
@@ -124,8 +130,6 @@ namespace i_am.ViewModels
                 await LoadQuestionsAsync(SelectedCareTaker.Id);
             }
         }
-
-        // --- KOMENDY WEWNĄTRZ EDYTORA ---
 
         [RelayCommand]
         private void AddOption()
@@ -159,9 +163,19 @@ namespace i_am.ViewModels
 
             if (SelectedCareTaker == null || _editingTemplate == null) return;
 
-            // Zaktualizuj edytowany model
             _editingTemplate.Text = EditorQuestionText;
             _editingTemplate.Type = EditorQuestionType == "Otwarte" ? "Open" : "Closed";
+            _editingTemplate.IsRandomPool = EditorIsRandomPool;
+
+            // Logika wyborów: Dla otwartych wymuszamy 1. Dla zamkniętych pobieramy ze Steppera.
+            if (_editingTemplate.Type == "Open")
+            {
+                _editingTemplate.MaxSelections = 1;
+            }
+            else
+            {
+                _editingTemplate.MaxSelections = (int)EditorMaxSelections;
+            }
 
             _editingTemplate.Options = new List<QuestionOption>();
             if (_editingTemplate.Type == "Closed")
@@ -185,7 +199,6 @@ namespace i_am.ViewModels
                 }
             }
 
-            // Zapis do Firebase
             await _firestoreService.SaveQuestionTemplateAsync(SelectedCareTaker.Id, _editingTemplate);
 
             IsEditorVisible = false;

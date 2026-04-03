@@ -39,21 +39,45 @@
                                     <Grid ColumnDefinitions="*, Auto">
                                         <VerticalStackLayout Grid.Column="0" VerticalOptions="Center" Spacing="5">
                                             <Label FontAttributes="Bold" FontSize="15" Text="{Binding Text}" />
-                                            <Label FontSize="12" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}">
+
+                                            <HorizontalStackLayout Spacing="8">
+                                                <Label FontSize="12" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}">
+                                                    <Label.Triggers>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding Type}" Value="Open">
+                                                            <Setter Property="Text" Value="Format: Otwarte |" />
+                                                        </DataTrigger>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding Type}" Value="Closed">
+                                                            <Setter Property="Text" Value="Format: Zamknięte |" />
+                                                        </DataTrigger>
+                                                    </Label.Triggers>
+                                                </Label>
+
+                                                <Label FontSize="12" FontAttributes="Bold">
+                                                    <Label.Triggers>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding IsRandomPool}" Value="False">
+                                                            <Setter Property="Text" Value="Codzienne" />
+                                                            <Setter Property="TextColor" Value="{StaticResource Primary}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding IsRandomPool}" Value="True">
+                                                            <Setter Property="Text" Value="Losowe z puli" />
+                                                            <Setter Property="TextColor" Value="{StaticResource Secondary}" />
+                                                        </DataTrigger>
+                                                    </Label.Triggers>
+                                                </Label>
+                                            </HorizontalStackLayout>
+
+                                            <Label FontSize="12" TextColor="{StaticResource Primary}" Text="{Binding MaxSelections, StringFormat='Max. odpowiedzi: {0}'}">
                                                 <Label.Triggers>
                                                     <DataTrigger TargetType="Label" Binding="{Binding Type}" Value="Open">
-                                                        <Setter Property="Text" Value="Typ: Otwarte (tekstowe)" />
-                                                    </DataTrigger>
-                                                    <DataTrigger TargetType="Label" Binding="{Binding Type}" Value="Closed">
-                                                        <Setter Property="Text" Value="Typ: Zamknięte (punktowane)" />
+                                                        <Setter Property="IsVisible" Value="False"/>
                                                     </DataTrigger>
                                                 </Label.Triggers>
                                             </Label>
                                         </VerticalStackLayout>
 
-                                        <HorizontalStackLayout Grid.Column="1" Spacing="10">
+                                        <HorizontalStackLayout Grid.Column="1" Spacing="10" VerticalOptions="Center">
                                             <Button Text="Edytuj" HeightRequest="35" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EditCareTakerQuestionsViewModel}}, Path=OpenEditQuestionEditorCommand}" CommandParameter="{Binding .}" />
-                                            <Button Text="Usuń" HeightRequest="35" BackgroundColor="{StaticResource Danger}" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EditCareTakerQuestionsViewModel}}, Path=DeleteQuestionCommand}" CommandParameter="{Binding .}" />
+                                            <Button Text="X" HeightRequest="35" WidthRequest="40" BackgroundColor="{StaticResource Danger}" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EditCareTakerQuestionsViewModel}}, Path=DeleteQuestionCommand}" CommandParameter="{Binding .}" />
                                         </HorizontalStackLayout>
                                     </Grid>
                                 </Border>
@@ -62,8 +86,7 @@
                     </CollectionView>
                 </VerticalStackLayout>
 
-                <BoxView HeightRequest="400" IsVisible="{Binding IsEditorVisible}" Color="Transparent"/>
-
+                <BoxView HeightRequest="450" IsVisible="{Binding IsEditorVisible}" Color="Transparent"/>
             </VerticalStackLayout>
         </ScrollView>
 
@@ -83,10 +106,32 @@
                     <Entry Text="{Binding EditorQuestionText}" Placeholder="np. Jak się dzisiaj czujesz?" />
                 </Border>
 
-                <Label FontAttributes="Bold" Text="Typ pytania:" />
-                <Border Padding="10,0" StrokeShape="RoundRectangle 8">
-                    <Picker ItemsSource="{Binding AvailableTypes}" SelectedItem="{Binding EditorQuestionType}" />
-                </Border>
+                <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+                    <VerticalStackLayout Grid.Column="0">
+                        <Label FontAttributes="Bold" Text="Typ pytania:" />
+                        <Border Padding="10,0" StrokeShape="RoundRectangle 8">
+                            <Picker ItemsSource="{Binding AvailableTypes}" SelectedItem="{Binding EditorQuestionType}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Column="1">
+                        <Label FontAttributes="Bold" Text="Tylko losowe z puli?" />
+                        <Switch IsToggled="{Binding EditorIsRandomPool}" HorizontalOptions="Start" Margin="0,5,0,0"/>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <VerticalStackLayout Spacing="5">
+                    <VerticalStackLayout.Triggers>
+                        <DataTrigger TargetType="VerticalStackLayout" Binding="{Binding EditorQuestionType}" Value="Otwarte">
+                            <Setter Property="IsVisible" Value="False" />
+                        </DataTrigger>
+                    </VerticalStackLayout.Triggers>
+                    <Label FontAttributes="Bold" Text="Maksymalna liczba opcji do zaznaczenia:" />
+                    <HorizontalStackLayout Spacing="15" VerticalOptions="Center">
+                        <Stepper Minimum="1" Maximum="10" Increment="1" Value="{Binding EditorMaxSelections}" />
+                        <Label Text="{Binding EditorMaxSelections, StringFormat='Wybrano: {0}'}" VerticalOptions="Center" FontAttributes="Bold" FontSize="16" TextColor="{StaticResource Primary}"/>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
 
                 <VerticalStackLayout Spacing="10">
                     <VerticalStackLayout.Triggers>
@@ -96,24 +141,26 @@
                     </VerticalStackLayout.Triggers>
 
                     <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
-                        <Label Grid.Column="0" FontAttributes="Bold" Text="Warianty odpowiedzi i punkty:" VerticalOptions="Center"/>
+                        <Label Grid.Column="0" FontAttributes="Bold" Text="Warianty i punkty:" VerticalOptions="Center"/>
                         <Button Grid.Column="1" Text="+ Wariant" Command="{Binding AddOptionCommand}" HeightRequest="30" Padding="10,0" />
                     </Grid>
 
-                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding EditorOptions}" Spacing="5">
-                        <BindableLayout.ItemTemplate>
-                            <DataTemplate x:DataType="models:QuestionOption">
-                                <Grid ColumnDefinitions="*, 80, Auto" ColumnSpacing="10">
-                                    <Entry Grid.Column="0" Text="{Binding Text}" Placeholder="Odpowiedź" />
-                                    <Entry Grid.Column="1" Text="{Binding Points}" Keyboard="Numeric" Placeholder="Pkt" HorizontalTextAlignment="Center" />
-                                    <Button Grid.Column="2" Text="X" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EditCareTakerQuestionsViewModel}}, Path=RemoveOptionCommand}" CommandParameter="{Binding .}" BackgroundColor="{StaticResource Danger}" WidthRequest="40" Padding="0"/>
-                                </Grid>
-                            </DataTemplate>
-                        </BindableLayout.ItemTemplate>
-                    </VerticalStackLayout>
+                    <ScrollView MaximumHeightRequest="150">
+                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding EditorOptions}" Spacing="5">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="models:QuestionOption">
+                                    <Grid ColumnDefinitions="*, 80, Auto" ColumnSpacing="10">
+                                        <Entry Grid.Column="0" Text="{Binding Text}" Placeholder="Odpowiedź" />
+                                        <Entry Grid.Column="1" Text="{Binding Points}" Keyboard="Numeric" Placeholder="Pkt" HorizontalTextAlignment="Center" />
+                                        <Button Grid.Column="2" Text="X" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EditCareTakerQuestionsViewModel}}, Path=RemoveOptionCommand}" CommandParameter="{Binding .}" BackgroundColor="{StaticResource Danger}" WidthRequest="40" Padding="0"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </ScrollView>
                 </VerticalStackLayout>
 
-                <Grid ColumnDefinitions="*, *" ColumnSpacing="15" Margin="0,15,0,0">
+                <Grid ColumnDefinitions="*, *" ColumnSpacing="15" Margin="0,5,0,0">
                     <Button Grid.Column="0" Text="Anuluj" Command="{Binding CancelEditCommand}" BackgroundColor="{StaticResource Gray500}" />
                     <Button Grid.Column="1" Text="Zapisz" Command="{Binding SaveQuestionCommand}" BackgroundColor="{StaticResource Success}" />
                 </Grid>

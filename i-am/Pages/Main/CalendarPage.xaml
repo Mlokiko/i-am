@@ -81,6 +81,7 @@
 
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="vm:CalendarDayItem">
+
                                 <Border
                                     Padding="15"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
@@ -117,10 +118,12 @@
                                             Text="Szczegóły" />
                                     </Grid>
                                 </Border>
+
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>
                 </VerticalStackLayout>
+
             </VerticalStackLayout>
         </ScrollView>
 
@@ -131,101 +134,106 @@
             VerticalOptions="Center"
             ZIndex="10" />
 
-        <BoxView
-            IsVisible="{Binding IsDayDetailsVisible}"
-            Opacity="0.5"
-            Color="Black">
-            <BoxView.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding CloseDetailsCommand}" />
-            </BoxView.GestureRecognizers>
-        </BoxView>
+        <Grid IsVisible="{Binding IsDayDetailsVisible}" ZIndex="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-        <Border
-            Margin="0"
-            Padding="0"
-            BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                              Dark={StaticResource SurfaceDark}}"
-            HorizontalOptions="Fill"
-            IsVisible="{Binding IsDayDetailsVisible}"
-            Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                     Dark={StaticResource Gray600}}"
-            StrokeShape="RoundRectangle 20,20,0,0"
-            VerticalOptions="End">
+            <BoxView
+                Grid.RowSpan="2"
+                BackgroundColor="Black"
+                Opacity="0.6">
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CloseDetailsCommand}" />
+                </BoxView.GestureRecognizers>
+            </BoxView>
 
-            <Grid Padding="0,0,0,20" RowDefinitions="Auto, Auto">
+            <Border
+                Grid.Row="1"
+                Margin="0"
+                Padding="0"
+                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                  Dark={StaticResource SurfaceDark}}"
+                Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                         Dark={StaticResource Gray600}}"
+                StrokeShape="RoundRectangle 20,20,0,0">
 
-                <Grid
-                    Grid.Row="0"
-                    Padding="20"
-                    ColumnDefinitions="*, Auto">
-                    <VerticalStackLayout Grid.Column="0" Spacing="2">
-                        <Label
-                            FontAttributes="Bold"
-                            FontSize="18"
-                            Text="{Binding SelectedDay.Date, StringFormat='{0:dd MMMM yyyy}'}" />
-                        <Label
-                            FontSize="14"
-                            Text="{Binding SelectedDay.Response.EvaluationStatus, StringFormat='Status: {0}'}"
-                            TextColor="{StaticResource Primary}" />
-                        <Label
-                            FontAttributes="Bold"
-                            FontSize="14"
-                            IsVisible="{Binding IsCareGiver}"
-                            Text="{Binding SelectedDay.Response.TotalScore, StringFormat='Suma punktów: {0}'}" />
-                    </VerticalStackLayout>
-                    <Button
-                        Grid.Column="1"
-                        Padding="10,0"
-                        BackgroundColor="{StaticResource Gray500}"
-                        Command="{Binding CloseDetailsCommand}"
-                        HeightRequest="35"
-                        Text="Zamknij"
-                        VerticalOptions="Start" />
+                <Grid Padding="0,0,0,30" RowDefinitions="Auto, Auto">
+
+                    <Grid
+                        Grid.Row="0"
+                        Padding="20"
+                        ColumnDefinitions="*, Auto">
+                        <VerticalStackLayout Grid.Column="0" Spacing="2">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="18"
+                                Text="{Binding SelectedDay.Date, StringFormat='{0:dd MMMM yyyy}'}" />
+                            <Label
+                                FontSize="14"
+                                Text="{Binding SelectedDay.Response.EvaluationStatus, StringFormat='Status: {0}'}"
+                                TextColor="{StaticResource Primary}" />
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="14"
+                                IsVisible="{Binding IsCareGiver}"
+                                Text="{Binding SelectedDay.Response.TotalScore, StringFormat='Suma punktów: {0}'}" />
+                        </VerticalStackLayout>
+                        <Button
+                            Grid.Column="1"
+                            Padding="10,0"
+                            BackgroundColor="{StaticResource Gray500}"
+                            Command="{Binding CloseDetailsCommand}"
+                            HeightRequest="35"
+                            Text="Zamknij"
+                            VerticalOptions="Start" />
+                    </Grid>
+
+                    <ScrollView
+                        Grid.Row="1"
+                        IsVisible="{Binding IsCareGiver}"
+                        MaximumHeightRequest="400">
+                        <VerticalStackLayout
+                            Padding="20,0,20,0"
+                            BindableLayout.ItemsSource="{Binding SelectedDayAnswers}"
+                            Spacing="15">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="models:GivenAnswer">
+                                    <Border
+                                        Padding="15"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                                          Dark={StaticResource SurfaceDark}}"
+                                        Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                                                 Dark={StaticResource Gray600}}"
+                                        StrokeShape="RoundRectangle 8">
+                                        <VerticalStackLayout Spacing="5">
+                                            <Label
+                                                FontAttributes="Bold"
+                                                FontSize="14"
+                                                Text="{Binding QuestionText}" />
+                                            <Label
+                                                FontAttributes="Bold"
+                                                Text="{Binding SelectedOptionText}"
+                                                TextColor="{StaticResource Primary}" />
+                                            <Label
+                                                FontAttributes="Italic"
+                                                Text="{Binding OpenTextResponse}"
+                                                TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                                            Dark={StaticResource Gray400}}" />
+                                            <Label
+                                                Margin="0,5,0,0"
+                                                FontSize="12"
+                                                Text="{Binding PointsAwarded, StringFormat='Punkty: {0}'}"
+                                                TextColor="{StaticResource Gray500}" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </ScrollView>
                 </Grid>
-
-                <ScrollView
-                    Grid.Row="1"
-                    HeightRequest="350"
-                    IsVisible="{Binding IsCareGiver}">
-                    <VerticalStackLayout
-                        Padding="20,0,20,20"
-                        BindableLayout.ItemsSource="{Binding SelectedDayAnswers}"
-                        Spacing="15">
-                        <BindableLayout.ItemTemplate>
-                            <DataTemplate x:DataType="models:GivenAnswer">
-                                <Border
-                                    Padding="15"
-                                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                                      Dark={StaticResource SurfaceDark}}"
-                                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                                             Dark={StaticResource Gray600}}"
-                                    StrokeShape="RoundRectangle 8">
-                                    <VerticalStackLayout Spacing="5">
-                                        <Label
-                                            FontAttributes="Bold"
-                                            FontSize="14"
-                                            Text="{Binding QuestionText}" />
-                                        <Label
-                                            FontAttributes="Bold"
-                                            Text="{Binding SelectedOptionText}"
-                                            TextColor="{StaticResource Primary}" />
-                                        <Label
-                                            FontAttributes="Italic"
-                                            Text="{Binding OpenTextResponse}"
-                                            TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                                        Dark={StaticResource Gray400}}" />
-                                        <Label
-                                            Margin="0,5,0,0"
-                                            FontSize="12"
-                                            Text="{Binding PointsAwarded, StringFormat='Punkty: {0}'}"
-                                            TextColor="{StaticResource Gray500}" />
-                                    </VerticalStackLayout>
-                                </Border>
-                            </DataTemplate>
-                        </BindableLayout.ItemTemplate>
-                    </VerticalStackLayout>
-                </ScrollView>
-            </Grid>
-        </Border>
+            </Border>
+        </Grid>
     </Grid>
 </ContentPage>

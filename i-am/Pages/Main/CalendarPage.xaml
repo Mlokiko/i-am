@@ -9,12 +9,6 @@
     x:DataType="vm:CalendarViewModel">
 
     <Grid>
-        <ActivityIndicator
-            HorizontalOptions="Center"
-            IsRunning="{Binding IsLoading}"
-            IsVisible="{Binding IsLoading}"
-            VerticalOptions="Center"
-            ZIndex="10" />
 
         <ScrollView>
             <VerticalStackLayout Padding="20" Spacing="20">
@@ -87,7 +81,6 @@
 
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="vm:CalendarDayItem">
-
                                 <Border
                                     Padding="15"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
@@ -122,29 +115,43 @@
                                             Text="Szczegóły" />
                                     </Grid>
                                 </Border>
-
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>
                 </VerticalStackLayout>
-
-                <BoxView
-                    HeightRequest="400"
-                    IsVisible="{Binding IsDayDetailsVisible}"
-                    Color="Transparent" />
             </VerticalStackLayout>
         </ScrollView>
 
+        <ActivityIndicator
+            HorizontalOptions="Center"
+            IsRunning="{Binding IsLoading}"
+            IsVisible="{Binding IsLoading}"
+            VerticalOptions="Center"
+            ZIndex="10" />
+
+        <BoxView
+            IsVisible="{Binding IsDayDetailsVisible}"
+            Opacity="0.5"
+            Color="Black">
+            <BoxView.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding CloseDetailsCommand}" />
+            </BoxView.GestureRecognizers>
+        </BoxView>
+
         <Border
+            Margin="0"
+            Padding="0"
             BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
                                               Dark={StaticResource SurfaceDark}}"
+            HorizontalOptions="Fill"
             IsVisible="{Binding IsDayDetailsVisible}"
             Stroke="{AppThemeBinding Light={StaticResource Gray200},
                                      Dark={StaticResource Gray600}}"
             StrokeShape="RoundRectangle 20,20,0,0"
             VerticalOptions="End">
 
-            <Grid RowDefinitions="Auto, *">
+            <Grid Padding="0,0,0,20" RowDefinitions="Auto, Auto">
+
                 <Grid
                     Grid.Row="0"
                     Padding="20"
@@ -176,8 +183,8 @@
 
                 <ScrollView
                     Grid.Row="1"
-                    IsVisible="{Binding IsCareGiver}"
-                    MaximumHeightRequest="300">
+                    HeightRequest="350"
+                    IsVisible="{Binding IsCareGiver}">
                     <VerticalStackLayout
                         Padding="20,0,20,20"
                         BindableLayout.ItemsSource="{Binding SelectedDayAnswers}"

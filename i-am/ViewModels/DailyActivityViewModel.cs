@@ -3,19 +3,46 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using i_am.Models;
 using i_am.Services;
+using Microsoft.Maui.Graphics;
 
 namespace i_am.ViewModels
 {
-    // Model pojedynczego kafelka odpowiedzi
     public partial class OptionItem : ObservableObject
     {
         public QuestionOption Option { get; set; } = new();
+        public AnswerFormItem? Parent { get; set; } // Referencja do rodzica, by uniknąć RelativeSource w XAML
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(BgColor))]
+        [NotifyPropertyChangedFor(nameof(BorderColor))]
+        [NotifyPropertyChangedFor(nameof(TxtColor))]
+        [NotifyPropertyChangedFor(nameof(TextFontAttributes))]
         private bool isSelected;
+
+        // BEZPIECZNE KOLORY I STYLE: Przekazywane jako dane, nie wywalają AOT!
+        private bool IsDark => Application.Current?.RequestedTheme == AppTheme.Dark;
+
+        public Color BgColor => IsSelected
+            ? (IsDark ? Color.FromArgb("#356AAB") : Color.FromArgb("#E8F0FE")) // PrimaryDark / Jasny Niebieski
+            : (IsDark ? Color.FromArgb("#2C2F36") : Color.FromArgb("#FFFFFF")); // SurfaceDark / SurfaceLight
+
+        public Color BorderColor => IsSelected
+            ? Color.FromArgb("#4A90E2") // Primary
+            : (IsDark ? Color.FromArgb("#404040") : Color.FromArgb("#C8C8C8")); // Gray600 / Gray200
+
+        public Color TxtColor => IsSelected
+            ? (IsDark ? Colors.White : Color.FromArgb("#4A90E2")) // Biały / Primary
+            : (IsDark ? Colors.White : Colors.Black);
+
+        public FontAttributes TextFontAttributes => IsSelected ? FontAttributes.Bold : FontAttributes.None;
+
+        [RelayCommand]
+        private void Toggle()
+        {
+            Parent?.ToggleOption(this); // Bezpośrednie wywołanie, omija RelativeSource!
+        }
     }
 
-    // Model pojedynczego pytania w formularzu
     public partial class AnswerFormItem : ObservableObject
     {
         public QuestionTemplate Question { get; set; } = new();
@@ -26,39 +53,38 @@ namespace i_am.ViewModels
 
         public bool IsClosed => Question.Type == "Closed";
         public bool IsOpen => Question.Type == "Open";
-
-        // Tekst podpowiadający limit
         public string SelectionHint => Question.MaxSelections > 1 ? $"(Wybierz do {Question.MaxSelections} opcji)" : "(Wybierz 1 opcję)";
 
-        [RelayCommand]
-        private void ToggleOption(OptionItem? item)
+        // KOLORY DLA TREŚCI PYTANIA W LIŚCIE
+        private bool IsDark => Application.Current?.RequestedTheme == AppTheme.Dark;
+        public Color TitleColor => IsDark ? Colors.White : Colors.Black;
+        public Color HintColor => IsDark ? Color.FromArgb("#356AAB") : Color.FromArgb("#4A90E2"); // PrimaryDark / Primary
+        public Color EditorBgColor => IsDark ? Color.FromArgb("#2C2F36") : Color.FromArgb("#FFFFFF"); // SurfaceDark/Light
+        public Color EditorBorderColor => IsDark ? Color.FromArgb("#404040") : Color.FromArgb("#C8C8C8"); // Gray600/200
+
+        public void ToggleOption(OptionItem? item)
         {
             if (item == null) return;
 
             if (item.IsSelected)
             {
-                // Odznaczanie
                 item.IsSelected = false;
             }
             else
             {
-                // Zaznaczanie
                 var currentlySelected = SelectableOptions.Count(o => o.IsSelected);
 
                 if (Question.MaxSelections == 1)
                 {
-                    // Zachowanie RadioButton: odznacz wszystkie inne, zaznacz ten
                     foreach (var opt in SelectableOptions) opt.IsSelected = false;
                     item.IsSelected = true;
                 }
                 else if (currentlySelected < Question.MaxSelections)
                 {
-                    // Jest jeszcze miejsce w limicie
                     item.IsSelected = true;
                 }
                 else
                 {
-                    // Limit osiągnięty
                     Shell.Current.DisplayAlert("Limit", $"Możesz wybrać maksymalnie {Question.MaxSelections} opcji.", "OK");
                 }
             }
@@ -88,7 +114,6 @@ namespace i_am.ViewModels
             if (string.IsNullOrEmpty(_myUid)) return;
 
             string reportingDate = _firestoreService.GetReportingDateString();
-
             HasAlreadySubmitted = await _firestoreService.HasSubmittedDailyResponseAsync(_myUid, reportingDate);
 
             if (!HasAlreadySubmitted)
@@ -104,10 +129,8 @@ namespace i_am.ViewModels
             var allQuestions = await _firestoreService.GetQuestionTemplatesAsync(_myUid);
             var finalQuestions = new List<QuestionTemplate>();
 
-            // 1. Zawsze bierzemy pytania codzienne (IsRandomPool == false)
             finalQuestions.AddRange(allQuestions.Where(q => !q.IsRandomPool));
 
-            // 2. Losujemy po 1 pytaniu z puli (Używamy seeda daty, by losowanie było stałe w danej dobie!)
             var randomSeed = DateTime.Now.DayOfYear + DateTime.Now.Year;
             var random = new Random(randomSeed);
 
@@ -119,7 +142,6 @@ namespace i_am.ViewModels
                                          .OrderBy(x => random.Next()).FirstOrDefault();
             if (randomOpen != null) finalQuestions.Add(randomOpen);
 
-            // 3. Budujemy modele do widoku (sortując po OrderIndex, żeby zachować logikę)
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 FormItems.Clear();
@@ -130,7 +152,8 @@ namespace i_am.ViewModels
                     {
                         foreach (var opt in q.Options)
                         {
-                            formItem.SelectableOptions.Add(new OptionItem { Option = opt, IsSelected = false });
+                            // Przekazujemy rodzica podczas tworzenia, omija błąd RelativeSource
+                            formItem.SelectableOptions.Add(new OptionItem { Option = opt, IsSelected = false, Parent = formItem });
                         }
                     }
                     FormItems.Add(formItem);
@@ -141,7 +164,6 @@ namespace i_am.ViewModels
         [RelayCommand]
         private async Task SubmitAnswersAsync()
         {
-            // Walidacja: czy odpowiedziano na WSZYSTKIE zamknięte pytania?
             if (FormItems.Any(item => item.IsClosed && !item.SelectableOptions.Any(o => o.IsSelected)))
             {
                 await Shell.Current.DisplayAlert("Uwaga", "Proszę wybrać odpowiedź we wszystkich zamkniętych pytaniach.", "OK");
@@ -151,7 +173,6 @@ namespace i_am.ViewModels
             try
             {
                 IsLoading = true;
-
                 var response = new DailyResponse
                 {
                     Id = _firestoreService.GetReportingDateString(),
@@ -168,7 +189,6 @@ namespace i_am.ViewModels
                         OpenTextResponse = item.OpenText ?? string.Empty
                     };
 
-                    // Jeśli zamknięte, zlicz punkty i sformatuj odpowiedzi po przecinku
                     if (item.IsClosed)
                     {
                         var selected = item.SelectableOptions.Where(o => o.IsSelected).ToList();
@@ -180,14 +200,12 @@ namespace i_am.ViewModels
                     response.TotalScore += answer.PointsAwarded;
                 }
 
-                // Logika diagnozowania na podstawie Twoich wytycznych
                 if (response.TotalScore <= -3) response.EvaluationStatus = "Sugeruje zaburzenie (Krytyczne)";
                 else if (response.TotalScore <= -2) response.EvaluationStatus = "Sugeruje stan zaniżony (Ostrzeżenie)";
                 else if (response.TotalScore <= -1) response.EvaluationStatus = "Niewspierające doznania";
                 else response.EvaluationStatus = "W normie";
 
                 await _firestoreService.SaveDailyResponseAsync(_myUid, response);
-
                 HasAlreadySubmitted = true;
             }
             catch (Exception ex)

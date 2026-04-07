@@ -12,7 +12,8 @@
             HorizontalOptions="Center"
             IsRunning="{Binding IsLoading}"
             IsVisible="{Binding IsLoading}"
-            VerticalOptions="Center" />
+            VerticalOptions="Center"
+            Color="{StaticResource Primary}" />
 
         <VerticalStackLayout
             Padding="30"
@@ -69,15 +70,16 @@
                                 <Label
                                     FontAttributes="Bold"
                                     FontSize="16"
-                                    Text="{Binding Question.Text}" />
+                                    Text="{Binding Question.Text}"
+                                    TextColor="{Binding TitleColor}" />
+
                                 <Label
                                     Margin="0,-5,0,5"
                                     FontAttributes="Italic"
                                     FontSize="12"
                                     IsVisible="{Binding IsClosed}"
                                     Text="{Binding SelectionHint}"
-                                    TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                                Dark={StaticResource PrimaryDark}}" />
+                                    TextColor="{Binding HintColor}" />
 
                                 <FlexLayout
                                     AlignContent="Start"
@@ -92,42 +94,19 @@
                                             <Border
                                                 Margin="0,0,10,10"
                                                 Padding="15,10"
+                                                BackgroundColor="{Binding BgColor}"
+                                                Stroke="{Binding BorderColor}"
                                                 StrokeShape="RoundRectangle 8"
                                                 StrokeThickness="2">
 
                                                 <Border.GestureRecognizers>
-                                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AnswerFormItem}}, Path=ToggleOptionCommand}" CommandParameter="{Binding .}" />
+                                                    <TapGestureRecognizer Command="{Binding ToggleCommand}" />
                                                 </Border.GestureRecognizers>
 
-                                                <Border.Triggers>
-                                                    <DataTrigger
-                                                        Binding="{Binding IsSelected}"
-                                                        TargetType="Border"
-                                                        Value="False">
-                                                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" />
-                                                        <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" />
-                                                    </DataTrigger>
-                                                    <DataTrigger
-                                                        Binding="{Binding IsSelected}"
-                                                        TargetType="Border"
-                                                        Value="True">
-                                                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryLight}, Dark={StaticResource PrimaryDark}}" />
-                                                        <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Primary}}" />
-                                                    </DataTrigger>
-                                                </Border.Triggers>
-
-                                                <Label Text="{Binding Option.Text}">
-                                                    <Label.Triggers>
-                                                        <DataTrigger
-                                                            Binding="{Binding IsSelected}"
-                                                            TargetType="Label"
-                                                            Value="True">
-                                                            <Setter Property="FontAttributes" Value="Bold" />
-                                                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark=White}" />
-                                                        </DataTrigger>
-                                                    </Label.Triggers>
-                                                </Label>
-
+                                                <Label
+                                                    FontAttributes="{Binding TextFontAttributes}"
+                                                    Text="{Binding Option.Text}"
+                                                    TextColor="{Binding TxtColor}" />
                                             </Border>
 
                                         </DataTemplate>
@@ -136,17 +115,16 @@
 
                                 <Border
                                     Padding="10"
-                                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                                      Dark={StaticResource SurfaceDark}}"
+                                    BackgroundColor="{Binding EditorBgColor}"
                                     IsVisible="{Binding IsOpen}"
-                                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                                             Dark={StaticResource Gray600}}"
+                                    Stroke="{Binding EditorBorderColor}"
                                     StrokeShape="RoundRectangle 8">
                                     <Editor
                                         AutoSize="TextChanges"
                                         MinimumHeightRequest="80"
                                         Placeholder="Twoja odpowiedź..."
-                                        Text="{Binding OpenText}" />
+                                        Text="{Binding OpenText}"
+                                        TextColor="{Binding TitleColor}" />
                                 </Border>
 
                             </VerticalStackLayout>
@@ -156,10 +134,12 @@
 
                 <Button
                     Margin="0,20,0,40"
+                    BackgroundColor="{StaticResource Primary}"
                     Command="{Binding SubmitAnswersCommand}"
                     FontAttributes="Bold"
                     HeightRequest="50"
-                    Text="Wyślij Raport" />
+                    Text="Wyślij Raport"
+                    TextColor="White" />
 
             </VerticalStackLayout>
         </ScrollView>

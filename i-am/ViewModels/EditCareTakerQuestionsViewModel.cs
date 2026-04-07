@@ -6,33 +6,61 @@ using i_am.Services;
 
 namespace i_am.ViewModels
 {
+    // BEZPIECZNA NAKŁADKA NA OPCJE EDYTORA (Zabezpiecza Entry przed crashem kompilatora AOT)
+    public partial class EditorOptionItem : ObservableObject
+    {
+        [ObservableProperty] private string text = string.Empty;
+        [ObservableProperty] private string points = "0"; // Typ string zamiast int!
+    }
+
+    // BEZPIECZNA NAKŁADKA NA LISTĘ PYTAŃ (Eliminuje crashe DataTriggerów)
+    public partial class QuestionItemViewModel : ObservableObject
+    {
+        public QuestionTemplate Template { get; set; } = new();
+
+        public string Text => Template.Text;
+        public string TypeText => Template.Type == "Open" ? "Format: Otwarte |" : "Format: Zamknięte |";
+
+        public bool IsRandom => Template.IsRandomPool;
+        public bool IsDaily => !Template.IsRandomPool;
+        public bool IsClosed => Template.Type == "Closed";
+
+        public string MaxSelectionsText => $"Max. odpowiedzi: {Template.MaxSelections}";
+    }
+
     public partial class EditCareTakerQuestionsViewModel : ObservableObject
     {
         private readonly FirestoreService _firestoreService;
         private QuestionTemplate? _editingTemplate;
 
-        // --- GŁÓWNE LISTY ---
+        // UŻYWAMY BEZPIECZNYCH WRAPPERÓW ZAMIAST SUROWYCH MODELI
         public ObservableCollection<User> CareTakers { get; } = new();
-        public ObservableCollection<QuestionTemplate> Questions { get; } = new();
+        public ObservableCollection<QuestionItemViewModel> Questions { get; } = new();
+        public ObservableCollection<EditorOptionItem> EditorOptions { get; } = new();
 
-        [ObservableProperty]
-        private User? selectedCareTaker;
+        [ObservableProperty] private User? selectedCareTaker;
+        [ObservableProperty] private string selectedCareTakerName = "Kliknij, aby wybrać...";
 
-        [ObservableProperty]
-        private bool isQuestionsVisible;
+        [ObservableProperty] private bool isQuestionsVisible = true;
+        [ObservableProperty] private bool isEditorVisible = false;
 
-        // --- PANEL EDYTORA ---
-        [ObservableProperty] private bool isEditorVisible;
         [ObservableProperty] private string editorTitle = string.Empty;
         [ObservableProperty] private string editorQuestionText = string.Empty;
-        [ObservableProperty] private string editorQuestionType = "Zamknięte";
 
-        // NOWE POLA DLA ZAAWANSOWANYCH PYTAŃ
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsClosedType))]
+        [NotifyPropertyChangedFor(nameof(IsOpenType))]
+        [NotifyPropertyChangedFor(nameof(ClosedTypeOpacity))]
+        [NotifyPropertyChangedFor(nameof(OpenTypeOpacity))]
+        private string editorQuestionType = "Zamknięte";
+
+        public bool IsClosedType => EditorQuestionType == "Zamknięte";
+        public bool IsOpenType => EditorQuestionType == "Otwarte";
+        public double ClosedTypeOpacity => IsClosedType ? 1.0 : 0.3;
+        public double OpenTypeOpacity => IsOpenType ? 1.0 : 0.3;
+
         [ObservableProperty] private bool editorIsRandomPool;
-        [ObservableProperty] private double editorMaxSelections = 1; // Double bo MAUI Stepper operuje na double
-
-        public ObservableCollection<string> AvailableTypes { get; } = new(new[] { "Zamknięte", "Otwarte" });
-        public ObservableCollection<QuestionOption> EditorOptions { get; } = new();
+        [ObservableProperty] private int editorMaxSelections = 1;
 
         public EditCareTakerQuestionsViewModel(FirestoreService firestoreService)
         {
@@ -41,43 +69,79 @@ namespace i_am.ViewModels
 
         public async Task InitializeAsync()
         {
+            if (CareTakers.Any()) return;
+
             string? myUid = _firestoreService.GetCurrentUserId();
             if (string.IsNullOrEmpty(myUid)) return;
 
             var profile = await _firestoreService.GetUserProfileAsync(myUid);
-            if (profile != null)
+            if (profile != null && profile.CaretakersID != null && profile.CaretakersID.Any())
             {
-                var careTakers = await _firestoreService.GetUsersByIdsAsync(profile.CaretakersID);
+                var careTakersList = await _firestoreService.GetUsersByIdsAsync(profile.CaretakersID);
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
+                    SelectedCareTaker = null;
+                    SelectedCareTakerName = "Kliknij, aby wybrać...";
+                    IsQuestionsVisible = true;
+                    IsEditorVisible = false;
                     CareTakers.Clear();
-                    foreach (var ct in careTakers) CareTakers.Add(ct);
+                    foreach (var ct in careTakersList) CareTakers.Add(ct);
                 });
             }
         }
 
-        partial void OnSelectedCareTakerChanged(User? value)
+        [RelayCommand]
+        private async Task SelectCareTakerAsync()
         {
-            if (value != null)
+            if (!CareTakers.Any()) return;
+
+            var names = CareTakers.Select(c => c.Name).ToArray();
+            var action = await Shell.Current.DisplayActionSheet("Wybierz podopiecznego", "Anuluj", null, names);
+
+            if (action != "Anuluj" && !string.IsNullOrEmpty(action))
             {
-                IsQuestionsVisible = true;
-                IsEditorVisible = false;
-                _ = LoadQuestionsAsync(value.Id);
-            }
-            else
-            {
-                IsQuestionsVisible = false;
+                var selected = CareTakers.FirstOrDefault(c => c.Name == action);
+                if (selected != null)
+                {
+                    SelectedCareTaker = selected;
+                    SelectedCareTakerName = selected.Name;
+                    IsQuestionsVisible = true;
+                    IsEditorVisible = false;
+                    await LoadQuestionsAsync(selected.Id);
+                }
             }
         }
 
         private async Task LoadQuestionsAsync(string careTakerId)
         {
-            var questions = await _firestoreService.GetQuestionTemplatesAsync(careTakerId);
+            var questionsList = await _firestoreService.GetQuestionTemplatesAsync(careTakerId);
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 Questions.Clear();
-                foreach (var q in questions) Questions.Add(q);
+                foreach (var q in questionsList.OrderBy(x => x.OrderIndex))
+                {
+                    Questions.Add(new QuestionItemViewModel { Template = q });
+                }
             });
+        }
+
+        [RelayCommand]
+        private void SetQuestionType(string type)
+        {
+            EditorQuestionType = type;
+            if (type == "Otwarte") EditorMaxSelections = 1;
+        }
+
+        [RelayCommand]
+        private void DecreaseMaxSelections()
+        {
+            if (EditorMaxSelections > 1) EditorMaxSelections--;
+        }
+
+        [RelayCommand]
+        private void IncreaseMaxSelections()
+        {
+            if (EditorMaxSelections < 10) EditorMaxSelections++;
         }
 
         [RelayCommand]
@@ -87,13 +151,14 @@ namespace i_am.ViewModels
             EditorTitle = "Dodaj nowe pytanie";
             EditorQuestionText = string.Empty;
             EditorQuestionType = "Zamknięte";
-            EditorIsRandomPool = false; // Domyślnie codzienne
-            EditorMaxSelections = 1;    // Domyślnie 1 wybór
+            EditorIsRandomPool = false;
+            EditorMaxSelections = 1;
 
             EditorOptions.Clear();
-            EditorOptions.Add(new QuestionOption { Text = "Tak", Points = 5 });
-            EditorOptions.Add(new QuestionOption { Text = "Nie", Points = 0 });
+            EditorOptions.Add(new EditorOptionItem { Text = "Tak", Points = "5" });
+            EditorOptions.Add(new EditorOptionItem { Text = "Nie", Points = "0" });
 
+            IsQuestionsVisible = false;
             IsEditorVisible = true;
         }
 
@@ -112,9 +177,13 @@ namespace i_am.ViewModels
             EditorOptions.Clear();
             if (template.Options != null)
             {
-                foreach (var opt in template.Options) EditorOptions.Add(opt);
+                foreach (var opt in template.Options)
+                {
+                    EditorOptions.Add(new EditorOptionItem { Text = opt.Text, Points = opt.Points.ToString() });
+                }
             }
 
+            IsQuestionsVisible = false;
             IsEditorVisible = true;
         }
 
@@ -132,24 +201,19 @@ namespace i_am.ViewModels
         }
 
         [RelayCommand]
-        private void AddOption()
-        {
-            EditorOptions.Add(new QuestionOption { Text = "", Points = 0 });
-        }
+        private void AddOption() => EditorOptions.Add(new EditorOptionItem { Text = "", Points = "0" });
 
         [RelayCommand]
-        private void RemoveOption(QuestionOption option)
+        private void RemoveOption(EditorOptionItem option)
         {
-            if (option != null && EditorOptions.Contains(option))
-            {
-                EditorOptions.Remove(option);
-            }
+            if (option != null && EditorOptions.Contains(option)) EditorOptions.Remove(option);
         }
 
         [RelayCommand]
         private void CancelEdit()
         {
             IsEditorVisible = false;
+            IsQuestionsVisible = true;
         }
 
         [RelayCommand]
@@ -166,16 +230,7 @@ namespace i_am.ViewModels
             _editingTemplate.Text = EditorQuestionText;
             _editingTemplate.Type = EditorQuestionType == "Otwarte" ? "Open" : "Closed";
             _editingTemplate.IsRandomPool = EditorIsRandomPool;
-
-            // Logika wyborów: Dla otwartych wymuszamy 1. Dla zamkniętych pobieramy ze Steppera.
-            if (_editingTemplate.Type == "Open")
-            {
-                _editingTemplate.MaxSelections = 1;
-            }
-            else
-            {
-                _editingTemplate.MaxSelections = (int)EditorMaxSelections;
-            }
+            _editingTemplate.MaxSelections = _editingTemplate.Type == "Open" ? 1 : EditorMaxSelections;
 
             _editingTemplate.Options = new List<QuestionOption>();
             if (_editingTemplate.Type == "Closed")
@@ -184,11 +239,9 @@ namespace i_am.ViewModels
                 {
                     if (!string.IsNullOrWhiteSpace(opt.Text))
                     {
-                        _editingTemplate.Options.Add(new QuestionOption
-                        {
-                            Text = opt.Text,
-                            Points = opt.Points
-                        });
+                        // Bezpieczna konwersja stringa z powrotem na int przy zapisie
+                        int.TryParse(opt.Points, out int parsedPoints);
+                        _editingTemplate.Options.Add(new QuestionOption { Text = opt.Text, Points = parsedPoints });
                     }
                 }
 
@@ -202,6 +255,7 @@ namespace i_am.ViewModels
             await _firestoreService.SaveQuestionTemplateAsync(SelectedCareTaker.Id, _editingTemplate);
 
             IsEditorVisible = false;
+            IsQuestionsVisible = true;
             await LoadQuestionsAsync(SelectedCareTaker.Id);
         }
     }

@@ -1,16 +1,16 @@
-﻿using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using i_am.Models;
 using i_am.Services;
+using System.Collections.ObjectModel;
+using static AndroidX.Core.Text.Util.LocalePreferences.FirstDayOfWeek;
 
 namespace i_am.ViewModels
 {
-    // Model reprezentujący pojedynczą kratkę w kalendarzu
     public partial class CalendarDayItem : ObservableObject
     {
         public DateTime Date { get; set; }
-        public bool IsEmpty { get; set; } // Puste dni na wyrównanie siatki miesiąca
+        public bool IsEmpty { get; set; }
         public string DayText => IsEmpty ? "" : Date.Day.ToString();
 
         public DailyResponse? Response { get; set; }
@@ -19,15 +19,14 @@ namespace i_am.ViewModels
         [ObservableProperty]
         private bool isSelected;
 
-        // Zwraca kolor kropki/tła w zależności od wyniku
         public string StatusColor
         {
             get
             {
                 if (!HasData) return "Transparent";
-                if (Response!.TotalScore <= -3) return "Red"; // Krytyczne
-                if (Response!.TotalScore <= -2) return "Orange"; // Ostrzeżenie
-                return "Green"; // W normie
+                if (Response!.TotalScore <= -3) return "Red";
+                if (Response!.TotalScore <= -2) return "Orange";
+                return "Green";
             }
         }
     }
@@ -38,23 +37,21 @@ namespace i_am.ViewModels
         private string _myUid = string.Empty;
         private List<DailyResponse> _allResponses = new();
 
+        [ObservableProperty] private ObservableCollection<User> careTakers = new();
+        [ObservableProperty] private ObservableCollection<CalendarDayItem> days = new();
+        [ObservableProperty] private ObservableCollection<GivenAnswer> selectedDayAnswers = new();
+
         [ObservableProperty] private bool isLoading = true;
         [ObservableProperty] private bool isCareGiver;
         [ObservableProperty] private bool hasCareTakerSelected;
 
-        // Zmienne do nawigacji po miesiącach
         private DateTime _currentMonthDate;
         [ObservableProperty] private string currentMonthName = string.Empty;
 
-        // Listy
-        public ObservableCollection<User> CareTakers { get; } = new();
         [ObservableProperty] private User? selectedCareTaker;
-        public ObservableCollection<CalendarDayItem> Days { get; } = new();
-
-        // Wybrany dzień i jego szczegóły
+        [ObservableProperty] private string selectedCareTakerName = "Kliknij, aby wybrać...";
         [ObservableProperty] private CalendarDayItem? selectedDay;
         [ObservableProperty] private bool isDayDetailsVisible;
-        public ObservableCollection<GivenAnswer> SelectedDayAnswers { get; } = new();
 
         public CalendarViewModel(FirestoreService firestoreService)
         {
@@ -64,28 +61,29 @@ namespace i_am.ViewModels
 
         public async Task InitializeAsync()
         {
+            if (CareTakers.Any()) return;
+
             IsLoading = true;
             _myUid = _firestoreService.GetCurrentUserId() ?? string.Empty;
             IsCareGiver = Preferences.Default.Get("IsCaregiver", false);
 
             if (IsCareGiver)
             {
-                // Opiekun musi najpierw wybrać podopiecznego
                 var profile = await _firestoreService.GetUserProfileAsync(_myUid);
                 if (profile != null)
                 {
-                    var careTakers = await _firestoreService.GetUsersByIdsAsync(profile.CaretakersID);
+                    var careTakersList = await _firestoreService.GetUsersByIdsAsync(profile.CaretakersID);
                     MainThread.BeginInvokeOnMainThread(() =>
                     {
-                        CareTakers.Clear();
-                        foreach (var ct in careTakers) CareTakers.Add(ct);
+                        SelectedCareTaker = null;
+                        SelectedCareTakerName = "Kliknij, aby wybrać...";
+                        CareTakers = new ObservableCollection<User>(careTakersList);
                     });
                 }
                 HasCareTakerSelected = false;
             }
             else
             {
-                // Podopieczny od razu ładuje swoje dane
                 HasCareTakerSelected = true;
                 await LoadResponsesAsync(_myUid);
             }
@@ -93,14 +91,26 @@ namespace i_am.ViewModels
             IsLoading = false;
         }
 
-        partial void OnSelectedCareTakerChanged(User? value)
+        [RelayCommand]
+        private async Task SelectCareTakerAsync()
         {
-            if (value != null)
+            if (!CareTakers.Any()) return;
+
+            var names = CareTakers.Select(c => c.Name).ToArray();
+            var action = await Shell.Current.DisplayActionSheet("Wybierz podopiecznego", "Anuluj", null, names);
+
+            if (action != "Anuluj" && !string.IsNullOrEmpty(action))
             {
-                HasCareTakerSelected = true;
-                IsDayDetailsVisible = false;
-                SelectedDay = null;
-                _ = LoadResponsesAsync(value.Id);
+                var selected = CareTakers.FirstOrDefault(c => c.Name == action);
+                if (selected != null)
+                {
+                    SelectedCareTaker = selected;
+                    SelectedCareTakerName = selected.Name;
+                    HasCareTakerSelected = true;
+                    IsDayDetailsVisible = false;
+                    SelectedDay = null;
+                    await LoadResponsesAsync(selected.Id);
+                }
             }
         }
 
@@ -114,36 +124,22 @@ namespace i_am.ViewModels
 
         private void GenerateCalendarGrid()
         {
+            var backgroundDays = new List<CalendarDayItem>();
+            string newMonthName = _currentMonthDate.ToString("MMMM yyyy").ToUpper();
+
+            int daysInMonth = DateTime.DaysInMonth(_currentMonthDate.Year, _currentMonthDate.Month);
+
+            for (int i = 1; i <= daysInMonth; i++)
+            {
+                var date = new DateTime(_currentMonthDate.Year, _currentMonthDate.Month, i);
+                var response = _allResponses.FirstOrDefault(r => r.Id == date.ToString("yyyy-MM-dd"));
+                backgroundDays.Add(new CalendarDayItem { Date = date, IsEmpty = false, Response = response });
+            }
+
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                Days.Clear();
-                CurrentMonthName = _currentMonthDate.ToString("MMMM yyyy").ToUpper();
-
-                int daysInMonth = DateTime.DaysInMonth(_currentMonthDate.Year, _currentMonthDate.Month);
-                DateTime firstDayOfMonth = new DateTime(_currentMonthDate.Year, _currentMonthDate.Month, 1);
-
-                // Obliczanie pustych kratek na początku (poniedziałek = 1, niedziela = 7)
-                int startDayOfWeek = (int)firstDayOfMonth.DayOfWeek;
-                if (startDayOfWeek == 0) startDayOfWeek = 7; // Niedziela jako ostatnia
-
-                for (int i = 1; i < startDayOfWeek; i++)
-                {
-                    Days.Add(new CalendarDayItem { IsEmpty = true });
-                }
-
-                // Generowanie właściwych dni
-                for (int i = 1; i <= daysInMonth; i++)
-                {
-                    var date = new DateTime(_currentMonthDate.Year, _currentMonthDate.Month, i);
-                    var response = _allResponses.FirstOrDefault(r => r.Id == date.ToString("yyyy-MM-dd"));
-
-                    Days.Add(new CalendarDayItem
-                    {
-                        Date = date,
-                        IsEmpty = false,
-                        Response = response
-                    });
-                }
+                CurrentMonthName = newMonthName;
+                Days = new ObservableCollection<CalendarDayItem>(backgroundDays);
             });
         }
 
@@ -161,23 +157,14 @@ namespace i_am.ViewModels
         [RelayCommand]
         private void SelectDay(CalendarDayItem? day)
         {
-            if (day == null || day.IsEmpty || !day.HasData) return;
-
-            // Odznacz poprzedni
+            if (day == null || !day.HasData) return;
             if (SelectedDay != null) SelectedDay.IsSelected = false;
 
             day.IsSelected = true;
             SelectedDay = day;
             IsDayDetailsVisible = true;
 
-            SelectedDayAnswers.Clear();
-            if (day.Response != null && day.Response.Answers != null)
-            {
-                foreach (var ans in day.Response.Answers)
-                {
-                    SelectedDayAnswers.Add(ans);
-                }
-            }
+            SelectedDayAnswers = new ObservableCollection<GivenAnswer>(day.Response?.Answers ?? new List<GivenAnswer>());
         }
 
         [RelayCommand]

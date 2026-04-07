@@ -13,9 +13,13 @@ public partial class CalendarPage : ContentPage
         BindingContext = _viewModel;
     }
 
-    protected override async void OnAppearing()
+    protected override void OnAppearing()
     {
         base.OnAppearing();
-        await _viewModel.InitializeAsync();
+        Dispatcher.Dispatch(async () =>
+        {
+            await Task.Delay(100);
+            await _viewModel.InitializeAsync();
+        });
     }
 }

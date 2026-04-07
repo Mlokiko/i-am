@@ -6,8 +6,8 @@ namespace i_am.Pages.Authentication;
 
 public partial class LoadingPage : ContentPage
 {
-    private readonly FirestoreService _firestoreService;
-    public LoadingPage(FirestoreService firestoreService)
+    private readonly IFirestoreService _firestoreService;
+    public LoadingPage(IFirestoreService firestoreService)
     {
         InitializeComponent();
         _firestoreService = firestoreService;

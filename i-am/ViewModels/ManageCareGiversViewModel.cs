@@ -8,7 +8,7 @@ namespace i_am.ViewModels
 {
     public partial class ManageCareGiversViewModel : ObservableObject
     {
-        private readonly FirestoreService _firestoreService;
+        private readonly IFirestoreService _firestoreService;
         private User? _currentUser;
 
         private IDisposable? _sentListener;
@@ -23,7 +23,7 @@ namespace i_am.ViewModels
         [ObservableProperty]
         private string inviteEmail = string.Empty;
 
-        public ManageCareGiversViewModel(FirestoreService firestoreService)
+        public ManageCareGiversViewModel(IFirestoreService firestoreService)
         {
             _firestoreService = firestoreService;
         }

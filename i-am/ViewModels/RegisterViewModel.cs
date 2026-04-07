@@ -6,15 +6,14 @@ using i_am.Pages.CareGiver;
 using i_am.Pages.CareTaker;
 using i_am.Services;
 using System.Text.RegularExpressions;
-using static Java.Util.Jar.Attributes;
 
 namespace i_am.ViewModels
 {
     public partial class RegisterViewModel : ObservableObject
     {
-        private readonly FirestoreService _firestoreService;
+        private readonly IFirestoreService _firestoreService;
 
-        public RegisterViewModel(FirestoreService firestoreService)
+        public RegisterViewModel(IFirestoreService firestoreService)
         {
             _firestoreService = firestoreService;
             Birthdate = DateTime.Today.AddYears(-20); // Domyślna data

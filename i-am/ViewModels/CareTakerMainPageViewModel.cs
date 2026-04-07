@@ -9,9 +9,9 @@ namespace i_am.ViewModels
 {
     public partial class CareTakerMainViewModel : ObservableObject
     {
-        private readonly FirestoreService _firestoreService;
+        private readonly IFirestoreService _firestoreService;
 
-        public CareTakerMainViewModel(FirestoreService firestoreService)
+        public CareTakerMainViewModel(IFirestoreService firestoreService)
         {
             _firestoreService = firestoreService;
         }

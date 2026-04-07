@@ -28,7 +28,7 @@ namespace i_am.ViewModels
 
     public partial class EditCareTakerQuestionsViewModel : ObservableObject
     {
-        private readonly FirestoreService _firestoreService;
+        private readonly IFirestoreService _firestoreService;
         private QuestionTemplate? _editingTemplate;
 
         public ObservableCollection<User> CareTakers { get; } = new();
@@ -62,7 +62,7 @@ namespace i_am.ViewModels
         [ObservableProperty] private bool editorIsRandomPool;
         [ObservableProperty] private int editorMaxSelections = 1;
 
-        public EditCareTakerQuestionsViewModel(FirestoreService firestoreService)
+        public EditCareTakerQuestionsViewModel(IFirestoreService firestoreService)
         {
             _firestoreService = firestoreService;
         }

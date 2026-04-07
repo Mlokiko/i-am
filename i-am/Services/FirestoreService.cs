@@ -5,7 +5,7 @@ using Plugin.Firebase.Firestore;
 
 namespace i_am.Services
 {
-    public class FirestoreService
+    public class FirestoreService : IFirestoreService
     {
         #region User Management
 

@@ -15,9 +15,10 @@
 		-->
 		<NoWarn>$(NoWarn);XC0025</NoWarn>
 
-		<TargetFrameworks>net9.0-android</TargetFrameworks>
+		<TargetFrameworks>net9.0; net9.0-android</TargetFrameworks>
 
-		<OutputType>Exe</OutputType>
+		<OutputType Condition="'$(TargetFramework)' != 'net9.0'">Exe</OutputType>
+		<OutputType Condition="'$(TargetFramework)' == 'net9.0'">Library</OutputType>
 		<RootNamespace>i_am</RootNamespace>
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>

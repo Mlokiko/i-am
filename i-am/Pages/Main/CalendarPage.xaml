@@ -16,8 +16,11 @@
 
                 <VerticalStackLayout IsVisible="{Binding IsCareGiver}" Spacing="10">
                     <Label FontAttributes="Bold" Text="Wybierz podopiecznego:" />
-                    <Border Padding="10,0" StrokeShape="RoundRectangle 8" BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}">
-                        <Button Text="{Binding SelectedCareTakerName}" Command="{Binding SelectCareTakerCommand}" BackgroundColor="Transparent" TextColor="{AppThemeBinding Light=Black, Dark=White}" HorizontalOptions="Start" HeightRequest="50"/>
+                    <Border StrokeShape="RoundRectangle 8" BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}">
+                        <Grid HeightRequest="50">
+                            <Label Text="{Binding SelectedCareTakerName}" HorizontalOptions="Start" VerticalOptions="Center" Margin="15,0,0,0" TextColor="{AppThemeBinding Light=Black, Dark=White}" FontSize="15" />
+                            <Button Command="{Binding SelectCareTakerCommand}" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill" />
+                        </Grid>
                     </Border>
                 </VerticalStackLayout>
 
@@ -65,8 +68,7 @@
             VerticalOptions="End"
             BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" 
             Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" 
-            StrokeShape="RoundRectangle 20,20,0,0"
-            Shadow="{Shadow Brush=Black, Offset='0,-5', Radius=15, Opacity=0.1}">
+            StrokeShape="RoundRectangle 20,20,0,0">
 
             <Grid RowDefinitions="Auto, *">
                 <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Padding="20">

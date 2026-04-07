@@ -15,11 +15,12 @@
             <VerticalStackLayout Spacing="5">
                 <Label FontAttributes="Bold" FontSize="16" Text="1. Wybierz podopiecznego:" TextColor="{Binding TextColor}" />
 
-                <Grid HeightRequest="50" BackgroundColor="{Binding CardBgColor}">
-                    <BoxView Color="{Binding DividerColor}" Opacity="0.2" CornerRadius="8" />
-                    <Label Text="{Binding SelectedCareTakerName}" HorizontalOptions="Start" VerticalOptions="Center" Margin="15,0,0,0" FontSize="16" TextColor="{Binding TextColor}" />
-                    <Button Command="{Binding SelectCareTakerCommand}" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill" />
-                </Grid>
+                <Border StrokeShape="RoundRectangle 8" BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}">
+                    <Grid HeightRequest="50">
+                        <Label Text="{Binding SelectedCareTakerName}" HorizontalOptions="Start" VerticalOptions="Center" Margin="15,0,0,0" TextColor="{AppThemeBinding Light=Black, Dark=White}" FontSize="15" />
+                        <Button Command="{Binding SelectCareTakerCommand}" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill" />
+                    </Grid>
+                </Border>
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="15" IsVisible="{Binding IsQuestionsVisible}">

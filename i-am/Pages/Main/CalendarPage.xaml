@@ -3,16 +3,13 @@
     x:Class="i_am.Pages.Main.CalendarPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:models="clr-namespace:i_am.Models"
     xmlns:vm="clr-namespace:i_am.ViewModels"
     Title="Historia Raportów"
     x:DataType="vm:CalendarViewModel">
 
     <Grid>
-
         <ScrollView>
             <VerticalStackLayout Padding="20" Spacing="20">
-
                 <VerticalStackLayout IsVisible="{Binding IsCareGiver}" Spacing="10">
                     <Label FontAttributes="Bold" Text="Wybierz podopiecznego:" />
                     <Border
@@ -40,7 +37,6 @@
                 </VerticalStackLayout>
 
                 <VerticalStackLayout IsVisible="{Binding HasCareTakerSelected}" Spacing="15">
-
                     <Grid
                         Margin="0,0,0,10"
                         ColumnDefinitions="Auto, *, Auto"
@@ -81,7 +77,6 @@
 
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="vm:CalendarDayItem">
-
                                 <Border
                                     Padding="15"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
@@ -90,11 +85,9 @@
                                     Stroke="{AppThemeBinding Light={StaticResource Gray200},
                                                              Dark={StaticResource Gray600}}"
                                     StrokeShape="RoundRectangle 8">
-
                                     <Border.GestureRecognizers>
                                         <TapGestureRecognizer CommandParameter="{Binding .}" Tapped="OnDayTapped" />
                                     </Border.GestureRecognizers>
-
                                     <Grid ColumnDefinitions="*, Auto">
                                         <VerticalStackLayout
                                             Grid.Column="0"
@@ -109,7 +102,6 @@
                                                 Text="{Binding Response.EvaluationStatus}"
                                                 TextColor="{Binding StatusColor}" />
                                         </VerticalStackLayout>
-
                                         <Button
                                             Grid.Column="1"
                                             Clicked="OnDayDetailsClicked"
@@ -118,12 +110,10 @@
                                             Text="Szczegóły" />
                                     </Grid>
                                 </Border>
-
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>
                 </VerticalStackLayout>
-
             </VerticalStackLayout>
         </ScrollView>
 
@@ -158,9 +148,7 @@
                 Stroke="{AppThemeBinding Light={StaticResource Gray200},
                                          Dark={StaticResource Gray600}}"
                 StrokeShape="RoundRectangle 20,20,0,0">
-
                 <Grid Padding="0,0,0,30" RowDefinitions="Auto, Auto">
-
                     <Grid
                         Grid.Row="0"
                         Padding="20"
@@ -190,16 +178,13 @@
                             VerticalOptions="Start" />
                     </Grid>
 
-                    <ScrollView
-                        Grid.Row="1"
-                        IsVisible="{Binding IsCareGiver}"
-                        MaximumHeightRequest="400">
+                    <ScrollView Grid.Row="1" MaximumHeightRequest="400">
                         <VerticalStackLayout
                             Padding="20,0,20,0"
                             BindableLayout.ItemsSource="{Binding SelectedDayAnswers}"
                             Spacing="15">
                             <BindableLayout.ItemTemplate>
-                                <DataTemplate x:DataType="models:GivenAnswer">
+                                <DataTemplate x:DataType="vm:GivenAnswerDisplay">
                                     <Border
                                         Padding="15"
                                         BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
@@ -224,6 +209,7 @@
                                             <Label
                                                 Margin="0,5,0,0"
                                                 FontSize="12"
+                                                IsVisible="{Binding IsVisibleToCareGiver}"
                                                 Text="{Binding PointsAwarded, StringFormat='Punkty: {0}'}"
                                                 TextColor="{StaticResource Gray500}" />
                                         </VerticalStackLayout>

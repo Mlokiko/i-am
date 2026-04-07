@@ -13,7 +13,6 @@ public partial class CalendarPage : ContentPage
         BindingContext = _viewModel;
     }
 
-    // Bezpieczniejszy zapis OnAppearing (zapobiega ewentualnym b³êdom w¹tków UI)
     protected override void OnAppearing()
     {
         base.OnAppearing();
@@ -23,17 +22,10 @@ public partial class CalendarPage : ContentPage
         });
     }
 
-    // --- BEZPIECZNE ZDARZENIA (Omijaj¹ AOT Crash) ---
-
     private void OnDayTapped(object sender, TappedEventArgs e)
     {
-        // Sprawdzamy czy powi¹zanym obiektem jest wybrany dzieñ z kalendarza
         var dayItem = e.Parameter as CalendarDayItem ?? (sender as BindableObject)?.BindingContext as CalendarDayItem;
-
-        if (dayItem != null)
-        {
-            _viewModel.SelectDayCommand.Execute(dayItem);
-        }
+        if (dayItem != null) _viewModel.SelectDayCommand.Execute(dayItem);
     }
 
     private void OnDayDetailsClicked(object sender, EventArgs e)

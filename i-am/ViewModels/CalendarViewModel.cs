@@ -3,10 +3,19 @@ using CommunityToolkit.Mvvm.Input;
 using i_am.Models;
 using i_am.Services;
 using System.Collections.ObjectModel;
-using static AndroidX.Core.Text.Util.LocalePreferences.FirstDayOfWeek;
 
 namespace i_am.ViewModels
 {
+    // WYCIĄGNIĘTA KLASA WRAPPERA - teraz XAML bez problemu ją odnajdzie
+    public class GivenAnswerDisplay
+    {
+        public string QuestionText { get; set; } = string.Empty;
+        public string SelectedOptionText { get; set; } = string.Empty;
+        public string OpenTextResponse { get; set; } = string.Empty;
+        public int PointsAwarded { get; set; }
+        public bool IsVisibleToCareGiver { get; set; }
+    }
+
     public partial class CalendarDayItem : ObservableObject
     {
         public DateTime Date { get; set; }
@@ -39,7 +48,9 @@ namespace i_am.ViewModels
 
         [ObservableProperty] private ObservableCollection<User> careTakers = new();
         [ObservableProperty] private ObservableCollection<CalendarDayItem> days = new();
-        [ObservableProperty] private ObservableCollection<GivenAnswer> selectedDayAnswers = new();
+
+        // POPRAWKA: Lista przechowuje teraz nowy typ GivenAnswerDisplay
+        [ObservableProperty] private ObservableCollection<GivenAnswerDisplay> selectedDayAnswers = new();
 
         [ObservableProperty] private bool isLoading = true;
         [ObservableProperty] private bool isCareGiver;
@@ -164,7 +175,18 @@ namespace i_am.ViewModels
             SelectedDay = day;
             IsDayDetailsVisible = true;
 
-            SelectedDayAnswers = new ObservableCollection<GivenAnswer>(day.Response?.Answers ?? new List<GivenAnswer>());
+            // Ładowanie z Wrapperem (błąd CS0029 zniknie)
+            SelectedDayAnswers = new ObservableCollection<GivenAnswerDisplay>(
+                (day.Response?.Answers ?? new List<GivenAnswer>())
+                .Select(a => new GivenAnswerDisplay
+                {
+                    QuestionText = a.QuestionText,
+                    SelectedOptionText = a.SelectedOptionText,
+                    OpenTextResponse = a.OpenTextResponse,
+                    PointsAwarded = a.PointsAwarded,
+                    IsVisibleToCareGiver = IsCareGiver
+                })
+            );
         }
 
         [RelayCommand]

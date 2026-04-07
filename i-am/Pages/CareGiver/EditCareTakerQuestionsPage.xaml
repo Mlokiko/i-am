@@ -20,7 +20,6 @@
                     Text="Wybierz podopiecznego:"
                     TextColor="{AppThemeBinding Light=Black,
                                                 Dark=White}" />
-
                 <Border
                     BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
                                                       Dark={StaticResource SurfaceDark}}"
@@ -86,7 +85,6 @@
                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding Questions}" Spacing="10">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="vm:QuestionItemViewModel">
-
                             <Border
                                 Padding="15"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
@@ -94,7 +92,6 @@
                                 Stroke="{AppThemeBinding Light={StaticResource Gray200},
                                                          Dark={StaticResource Gray600}}"
                                 StrokeShape="RoundRectangle 8">
-
                                 <Grid ColumnDefinitions="*, Auto" RowSpacing="5">
                                     <VerticalStackLayout
                                         Grid.Column="0"
@@ -107,7 +104,6 @@
                                             Text="{Binding Text}"
                                             TextColor="{AppThemeBinding Light=Black,
                                                                         Dark=White}" />
-
                                         <HorizontalStackLayout Spacing="8">
                                             <Label
                                                 FontSize="12"
@@ -127,7 +123,6 @@
                                                 Text="Losowe z puli"
                                                 TextColor="{StaticResource Secondary}" />
                                         </HorizontalStackLayout>
-
                                         <Label
                                             FontSize="12"
                                             IsVisible="{Binding IsClosed}"
@@ -158,7 +153,6 @@
                                     </VerticalStackLayout>
                                 </Grid>
                             </Border>
-
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </VerticalStackLayout>
@@ -180,7 +174,6 @@
                     Text="Treść pytania:"
                     TextColor="{AppThemeBinding Light=Black,
                                                 Dark=White}" />
-
                 <Border
                     Padding="5"
                     BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
@@ -293,7 +286,6 @@
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="vm:EditorOptionItem">
                                 <Grid ColumnDefinitions="*, 70, Auto" ColumnSpacing="10">
-
                                     <Border
                                         Grid.Column="0"
                                         BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
@@ -311,7 +303,6 @@
                                             TextColor="{AppThemeBinding Light=Black,
                                                                         Dark=White}" />
                                     </Border>
-
                                     <Border
                                         Grid.Column="1"
                                         BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
@@ -331,7 +322,6 @@
                                             TextColor="{AppThemeBinding Light=Black,
                                                                         Dark=White}" />
                                     </Border>
-
                                     <Button
                                         Grid.Column="2"
                                         Padding="0"

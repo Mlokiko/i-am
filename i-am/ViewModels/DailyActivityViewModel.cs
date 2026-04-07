@@ -10,7 +10,7 @@ namespace i_am.ViewModels
     public partial class OptionItem : ObservableObject
     {
         public QuestionOption Option { get; set; } = new();
-        public AnswerFormItem? Parent { get; set; } // Referencja do rodzica, by uniknąć RelativeSource w XAML
+        public AnswerFormItem? Parent { get; set; }
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(BgColor))]
@@ -19,19 +19,18 @@ namespace i_am.ViewModels
         [NotifyPropertyChangedFor(nameof(TextFontAttributes))]
         private bool isSelected;
 
-        // BEZPIECZNE KOLORY I STYLE: Przekazywane jako dane, nie wywalają AOT!
         private bool IsDark => Application.Current?.RequestedTheme == AppTheme.Dark;
 
         public Color BgColor => IsSelected
-            ? (IsDark ? Color.FromArgb("#356AAB") : Color.FromArgb("#E8F0FE")) // PrimaryDark / Jasny Niebieski
-            : (IsDark ? Color.FromArgb("#2C2F36") : Color.FromArgb("#FFFFFF")); // SurfaceDark / SurfaceLight
+            ? (IsDark ? Color.FromArgb("#356AAB") : Color.FromArgb("#E8F0FE"))
+            : (IsDark ? Color.FromArgb("#2C2F36") : Color.FromArgb("#FFFFFF"));
 
         public Color BorderColor => IsSelected
-            ? Color.FromArgb("#4A90E2") // Primary
-            : (IsDark ? Color.FromArgb("#404040") : Color.FromArgb("#C8C8C8")); // Gray600 / Gray200
+            ? Color.FromArgb("#4A90E2")
+            : (IsDark ? Color.FromArgb("#404040") : Color.FromArgb("#C8C8C8"));
 
         public Color TxtColor => IsSelected
-            ? (IsDark ? Colors.White : Color.FromArgb("#4A90E2")) // Biały / Primary
+            ? (IsDark ? Colors.White : Color.FromArgb("#4A90E2"))
             : (IsDark ? Colors.White : Colors.Black);
 
         public FontAttributes TextFontAttributes => IsSelected ? FontAttributes.Bold : FontAttributes.None;
@@ -39,7 +38,7 @@ namespace i_am.ViewModels
         [RelayCommand]
         private void Toggle()
         {
-            Parent?.ToggleOption(this); // Bezpośrednie wywołanie, omija RelativeSource!
+            Parent?.ToggleOption(this);
         }
     }
 
@@ -55,12 +54,11 @@ namespace i_am.ViewModels
         public bool IsOpen => Question.Type == "Open";
         public string SelectionHint => Question.MaxSelections > 1 ? $"(Wybierz do {Question.MaxSelections} opcji)" : "(Wybierz 1 opcję)";
 
-        // KOLORY DLA TREŚCI PYTANIA W LIŚCIE
         private bool IsDark => Application.Current?.RequestedTheme == AppTheme.Dark;
         public Color TitleColor => IsDark ? Colors.White : Colors.Black;
-        public Color HintColor => IsDark ? Color.FromArgb("#356AAB") : Color.FromArgb("#4A90E2"); // PrimaryDark / Primary
-        public Color EditorBgColor => IsDark ? Color.FromArgb("#2C2F36") : Color.FromArgb("#FFFFFF"); // SurfaceDark/Light
-        public Color EditorBorderColor => IsDark ? Color.FromArgb("#404040") : Color.FromArgb("#C8C8C8"); // Gray600/200
+        public Color HintColor => IsDark ? Color.FromArgb("#356AAB") : Color.FromArgb("#4A90E2");
+        public Color EditorBgColor => IsDark ? Color.FromArgb("#2C2F36") : Color.FromArgb("#FFFFFF");
+        public Color EditorBorderColor => IsDark ? Color.FromArgb("#404040") : Color.FromArgb("#C8C8C8");
 
         public void ToggleOption(OptionItem? item)
         {
@@ -152,7 +150,6 @@ namespace i_am.ViewModels
                     {
                         foreach (var opt in q.Options)
                         {
-                            // Przekazujemy rodzica podczas tworzenia, omija błąd RelativeSource
                             formItem.SelectableOptions.Add(new OptionItem { Option = opt, IsSelected = false, Parent = formItem });
                         }
                     }

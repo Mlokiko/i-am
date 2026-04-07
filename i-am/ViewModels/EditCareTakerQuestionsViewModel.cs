@@ -116,7 +116,7 @@ namespace i_am.ViewModels
         private async Task LoadQuestionsAsync(string careTakerId)
         {
             IsLoadingQuestions = true;
-            HasNoQuestions = false; // Zawsze ukrywamy napis "Brak pytań" na czas ładowania
+            HasNoQuestions = false;
             Questions.Clear();
 
             var questionsList = await _firestoreService.GetQuestionTemplatesAsync(careTakerId);
@@ -129,7 +129,7 @@ namespace i_am.ViewModels
                     Questions.Add(new QuestionItemViewModel { Template = q });
                 }
                 IsLoadingQuestions = false;
-                HasNoQuestions = Questions.Count == 0; // Pokaż, jeśli faktycznie pusto
+                HasNoQuestions = Questions.Count == 0;
             });
         }
 

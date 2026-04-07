@@ -1,4 +1,5 @@
-﻿using Plugin.Firebase.Firestore;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Plugin.Firebase.Firestore;
 
 namespace i_am.Models
 {
@@ -36,5 +37,7 @@ namespace i_am.Models
 
         [FirestoreProperty("pointsAwarded")]
         public int PointsAwarded { get; set; }
+
+        public bool IsVisibleToCareGiver;
     }
 }

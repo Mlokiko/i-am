@@ -17,26 +17,22 @@ public partial class EditCareTakerQuestionsPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        Dispatcher.Dispatch(async () =>
-        {
-            await Task.Delay(100);
-            await _viewModel.InitializeAsync();
-        });
+        Dispatcher.Dispatch(async () => await _viewModel.InitializeAsync());
     }
 
-    private void OnEditQuestionClicked(object sender, EventArgs e)
+    private void OnEditQuestionClicked(object? sender, EventArgs e)
     {
         if (sender is Button btn && btn.CommandParameter is QuestionTemplate template)
             _viewModel.OpenEditQuestionEditorCommand.Execute(template);
     }
 
-    private void OnDeleteQuestionClicked(object sender, EventArgs e)
+    private void OnDeleteQuestionClicked(object? sender, EventArgs e)
     {
         if (sender is Button btn && btn.CommandParameter is QuestionTemplate template)
             _viewModel.DeleteQuestionCommand.Execute(template);
     }
 
-    private void OnRemoveOptionClicked(object sender, EventArgs e)
+    private void OnRemoveOptionClicked(object? sender, EventArgs e)
     {
         if (sender is Button btn && btn.CommandParameter is EditorOptionItem option)
             _viewModel.RemoveOptionCommand.Execute(option);

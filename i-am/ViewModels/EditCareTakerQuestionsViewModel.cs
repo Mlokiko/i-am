@@ -3,17 +3,22 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using i_am.Models;
 using i_am.Services;
+using Microsoft.Maui.Graphics;
 
 namespace i_am.ViewModels
 {
-    // BEZPIECZNA NAKŁADKA NA OPCJE EDYTORA (Zabezpiecza Entry przed crashem kompilatora AOT)
     public partial class EditorOptionItem : ObservableObject
     {
         [ObservableProperty] private string text = string.Empty;
-        [ObservableProperty] private string points = "0"; // Typ string zamiast int!
+        [ObservableProperty] private string points = "0";
+
+        private bool IsDark => Application.Current?.RequestedTheme == AppTheme.Dark;
+        public Color CardBgColor => IsDark ? Color.FromArgb("#2C2F36") : Color.FromArgb("#FFFFFF"); // SurfaceDark/Light
+        public Color TextColor => IsDark ? Colors.White : Colors.Black;
+        public Color PlaceholderColor => IsDark ? Color.FromArgb("#919191") : Color.FromArgb("#6E6E6E"); // Gray400/Gray500
+        public Color DangerBtnColor => IsDark ? Color.FromArgb("#CF6679") : Color.FromArgb("#E57373"); // DangerDark/Light
     }
 
-    // BEZPIECZNA NAKŁADKA NA LISTĘ PYTAŃ (Eliminuje crashe DataTriggerów)
     public partial class QuestionItemViewModel : ObservableObject
     {
         public QuestionTemplate Template { get; set; } = new();
@@ -26,6 +31,16 @@ namespace i_am.ViewModels
         public bool IsClosed => Template.Type == "Closed";
 
         public string MaxSelectionsText => $"Max. odpowiedzi: {Template.MaxSelections}";
+
+        private bool IsDark => Application.Current?.RequestedTheme == AppTheme.Dark;
+        public Color CardBgColor => IsDark ? Color.FromArgb("#2C2F36") : Color.FromArgb("#FFFFFF");
+        public Color TextColor => IsDark ? Colors.White : Colors.Black;
+        public Color SubTextColor => IsDark ? Color.FromArgb("#919191") : Color.FromArgb("#6E6E6E");
+
+        public Color PrimaryColor => Color.FromArgb("#4A90E2");
+        public Color SecondaryColor => Color.FromArgb("#81C784");
+        public Color EditBtnColor => IsDark ? Color.FromArgb("#404040") : Color.FromArgb("#6E6E6E"); // Gray600/Gray500
+        public Color DangerBtnColor => IsDark ? Color.FromArgb("#CF6679") : Color.FromArgb("#E57373");
     }
 
     public partial class EditCareTakerQuestionsViewModel : ObservableObject
@@ -33,7 +48,17 @@ namespace i_am.ViewModels
         private readonly FirestoreService _firestoreService;
         private QuestionTemplate? _editingTemplate;
 
-        // UŻYWAMY BEZPIECZNYCH WRAPPERÓW ZAMIAST SUROWYCH MODELI
+        // BAZOWE KOLORY EKRANU PRZESYŁANE DO XAML
+        private bool IsDark => Application.Current?.RequestedTheme == AppTheme.Dark;
+        public Color PageBgColor => IsDark ? Color.FromArgb("#1A1C20") : Color.FromArgb("#F7F9FC"); // BackgroundDark/Light
+        public Color CardBgColor => IsDark ? Color.FromArgb("#2C2F36") : Color.FromArgb("#FFFFFF"); // SurfaceDark/Light
+        public Color TextColor => IsDark ? Colors.White : Colors.Black;
+        public Color SubTextColor => IsDark ? Color.FromArgb("#919191") : Color.FromArgb("#6E6E6E");
+        public Color DividerColor => IsDark ? Color.FromArgb("#404040") : Color.FromArgb("#C8C8C8"); // Gray600/Gray200
+        public Color PrimaryColor => Color.FromArgb("#4A90E2");
+        public Color SuccessColor => Color.FromArgb("#81C784");
+        public Color CancelBtnColor => IsDark ? Color.FromArgb("#404040") : Color.FromArgb("#6E6E6E");
+
         public ObservableCollection<User> CareTakers { get; } = new();
         public ObservableCollection<QuestionItemViewModel> Questions { get; } = new();
         public ObservableCollection<EditorOptionItem> EditorOptions { get; } = new();
@@ -41,8 +66,9 @@ namespace i_am.ViewModels
         [ObservableProperty] private User? selectedCareTaker;
         [ObservableProperty] private string selectedCareTakerName = "Kliknij, aby wybrać...";
 
-        [ObservableProperty] private bool isQuestionsVisible = true;
+        [ObservableProperty] private bool isQuestionsVisible = false;
         [ObservableProperty] private bool isEditorVisible = false;
+        [ObservableProperty] private bool isLoadingQuestions = false;
 
         [ObservableProperty] private string editorTitle = string.Empty;
         [ObservableProperty] private string editorQuestionText = string.Empty;
@@ -82,7 +108,7 @@ namespace i_am.ViewModels
                 {
                     SelectedCareTaker = null;
                     SelectedCareTakerName = "Kliknij, aby wybrać...";
-                    IsQuestionsVisible = true;
+                    IsQuestionsVisible = false;
                     IsEditorVisible = false;
                     CareTakers.Clear();
                     foreach (var ct in careTakersList) CareTakers.Add(ct);
@@ -114,7 +140,11 @@ namespace i_am.ViewModels
 
         private async Task LoadQuestionsAsync(string careTakerId)
         {
+            IsLoadingQuestions = true;
+            Questions.Clear();
+
             var questionsList = await _firestoreService.GetQuestionTemplatesAsync(careTakerId);
+
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 Questions.Clear();
@@ -122,6 +152,7 @@ namespace i_am.ViewModels
                 {
                     Questions.Add(new QuestionItemViewModel { Template = q });
                 }
+                IsLoadingQuestions = false;
             });
         }
 
@@ -239,7 +270,6 @@ namespace i_am.ViewModels
                 {
                     if (!string.IsNullOrWhiteSpace(opt.Text))
                     {
-                        // Bezpieczna konwersja stringa z powrotem na int przy zapisie
                         int.TryParse(opt.Points, out int parsedPoints);
                         _editingTemplate.Options.Add(new QuestionOption { Text = opt.Text, Points = parsedPoints });
                     }

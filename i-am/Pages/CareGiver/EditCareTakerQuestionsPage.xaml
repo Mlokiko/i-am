@@ -6,47 +6,54 @@
     xmlns:models="clr-namespace:i_am.Models"
     xmlns:vm="clr-namespace:i_am.ViewModels"
     x:DataType="vm:EditCareTakerQuestionsViewModel"
-    Title="Pytania Podopiecznego">
+    Title="Pytania Podopiecznego"
+    BackgroundColor="{Binding PageBgColor}">
 
     <ScrollView>
         <VerticalStackLayout Padding="15" Spacing="20">
 
-            <VerticalStackLayout IsVisible="{Binding IsQuestionsVisible}" Spacing="15">
+            <VerticalStackLayout Spacing="5">
+                <Label FontAttributes="Bold" FontSize="16" Text="1. Wybierz podopiecznego:" TextColor="{Binding TextColor}" />
 
-                <Label FontAttributes="Bold" FontSize="16" Text="1. Wybierz podopiecznego:" />
-
-                <Grid Padding="10" BackgroundColor="#2D2D30">
-                    <Button Text="{Binding SelectedCareTakerName}" Command="{Binding SelectCareTakerCommand}" BackgroundColor="Transparent" TextColor="White" HorizontalOptions="Start" HeightRequest="45"/>
+                <Grid HeightRequest="50" BackgroundColor="{Binding CardBgColor}">
+                    <BoxView Color="{Binding DividerColor}" Opacity="0.2" CornerRadius="8" />
+                    <Label Text="{Binding SelectedCareTakerName}" HorizontalOptions="Start" VerticalOptions="Center" Margin="15,0,0,0" FontSize="16" TextColor="{Binding TextColor}" />
+                    <Button Command="{Binding SelectCareTakerCommand}" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill" />
                 </Grid>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="15" IsVisible="{Binding IsQuestionsVisible}">
 
                 <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center" Margin="0,10,0,0">
-                    <Label Grid.Column="0" FontAttributes="Bold" FontSize="16" Text="Aktualne Pytania" VerticalOptions="Center" />
-                    <Button Grid.Column="1" Command="{Binding OpenNewQuestionEditorCommand}" Text="+ Dodaj Pytanie" BackgroundColor="#0078D7" TextColor="White" HeightRequest="40" />
+                    <Label Grid.Column="0" FontAttributes="Bold" FontSize="16" Text="Aktualne Pytania" VerticalOptions="Center" TextColor="{Binding TextColor}" />
+                    <Button Grid.Column="1" Command="{Binding OpenNewQuestionEditorCommand}" Text="+ Dodaj Pytanie" BackgroundColor="{Binding PrimaryColor}" TextColor="White" HeightRequest="40" />
                 </Grid>
+
+                <Label Text="Ładowanie pytań..." IsVisible="{Binding IsLoadingQuestions}" TextColor="{Binding PrimaryColor}" HorizontalOptions="Center" Margin="0,20,0,0" FontAttributes="Bold"/>
 
                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding Questions}" Spacing="10">
                     <BindableLayout.EmptyView>
-                        <Label HorizontalOptions="Center" Padding="20" Text="Brak pytań. Dodaj pierwsze używając przycisku wyżej." TextColor="Gray" />
+                        <Label HorizontalOptions="Center" Padding="20" Text="Brak pytań. Dodaj pierwsze używając przycisku wyżej." TextColor="{Binding SubTextColor}" />
                     </BindableLayout.EmptyView>
 
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="vm:QuestionItemViewModel">
-                            <Grid Padding="15" ColumnDefinitions="*, Auto" BackgroundColor="#1E1E1E" RowSpacing="5">
-                                <VerticalStackLayout Grid.Column="0" VerticalOptions="Center" Spacing="5">
-                                    <Label FontAttributes="Bold" FontSize="15" Text="{Binding Text}" TextColor="White"/>
+                            <Grid Padding="15" ColumnDefinitions="*, Auto" BackgroundColor="{Binding CardBgColor}" RowSpacing="5">
+                                <VerticalStackLayout Grid.Column="0" VerticalOptions="Center" Spacing="5" Margin="0,0,10,0">
+                                    <Label FontAttributes="Bold" FontSize="15" Text="{Binding Text}" TextColor="{Binding TxtColor}"/>
 
                                     <HorizontalStackLayout Spacing="8">
-                                        <Label FontSize="12" TextColor="LightGray" Text="{Binding TypeText}" />
-                                        <Label FontSize="12" TextColor="#0078D7" FontAttributes="Bold" Text="Codzienne" IsVisible="{Binding IsDaily}"/>
-                                        <Label FontSize="12" TextColor="#FF9800" FontAttributes="Bold" Text="Losowe z puli" IsVisible="{Binding IsRandom}"/>
+                                        <Label FontSize="12" TextColor="{Binding SubTxtColor}" Text="{Binding TypeText}" />
+                                        <Label FontSize="12" TextColor="{Binding PrimaryColor}" FontAttributes="Bold" Text="Codzienne" IsVisible="{Binding IsDaily}"/>
+                                        <Label FontSize="12" TextColor="{Binding SecondaryColor}" FontAttributes="Bold" Text="Losowe z puli" IsVisible="{Binding IsRandom}"/>
                                     </HorizontalStackLayout>
 
-                                    <Label FontSize="12" TextColor="#0078D7" Text="{Binding MaxSelectionsText}" IsVisible="{Binding IsClosed}" />
+                                    <Label FontSize="12" TextColor="{Binding PrimaryColor}" Text="{Binding MaxSelectionsText}" IsVisible="{Binding IsClosed}" />
                                 </VerticalStackLayout>
 
                                 <VerticalStackLayout Grid.Column="1" Spacing="10" VerticalOptions="Center">
-                                    <Button Text="Edytuj" HeightRequest="35" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EditCareTakerQuestionsViewModel}}, Path=OpenEditQuestionEditorCommand}" CommandParameter="{Binding Template}" BackgroundColor="#555555" TextColor="White"/>
-                                    <Button Text="Usuń" HeightRequest="35" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EditCareTakerQuestionsViewModel}}, Path=DeleteQuestionCommand}" CommandParameter="{Binding Template}" BackgroundColor="#D32F2F" TextColor="White"/>
+                                    <Button Text="Edytuj" HeightRequest="35" Clicked="OnEditQuestionClicked" CommandParameter="{Binding Template}" BackgroundColor="{Binding EditBtnColor}" TextColor="White"/>
+                                    <Button Text="Usuń" HeightRequest="35" Clicked="OnDeleteQuestionClicked" CommandParameter="{Binding Template}" BackgroundColor="{Binding DangerBtnColor}" TextColor="White"/>
                                 </VerticalStackLayout>
                             </Grid>
                         </DataTemplate>
@@ -54,54 +61,58 @@
                 </VerticalStackLayout>
             </VerticalStackLayout>
 
-            <VerticalStackLayout IsVisible="{Binding IsEditorVisible}" Spacing="15">
+            <VerticalStackLayout Spacing="15" IsVisible="{Binding IsEditorVisible}">
 
-                <Label FontAttributes="Bold" FontSize="20" Text="{Binding EditorTitle}" HorizontalOptions="Center" Margin="0,0,0,10"/>
+                <Label FontAttributes="Bold" FontSize="20" Text="{Binding EditorTitle}" HorizontalOptions="Center" Margin="0,0,0,10" TextColor="{Binding TextColor}"/>
 
-                <Label FontAttributes="Bold" Text="Treść pytania:" />
-                <Grid Padding="5" BackgroundColor="#2D2D30">
-                    <Editor Text="{Binding EditorQuestionText}" Placeholder="np. Jak się dzisiaj czujesz?" HeightRequest="80" TextColor="White" PlaceholderColor="Gray"/>
+                <Label FontAttributes="Bold" Text="Treść pytania:" TextColor="{Binding TextColor}" />
+                <Grid BackgroundColor="{Binding CardBgColor}">
+                    <Editor Text="{Binding EditorQuestionText}" Placeholder="np. Jak się dzisiaj czujesz?" HeightRequest="80" Margin="10,5" TextColor="{Binding TextColor}" PlaceholderColor="{Binding SubTextColor}"/>
                 </Grid>
 
                 <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
                     <VerticalStackLayout Grid.Column="0" Spacing="5">
-                        <Label FontAttributes="Bold" Text="Typ pytania:" />
+                        <Label FontAttributes="Bold" Text="Typ pytania:" TextColor="{Binding TextColor}" />
                         <HorizontalStackLayout Spacing="5">
-                            <Button Text="Zamk." Command="{Binding SetQuestionTypeCommand}" CommandParameter="Zamknięte" HeightRequest="40" BackgroundColor="#0078D7" TextColor="White" Opacity="{Binding ClosedTypeOpacity}" />
-                            <Button Text="Otw." Command="{Binding SetQuestionTypeCommand}" CommandParameter="Otwarte" HeightRequest="40" BackgroundColor="#0078D7" TextColor="White" Opacity="{Binding OpenTypeOpacity}" />
+                            <Button Text="Zamk." Command="{Binding SetQuestionTypeCommand}" CommandParameter="Zamknięte" HeightRequest="40" BackgroundColor="{Binding PrimaryColor}" TextColor="White" Opacity="{Binding ClosedTypeOpacity}" />
+                            <Button Text="Otw." Command="{Binding SetQuestionTypeCommand}" CommandParameter="Otwarte" HeightRequest="40" BackgroundColor="{Binding PrimaryColor}" TextColor="White" Opacity="{Binding OpenTypeOpacity}" />
                         </HorizontalStackLayout>
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Grid.Column="1" Spacing="5">
-                        <Label FontAttributes="Bold" Text="Tylko losowe?" />
+                        <Label FontAttributes="Bold" Text="Tylko losowe?" TextColor="{Binding TextColor}" />
                         <Switch IsToggled="{Binding EditorIsRandomPool}" HorizontalOptions="Start" />
                     </VerticalStackLayout>
                 </Grid>
 
                 <VerticalStackLayout Spacing="10" IsVisible="{Binding IsClosedType}">
-                    <Label FontAttributes="Bold" Text="Maks. opcji do zaznaczenia:" />
+                    <Label FontAttributes="Bold" Text="Maks. opcji do zaznaczenia:" TextColor="{Binding TextColor}"/>
                     <HorizontalStackLayout Spacing="15" VerticalOptions="Center">
-                        <Button Text="-" Command="{Binding DecreaseMaxSelectionsCommand}" WidthRequest="45" HeightRequest="45" BackgroundColor="#555555" TextColor="White" FontAttributes="Bold"/>
-
-                        <Label Text="{Binding EditorMaxSelections, StringFormat='{0}'}" VerticalOptions="Center" FontAttributes="Bold" FontSize="20"/>
-
-                        <Button Text="+" Command="{Binding IncreaseMaxSelectionsCommand}" WidthRequest="45" HeightRequest="45" BackgroundColor="#555555" TextColor="White" FontAttributes="Bold"/>
+                        <Button Text="-" Command="{Binding DecreaseMaxSelectionsCommand}" WidthRequest="45" HeightRequest="45" BackgroundColor="{Binding CancelBtnColor}" TextColor="White" FontAttributes="Bold"/>
+                        <Label Text="{Binding EditorMaxSelections, StringFormat='{0}'}" VerticalOptions="Center" FontAttributes="Bold" FontSize="20" TextColor="{Binding TextColor}"/>
+                        <Button Text="+" Command="{Binding IncreaseMaxSelectionsCommand}" WidthRequest="45" HeightRequest="45" BackgroundColor="{Binding CancelBtnColor}" TextColor="White" FontAttributes="Bold"/>
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
 
                 <VerticalStackLayout Spacing="10" IsVisible="{Binding IsClosedType}">
                     <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
-                        <Label Grid.Column="0" FontAttributes="Bold" Text="Warianty i punkty:" VerticalOptions="Center"/>
-                        <Button Grid.Column="1" Text="+ Dodaj" Command="{Binding AddOptionCommand}" HeightRequest="35" BackgroundColor="#0078D7" TextColor="White"/>
+                        <Label Grid.Column="0" FontAttributes="Bold" Text="Warianty i punkty:" VerticalOptions="Center" TextColor="{Binding TextColor}"/>
+                        <Button Grid.Column="1" Text="+ Dodaj" Command="{Binding AddOptionCommand}" HeightRequest="35" BackgroundColor="{Binding PrimaryColor}" TextColor="White"/>
                     </Grid>
 
                     <VerticalStackLayout BindableLayout.ItemsSource="{Binding EditorOptions}" Spacing="10">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="vm:EditorOptionItem">
                                 <Grid ColumnDefinitions="*, 70, Auto" ColumnSpacing="10">
-                                    <Entry Grid.Column="0" Text="{Binding Text}" Placeholder="Odpowiedź" BackgroundColor="#2D2D30" TextColor="White"/>
-                                    <Entry Grid.Column="1" Text="{Binding Points}" Keyboard="Numeric" Placeholder="Pkt" HorizontalTextAlignment="Center" BackgroundColor="#2D2D30" TextColor="White"/>
-                                    <Button Grid.Column="2" Text="X" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EditCareTakerQuestionsViewModel}}, Path=RemoveOptionCommand}" CommandParameter="{Binding .}" BackgroundColor="#D32F2F" TextColor="White" WidthRequest="45" Padding="0"/>
+
+                                    <Grid Grid.Column="0" BackgroundColor="{Binding CardBgColor}">
+                                        <Entry Text="{Binding Text}" Placeholder="Odpowiedź" Margin="10,0" TextColor="{Binding TxtColor}" PlaceholderColor="{Binding PlaceholderColor}"/>
+                                    </Grid>
+                                    <Grid Grid.Column="1" BackgroundColor="{Binding CardBgColor}">
+                                        <Entry Text="{Binding Points}" Keyboard="Numeric" Placeholder="Pkt" HorizontalTextAlignment="Center" Margin="5,0" TextColor="{Binding TxtColor}" PlaceholderColor="{Binding PlaceholderColor}"/>
+                                    </Grid>
+
+                                    <Button Grid.Column="2" Text="X" Clicked="OnRemoveOptionClicked" CommandParameter="{Binding .}" BackgroundColor="{Binding DangerColor}" TextColor="White" WidthRequest="45" Padding="0"/>
                                 </Grid>
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
@@ -109,8 +120,8 @@
                 </VerticalStackLayout>
 
                 <Grid ColumnDefinitions="*, *" ColumnSpacing="15" Margin="0,20,0,40">
-                    <Button Grid.Column="0" Text="Anuluj" Command="{Binding CancelEditCommand}" BackgroundColor="#555555" TextColor="White" HeightRequest="50"/>
-                    <Button Grid.Column="1" Text="Zapisz" Command="{Binding SaveQuestionCommand}" BackgroundColor="#4CAF50" TextColor="White" HeightRequest="50" FontAttributes="Bold"/>
+                    <Button Grid.Column="0" Text="Anuluj" Command="{Binding CancelEditCommand}" BackgroundColor="{Binding CancelBtnColor}" TextColor="White" HeightRequest="50"/>
+                    <Button Grid.Column="1" Text="Zapisz" Command="{Binding SaveQuestionCommand}" BackgroundColor="{Binding SuccessColor}" TextColor="White" HeightRequest="50" FontAttributes="Bold"/>
                 </Grid>
 
             </VerticalStackLayout>

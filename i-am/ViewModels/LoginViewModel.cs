@@ -9,7 +9,7 @@ namespace i_am.ViewModels
 {
     public partial class LoginViewModel : ObservableObject
     {
-        private readonly IFirestoreService _firestoreService;
+        private readonly FirestoreService _firestoreService;
 
         // Te właściwości automatycznie powiadomią UI o zmianach (zastąpią wpisywanie EmailEntry.Text)
         [ObservableProperty]
@@ -18,7 +18,7 @@ namespace i_am.ViewModels
         [ObservableProperty]
         private string password = string.Empty;
 
-        public LoginViewModel(IFirestoreService firestoreService)
+        public LoginViewModel(FirestoreService firestoreService)
         {
             _firestoreService = firestoreService;
         }

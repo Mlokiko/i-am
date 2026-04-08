@@ -2,12 +2,14 @@
 using CommunityToolkit.Mvvm.Input;
 using i_am.Pages.Authentication;
 using i_am.Services;
+using System.Data;
+using static Java.Util.Jar.Attributes;
 
 namespace i_am.ViewModels
 {
     public partial class ManageAccountViewModel : ObservableObject
     {
-        private readonly IFirestoreService _firestoreService;
+        private readonly FirestoreService _firestoreService;
 
         // Właściwości bindowane do UI
         [ObservableProperty] private string name = "Wczytywanie...";
@@ -18,7 +20,7 @@ namespace i_am.ViewModels
         [ObservableProperty] private string role = "...";
         [ObservableProperty] private string createdAt = "...";
 
-        public ManageAccountViewModel(IFirestoreService firestoreService)
+        public ManageAccountViewModel(FirestoreService firestoreService)
         {
             _firestoreService = firestoreService;
         }

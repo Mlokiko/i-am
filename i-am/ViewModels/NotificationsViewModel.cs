@@ -10,12 +10,12 @@ namespace i_am.ViewModels
 {
     public partial class NotificationsViewModel : ObservableObject
     {
-        private readonly IFirestoreService _firestoreService;
+        private readonly FirestoreService _firestoreService;
         private IDisposable? _notificationListener;
 
         public ObservableCollection<AppNotification> NotificationsList { get; } = new();
 
-        public NotificationsViewModel(IFirestoreService firestoreService)
+        public NotificationsViewModel(FirestoreService firestoreService)
         {
             _firestoreService = firestoreService;
         }

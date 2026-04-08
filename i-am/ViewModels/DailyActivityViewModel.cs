@@ -91,7 +91,7 @@ namespace i_am.ViewModels
 
     public partial class DailyActivityViewModel : ObservableObject
     {
-        private readonly IFirestoreService _firestoreService;
+        private readonly FirestoreService _firestoreService;
         private string _myUid = string.Empty;
 
         [ObservableProperty] private bool isLoading = true;
@@ -99,7 +99,7 @@ namespace i_am.ViewModels
 
         public ObservableCollection<AnswerFormItem> FormItems { get; } = new();
 
-        public DailyActivityViewModel(IFirestoreService firestoreService)
+        public DailyActivityViewModel(FirestoreService firestoreService)
         {
             _firestoreService = firestoreService;
         }

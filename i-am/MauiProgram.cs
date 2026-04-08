@@ -31,7 +31,7 @@ namespace i_am
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
-            builder.Services.AddSingleton<IFirestoreService, FirestoreService>(); // Creates one instance for the whole app
+            builder.Services.AddSingleton<FirestoreService>(); // Creates one instance for the whole app
 
             builder.Services.AddTransient<LoadingPage>();
             builder.Services.AddTransient<LandingPage>();

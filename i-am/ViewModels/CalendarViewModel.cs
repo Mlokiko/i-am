@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 
 namespace i_am.ViewModels
 {
+    // WYCIĄGNIĘTA KLASA WRAPPERA - teraz XAML bez problemu ją odnajdzie
     public class GivenAnswerDisplay
     {
         public string QuestionText { get; set; } = string.Empty;
@@ -41,7 +42,7 @@ namespace i_am.ViewModels
 
     public partial class CalendarViewModel : ObservableObject
     {
-        private readonly IFirestoreService _firestoreService;
+        private readonly FirestoreService _firestoreService;
         private string _myUid = string.Empty;
         private List<DailyResponse> _allResponses = new();
 
@@ -63,7 +64,7 @@ namespace i_am.ViewModels
         [ObservableProperty] private CalendarDayItem? selectedDay;
         [ObservableProperty] private bool isDayDetailsVisible;
 
-        public CalendarViewModel(IFirestoreService firestoreService)
+        public CalendarViewModel(FirestoreService firestoreService)
         {
             _firestoreService = firestoreService;
             _currentMonthDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);

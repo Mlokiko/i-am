@@ -10,6 +10,7 @@
     <Grid>
         <ScrollView>
             <VerticalStackLayout Padding="20" Spacing="20">
+
                 <VerticalStackLayout IsVisible="{Binding IsCareGiver}" Spacing="10">
                     <Label FontAttributes="Bold" Text="Wybierz podopiecznego:" />
                     <Border
@@ -37,6 +38,7 @@
                 </VerticalStackLayout>
 
                 <VerticalStackLayout IsVisible="{Binding HasCareTakerSelected}" Spacing="15">
+
                     <Grid
                         Margin="0,0,0,10"
                         ColumnDefinitions="Auto, *, Auto"
@@ -66,52 +68,90 @@
                             WidthRequest="40" />
                     </Grid>
 
-                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Days}" Spacing="10">
-                        <BindableLayout.EmptyView>
-                            <Label
-                                Margin="0,20,0,0"
-                                HorizontalOptions="Center"
-                                Text="Brak raportów w tym miesiącu."
-                                TextColor="{StaticResource Gray500}" />
-                        </BindableLayout.EmptyView>
+                    <VerticalStackLayout Spacing="10">
 
-                        <BindableLayout.ItemTemplate>
-                            <DataTemplate x:DataType="vm:CalendarDayItem">
-                                <Border
-                                    Padding="15"
-                                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                                      Dark={StaticResource SurfaceDark}}"
-                                    IsVisible="{Binding HasData}"
-                                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                                             Dark={StaticResource Gray600}}"
-                                    StrokeShape="RoundRectangle 8">
-                                    <Border.GestureRecognizers>
-                                        <TapGestureRecognizer CommandParameter="{Binding .}" Tapped="OnDayTapped" />
-                                    </Border.GestureRecognizers>
-                                    <Grid ColumnDefinitions="*, Auto">
-                                        <VerticalStackLayout
-                                            Grid.Column="0"
-                                            Spacing="2"
-                                            VerticalOptions="Center">
+                        <Grid Margin="0,0,0,5" ColumnDefinitions="*,*,*,*,*,*,*">
+                            <Label
+                                Grid.Column="0"
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                HorizontalTextAlignment="Center"
+                                Text="Pn"
+                                TextColor="{StaticResource Primary}" />
+                            <Label
+                                Grid.Column="1"
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                HorizontalTextAlignment="Center"
+                                Text="Wt"
+                                TextColor="{StaticResource Primary}" />
+                            <Label
+                                Grid.Column="2"
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                HorizontalTextAlignment="Center"
+                                Text="Śr"
+                                TextColor="{StaticResource Primary}" />
+                            <Label
+                                Grid.Column="3"
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                HorizontalTextAlignment="Center"
+                                Text="Cz"
+                                TextColor="{StaticResource Primary}" />
+                            <Label
+                                Grid.Column="4"
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                HorizontalTextAlignment="Center"
+                                Text="Pt"
+                                TextColor="{StaticResource Primary}" />
+                            <Label
+                                Grid.Column="5"
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                HorizontalTextAlignment="Center"
+                                Text="Sb"
+                                TextColor="{StaticResource Primary}" />
+                            <Label
+                                Grid.Column="6"
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                HorizontalTextAlignment="Center"
+                                Text="Nd"
+                                TextColor="{StaticResource Primary}" />
+                        </Grid>
+
+                        <FlexLayout
+                            BindableLayout.ItemsSource="{Binding Days}"
+                            Direction="Row"
+                            JustifyContent="Start"
+                            Wrap="Wrap">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="vm:CalendarDayItem">
+                                    <ContentView Padding="2" FlexLayout.Basis="14.28%">
+                                        <Border
+                                            BackgroundColor="{Binding BgColor}"
+                                            HeightRequest="45"
+                                            Stroke="{Binding HighlightBorderColor}"
+                                            StrokeShape="RoundRectangle 8"
+                                            StrokeThickness="{Binding BorderThick}">
+
+                                            <Border.GestureRecognizers>
+                                                <TapGestureRecognizer CommandParameter="{Binding .}" Tapped="OnDayTapped" />
+                                            </Border.GestureRecognizers>
+
                                             <Label
                                                 FontAttributes="Bold"
-                                                FontSize="16"
-                                                Text="{Binding Date, StringFormat='{0:dd MMMM yyyy}'}" />
-                                            <Label
-                                                FontAttributes="Bold"
-                                                Text="{Binding Response.EvaluationStatus}"
-                                                TextColor="{Binding StatusColor}" />
-                                        </VerticalStackLayout>
-                                        <Button
-                                            Grid.Column="1"
-                                            Clicked="OnDayDetailsClicked"
-                                            CommandParameter="{Binding .}"
-                                            HeightRequest="35"
-                                            Text="Szczegóły" />
-                                    </Grid>
-                                </Border>
-                            </DataTemplate>
-                        </BindableLayout.ItemTemplate>
+                                                HorizontalOptions="Center"
+                                                Text="{Binding DayText}"
+                                                TextColor="{Binding TxtColor}"
+                                                VerticalOptions="Center" />
+                                        </Border>
+                                    </ContentView>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </FlexLayout>
                     </VerticalStackLayout>
                 </VerticalStackLayout>
             </VerticalStackLayout>

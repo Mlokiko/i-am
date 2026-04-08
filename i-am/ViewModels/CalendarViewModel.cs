@@ -6,7 +6,6 @@ using System.Collections.ObjectModel;
 
 namespace i_am.ViewModels
 {
-    // WYCIĄGNIĘTA KLASA WRAPPERA - teraz XAML bez problemu ją odnajdzie
     public class GivenAnswerDisplay
     {
         public string QuestionText { get; set; } = string.Empty;
@@ -19,25 +18,52 @@ namespace i_am.ViewModels
     public partial class CalendarDayItem : ObservableObject
     {
         public DateTime Date { get; set; }
-        public bool IsEmpty { get; set; }
+        public bool IsEmpty { get; set; } // Oznacza pustą kratkę przed 1. dniem miesiąca
         public string DayText => IsEmpty ? "" : Date.Day.ToString();
 
         public DailyResponse? Response { get; set; }
         public bool HasData => Response != null;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(BorderThick))]
+        [NotifyPropertyChangedFor(nameof(HighlightBorderColor))]
         private bool isSelected;
 
-        public string StatusColor
+        private bool IsDark => Application.Current?.RequestedTheme == AppTheme.Dark;
+
+        public Color BgColor
         {
             get
             {
-                if (!HasData) return "Transparent";
-                if (Response!.TotalScore <= -3) return "Red";
-                if (Response!.TotalScore <= -2) return "Orange";
-                return "Green";
+                if (IsEmpty || !HasData) return Colors.Transparent;
+                if (Response!.TotalScore <= -3) return IsDark ? Color.FromArgb("#CF6679") : Color.FromArgb("#E57373"); // Czerwony
+                if (Response!.TotalScore <= -2) return IsDark ? Color.FromArgb("#FFB74D") : Color.FromArgb("#FF9800"); // Pomarańczowy
+                return IsDark ? Color.FromArgb("#81C784") : Color.FromArgb("#4CAF50"); // Zielony
             }
         }
+
+        public Color TxtColor
+        {
+            get
+            {
+                if (IsEmpty) return Colors.Transparent;
+                if (HasData) return Colors.White; // Biały tekst na kolorowym tle
+                return IsDark ? Colors.White : Colors.Black; // Standardowy tekst dla braku danych
+            }
+        }
+
+        public Color BorderColor
+        {
+            get
+            {
+                if (IsEmpty || HasData) return Colors.Transparent;
+                return IsDark ? Color.FromArgb("#404040") : Color.FromArgb("#E0E0E0"); // Szara ramka dla pustych dni
+            }
+        }
+
+        // Grubsza ramka przy zaznaczeniu
+        public double BorderThick => IsSelected ? 2 : 1;
+        public Color HighlightBorderColor => IsSelected ? (IsDark ? Colors.White : Colors.Black) : BorderColor;
     }
 
     public partial class CalendarViewModel : ObservableObject
@@ -48,8 +74,6 @@ namespace i_am.ViewModels
 
         [ObservableProperty] private ObservableCollection<User> careTakers = new();
         [ObservableProperty] private ObservableCollection<CalendarDayItem> days = new();
-
-        // POPRAWKA: Lista przechowuje teraz nowy typ GivenAnswerDisplay
         [ObservableProperty] private ObservableCollection<GivenAnswerDisplay> selectedDayAnswers = new();
 
         [ObservableProperty] private bool isLoading = true;
@@ -139,7 +163,19 @@ namespace i_am.ViewModels
             string newMonthName = _currentMonthDate.ToString("MMMM yyyy").ToUpper();
 
             int daysInMonth = DateTime.DaysInMonth(_currentMonthDate.Year, _currentMonthDate.Month);
+            DateTime firstDay = new DateTime(_currentMonthDate.Year, _currentMonthDate.Month, 1);
 
+            // Obliczamy przesunięcie dla 1-go dnia miesiąca (Zakładamy, że Poniedziałek to początek tygodnia)
+            int offset = (int)firstDay.DayOfWeek - (int)DayOfWeek.Monday;
+            if (offset < 0) offset += 7; // Niedziela ma wartość 0, więc naprawiamy
+
+            // Puste kratki przed pierwszym dniem
+            for (int i = 0; i < offset; i++)
+            {
+                backgroundDays.Add(new CalendarDayItem { IsEmpty = true });
+            }
+
+            // Faktyczne dni
             for (int i = 1; i <= daysInMonth; i++)
             {
                 var date = new DateTime(_currentMonthDate.Year, _currentMonthDate.Month, i);
@@ -168,14 +204,15 @@ namespace i_am.ViewModels
         [RelayCommand]
         private void SelectDay(CalendarDayItem? day)
         {
-            if (day == null || !day.HasData) return;
+            // Otwieraj tylko, gdy kliknięty dzień ma dane (nie jest pustą kratką i ma raport)
+            if (day == null || day.IsEmpty || !day.HasData) return;
+
             if (SelectedDay != null) SelectedDay.IsSelected = false;
 
             day.IsSelected = true;
             SelectedDay = day;
             IsDayDetailsVisible = true;
 
-            // Ładowanie z Wrapperem (błąd CS0029 zniknie)
             SelectedDayAnswers = new ObservableCollection<GivenAnswerDisplay>(
                 (day.Response?.Answers ?? new List<GivenAnswer>())
                 .Select(a => new GivenAnswerDisplay

@@ -284,22 +284,22 @@
                             FontSize="15"
                             HorizontalTextAlignment="Start"
                             LineHeight="1.3"
-                            Text="• Depresja to choroba, a nie chwilowy smutek ani oznaka słabości. Może trwać tygodniami lub miesiącami i nie mija sama z siebie. Wpływa na sposób myślenia, odczuwania emocji oraz na codzienne funkcjonowanie." />
+                            Text="Depresja to choroba, a nie chwilowy smutek ani oznaka słabości. Może trwać tygodniami lub miesiącami i nie mija sama z siebie. Wpływa na sposób myślenia, odczuwania emocji oraz na codzienne funkcjonowanie." />
                         <Label
                             FontSize="15"
                             HorizontalTextAlignment="Start"
                             LineHeight="1.3"
-                            Text="• Objawy depresji mogą być różne u każdej osoby. Często pojawia się długotrwały smutek, brak energii lub zainteresowania rzeczami, które wcześniej sprawiały radość. Mogą też występować problemy ze snem, koncentracją lub apetytem." />
+                            Text="Objawy depresji mogą być różne u każdej osoby. Często pojawia się długotrwały smutek, brak energii lub zainteresowania rzeczami, które wcześniej sprawiały radość. Mogą też występować problemy ze snem, koncentracją lub apetytem." />
                         <Label
                             FontSize="15"
                             HorizontalTextAlignment="Start"
                             LineHeight="1.3"
-                            Text="• Depresja utrudnia codzienne życie i wykonywanie nawet prostych czynności. Osoba chora może mieć trudność z wstawaniem z łóżka, pracą lub kontaktami z innymi ludźmi. Z czasem może to prowadzić do poczucia bezradności i izolacji." />
+                            Text="Depresja utrudnia codzienne życie i wykonywanie nawet prostych czynności. Osoba chora może mieć trudność z wstawaniem z łóżka, pracą lub kontaktami z innymi ludźmi. Z czasem może to prowadzić do poczucia bezradności i izolacji." />
                         <Label
                             FontSize="15"
                             HorizontalTextAlignment="Start"
                             LineHeight="1.3"
-                            Text="• Wsparcie i szybka reakcja otoczenia są bardzo ważne w leczeniu depresji. Regularne monitorowanie samopoczucia pomaga zauważyć pogorszenie stanu psychicznego. Dzięki temu osoba bliska może szybciej zareagować i zapewnić potrzebną pomoc." />
+                            Text="Wsparcie i szybka reakcja otoczenia są bardzo ważne w leczeniu depresji. Regularne monitorowanie samopoczucia pomaga zauważyć pogorszenie stanu psychicznego. Dzięki temu osoba bliska może szybciej zareagować i zapewnić potrzebną pomoc." />
                     </VerticalStackLayout>
                 </Border>
             </VerticalStackLayout>

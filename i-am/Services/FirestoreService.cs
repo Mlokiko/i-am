@@ -566,9 +566,9 @@ namespace i_am.Services
             };
 
             // --- 1. PYTANIA CODZIENNE (ZAMKNIĘTE) ---
-            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = false, Type = "Closed", MaxSelections = 2, Text = "Jakie emocje czułeś na ROZPOCZĘCIE dnia? (max. 2)", Options = new List<QuestionOption>(emotionOptions) });
-            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = false, Type = "Closed", MaxSelections = 5, Text = "Jakie emocje czułeś w ŚRODKU dnia? (max. 5)", Options = new List<QuestionOption>(emotionOptions) });
-            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = false, Type = "Closed", MaxSelections = 2, Text = "Jakie emocje czułeś na ZAKOŃCZENIE dnia? (max. 2)", Options = new List<QuestionOption>(emotionOptions) });
+            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = false, Type = "Closed", MaxSelections = 2, Text = "Jakie emocje czułeś na ROZPOCZĘCIE dnia?", Options = new List<QuestionOption>(emotionOptions) });
+            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = false, Type = "Closed", MaxSelections = 5, Text = "Jakie emocje czułeś w ŚRODKU dnia?", Options = new List<QuestionOption>(emotionOptions) });
+            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = false, Type = "Closed", MaxSelections = 2, Text = "Jakie emocje czułeś na ZAKOŃCZENIE dnia?", Options = new List<QuestionOption>(emotionOptions) });
 
             questions.Add(new QuestionTemplate
             {
@@ -634,7 +634,7 @@ namespace i_am.Services
             });
 
             // --- 2. PYTANIA CODZIENNE (OTWARTE) ---
-            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = false, Type = "Open", Text = "Czy zdarzyło się dziś coś, co wywarło w tobie silne emocje? Co to było, jak się czułeś i jak zachowałeś?" });
+            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = false, Type = "Open", Text = "Czy zdarzyło się dziś coś, co wywarło w tobie silne emocje? Co to było, jak się czułeś i jak się zachowałeś?" });
             questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = false, Type = "Open", Text = "Co dzisiaj udało ci się zrobić?" });
 
             // --- 3. PULOWA LOSOWA (ZAMKNIĘTE) ---

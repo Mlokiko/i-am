@@ -13,9 +13,14 @@ public partial class ManageAccountPage : ContentPage
         BindingContext = _viewModel;
     }
 
-    protected override async void OnAppearing()
+    protected override void OnAppearing()
     {
         base.OnAppearing();
-        await _viewModel.InitializeAsync();
+
+        // U¿ywamy Dispatchera, aby unikn¹æ crashy ze StaticResource w trybie Release
+        Dispatcher.Dispatch(async () =>
+        {
+            await _viewModel.InitializeAsync();
+        });
     }
 }

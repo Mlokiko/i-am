@@ -165,7 +165,7 @@
                         Text="Anuluj" />
                     <Button
                         Grid.Column="1"
-                        BackgroundColor="{StaticResource Success}"
+                        BackgroundColor="{DynamicResource Success}"
                         Command="{Binding SaveChangesCommand}"
                         Text="Zapisz" />
                 </Grid>

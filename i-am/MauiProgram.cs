@@ -47,18 +47,16 @@ namespace i_am
             builder.Services.AddTransient<NotificationsPage>();
             builder.Services.AddTransient<i_am.ViewModels.CalendarViewModel>();
             builder.Services.AddTransient<i_am.Pages.Main.CalendarPage>();
+            builder.Services.AddTransient<i_am.ViewModels.ManageConnectionsViewModel>();
+            builder.Services.AddTransient<i_am.Pages.Main.ManageConnectionsPage>();
 
             builder.Services.AddTransient<i_am.ViewModels.CareGiverMainViewModel>();
             builder.Services.AddTransient<CareGiverMainPage>();
-            builder.Services.AddTransient<i_am.ViewModels.ManageCareTakersViewModel>();
-            builder.Services.AddTransient<ManageCareTakersPage>();
             builder.Services.AddTransient<i_am.ViewModels.EditCareTakerQuestionsViewModel>();
             builder.Services.AddTransient<i_am.Pages.CareGiver.EditCareTakerQuestionsPage>();
 
             builder.Services.AddTransient<i_am.ViewModels.CareTakerMainViewModel>();
             builder.Services.AddTransient<CareTakerMainPage>();
-            builder.Services.AddTransient<i_am.ViewModels.ManageCareGiversViewModel>();
-            builder.Services.AddTransient<ManageCareGiversPage>();
             builder.Services.AddTransient<i_am.ViewModels.DailyActivityViewModel>();
             builder.Services.AddTransient<i_am.Pages.CareTaker.DailyActivityPage>();
 

@@ -1,10 +1,11 @@
-﻿using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using i_am.Models;
-using i_am.Services;
 using i_am.Pages.CareGiver;
 using i_am.Pages.CareTaker;
+using i_am.Pages.Main;
+using i_am.Services;
+using System.Collections.ObjectModel;
 
 namespace i_am.ViewModels
 {
@@ -52,13 +53,7 @@ namespace i_am.ViewModels
             {
                 if (notification.Type == "NewInvitation")
                 {
-                    bool isCaregiver = Preferences.Default.Get("IsCaregiver", false);
-
-                    // Nawigacja na podstawie roli
-                    if (isCaregiver)
-                        await Shell.Current.GoToAsync(nameof(ManageCareTakersPage));
-                    else
-                        await Shell.Current.GoToAsync(nameof(ManageCareGiversPage));
+                    await Shell.Current.GoToAsync(nameof(ManageConnectionsPage));
 
                     // Automatyczne usunięcie powiadomienia po przejściu
                     await _firestoreService.DeleteNotificationAsync(notification.Id);

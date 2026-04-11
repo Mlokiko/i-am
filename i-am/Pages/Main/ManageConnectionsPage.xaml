@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="i_am.Pages.CareTaker.ManageCareGiversPage"
+    x:Class="i_am.Pages.Main.ManageConnectionsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:i_am.Models"
     xmlns:vm="clr-namespace:i_am.ViewModels"
-    Title="Zarządzaj Opiekunami"
-    x:DataType="vm:ManageCareGiversViewModel">
+    Title="{Binding PageTitle}"
+    x:DataType="vm:ManageConnectionsViewModel">
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="25">
@@ -22,13 +22,13 @@
                     <Label
                         FontAttributes="Bold"
                         FontSize="18"
-                        Text="Zaproś Opiekuna"
+                        Text="{Binding InviteLabelText}"
                         TextColor="{AppThemeBinding Light={StaticResource Primary},
                                                     Dark={StaticResource PrimaryDarkText}}" />
                     <Entry
                         ClearButtonVisibility="WhileEditing"
                         Keyboard="Email"
-                        Placeholder="Adres email opiekuna"
+                        Placeholder="{Binding InvitePlaceholder}"
                         Text="{Binding InviteEmail}" />
                     <Button Command="{Binding InviteCommand}" Text="Wyślij Zaproszenie" />
                 </VerticalStackLayout>
@@ -100,7 +100,7 @@
                                         Grid.Column="1"
                                         BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight},
                                                                           Dark={StaticResource DangerDark}}"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageCareGiversViewModel}}, Path=CancelInvitationCommand}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageConnectionsViewModel}}, Path=CancelInvitationCommand}"
                                         CommandParameter="{Binding .}"
                                         CornerRadius="6"
                                         HeightRequest="35"
@@ -121,17 +121,16 @@
 
                                         <Button
                                             BackgroundColor="{StaticResource Success}"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageCareGiversViewModel}}, Path=AcceptCommand}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageConnectionsViewModel}}, Path=AcceptCommand}"
                                             CommandParameter="{Binding .}"
                                             CornerRadius="6"
                                             HeightRequest="35"
                                             Text="Akceptuj"
                                             TextColor="White" />
-
                                         <Button
                                             BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight},
                                                                               Dark={StaticResource DangerDark}}"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageCareGiversViewModel}}, Path=RejectCommand}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageConnectionsViewModel}}, Path=RejectCommand}"
                                             CommandParameter="{Binding .}"
                                             CornerRadius="6"
                                             HeightRequest="35"
@@ -149,13 +148,13 @@
                 <Label
                     FontAttributes="Bold"
                     FontSize="16"
-                    Text="Moi Opiekunowie" />
-                <CollectionView ItemsSource="{Binding CareGivers}">
+                    Text="{Binding ListTitleText}" />
+                <CollectionView ItemsSource="{Binding Connections}">
                     <CollectionView.EmptyView>
                         <Label
                             Padding="20"
                             HorizontalOptions="Center"
-                            Text="Nie masz jeszcze żadnych opiekunów."
+                            Text="{Binding EmptyListText}"
                             TextColor="{AppThemeBinding Light={StaticResource Gray500},
                                                         Dark={StaticResource Gray400}}" />
                     </CollectionView.EmptyView>
@@ -181,12 +180,11 @@
                                             TextColor="{AppThemeBinding Light={StaticResource Gray500},
                                                                         Dark={StaticResource Gray400}}" />
                                     </VerticalStackLayout>
-
                                     <Button
                                         Grid.Column="1"
                                         BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight},
                                                                           Dark={StaticResource DangerDark}}"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageCareGiversViewModel}}, Path=RemoveCareGiverCommand}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageConnectionsViewModel}}, Path=RemoveConnectionCommand}"
                                         CommandParameter="{Binding .}"
                                         CornerRadius="6"
                                         HeightRequest="35"

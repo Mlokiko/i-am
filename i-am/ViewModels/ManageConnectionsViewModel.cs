@@ -6,7 +6,7 @@ using i_am.Services;
 
 namespace i_am.ViewModels
 {
-    public partial class ManageCareTakersViewModel : ObservableObject
+    public partial class ManageConnectionsViewModel : ObservableObject
     {
         private readonly FirestoreService _firestoreService;
         private User? _currentUser;
@@ -17,13 +17,20 @@ namespace i_am.ViewModels
         private List<Invitation> _rawSent = new();
         private List<Invitation> _rawReceived = new();
 
-        public ObservableCollection<User> CareTakers { get; } = new();
+        public ObservableCollection<User> Connections { get; } = new();
         public ObservableCollection<Invitation> AllInvitations { get; } = new();
 
         [ObservableProperty]
         private string inviteEmail = string.Empty;
 
-        public ManageCareTakersViewModel(FirestoreService firestoreService)
+        // --- DYNAMICZNE TEKSTY DLA UI ---
+        [ObservableProperty] private string pageTitle = "Zarządzanie połączeniami";
+        [ObservableProperty] private string inviteLabelText = "Zaproś";
+        [ObservableProperty] private string invitePlaceholder = "Adres email";
+        [ObservableProperty] private string listTitleText = "Moi przypisani użytkownicy";
+        [ObservableProperty] private string emptyListText = "Brak połączeń.";
+
+        public ManageConnectionsViewModel(FirestoreService firestoreService)
         {
             _firestoreService = firestoreService;
         }
@@ -34,7 +41,29 @@ namespace i_am.ViewModels
             if (string.IsNullOrEmpty(myUid)) return;
 
             _currentUser = await _firestoreService.GetUserProfileAsync(myUid);
-            await LoadCareTakersAsync();
+
+            // Ustawiamy teksty na podstawie roli
+            if (_currentUser != null)
+            {
+                if (_currentUser.IsCaregiver)
+                {
+                    PageTitle = "Zarządzaj Podopiecznymi";
+                    InviteLabelText = "Zaproś Podopiecznego";
+                    InvitePlaceholder = "Adres email podopiecznego";
+                    ListTitleText = "Moi Podopieczni";
+                    EmptyListText = "Nie masz jeszcze żadnych podopiecznych.";
+                }
+                else
+                {
+                    PageTitle = "Zarządzaj Opiekunami";
+                    InviteLabelText = "Zaproś Opiekuna";
+                    InvitePlaceholder = "Adres email opiekuna";
+                    ListTitleText = "Moi Opiekunowie";
+                    EmptyListText = "Nie masz jeszcze żadnych opiekunów.";
+                }
+            }
+
+            await LoadConnectionsAsync();
 
             _sentListener = _firestoreService.ListenForSentInvitations(myUid, (freshList) =>
             {
@@ -70,21 +99,20 @@ namespace i_am.ViewModels
             foreach (var inv in combined) AllInvitations.Add(inv);
         }
 
-        private async Task LoadCareTakersAsync()
+        private async Task LoadConnectionsAsync()
         {
-            string? myUid = _firestoreService.GetCurrentUserId();
-            if (string.IsNullOrEmpty(myUid)) return;
+            if (_currentUser == null) return;
 
-            var profile = await _firestoreService.GetUserProfileAsync(myUid);
-            if (profile != null)
+            // Wybieramy odpowiednią listę ID w zależności od roli
+            var targetIds = _currentUser.IsCaregiver ? _currentUser.CaretakersID : _currentUser.CaregiversID;
+
+            var connectionsList = await _firestoreService.GetUsersByIdsAsync(targetIds);
+
+            MainThread.BeginInvokeOnMainThread(() =>
             {
-                var careTakers = await _firestoreService.GetUsersByIdsAsync(profile.CaretakersID);
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    CareTakers.Clear();
-                    foreach (var ct in careTakers) CareTakers.Add(ct);
-                });
-            }
+                Connections.Clear();
+                foreach (var user in connectionsList) Connections.Add(user);
+            });
         }
 
         [RelayCommand]
@@ -92,7 +120,7 @@ namespace i_am.ViewModels
         {
             if (string.IsNullOrWhiteSpace(InviteEmail))
             {
-                await Shell.Current.DisplayAlert("Błąd", "Podaj adres email podopiecznego.", "OK");
+                await Shell.Current.DisplayAlert("Błąd", "Podaj adres email.", "OK");
                 return;
             }
 
@@ -108,7 +136,6 @@ namespace i_am.ViewModels
 
             try
             {
-                // Zgodnie z Twoją nową sygnaturą: (senderId, senderName, isSenderCaregiver, receiverEmail)
                 bool success = await _firestoreService.SendInvitationAsync(
                     _currentUser.Id,
                     _currentUser.Name,
@@ -138,7 +165,7 @@ namespace i_am.ViewModels
         {
             if (inv == null) return;
             await _firestoreService.AcceptInvitationAsync(inv);
-            await LoadCareTakersAsync();
+            await LoadConnectionsAsync(); // Odświeża listę po akceptacji
         }
 
         [RelayCommand]
@@ -148,19 +175,24 @@ namespace i_am.ViewModels
         }
 
         [RelayCommand]
-        private async Task RemoveCareTakerAsync(User targetUser)
+        private async Task RemoveConnectionAsync(User targetUser)
         {
             if (targetUser == null || _currentUser == null) return;
 
-            bool confirm = await Shell.Current.DisplayAlert("Usuń", $"Czy usunąć {targetUser.Name} z listy?", "Tak", "Anuluj");
+            bool confirm = await Shell.Current.DisplayAlert("Usuń", $"Czy na pewno usunąć użytkownika {targetUser.Name} z listy?", "Tak", "Anuluj");
             if (confirm)
             {
+                // FirestoreService.RemoveAcceptedInvitationAsync wymaga kolejności: caregiverId, caretakerId
+                string caregiverId = _currentUser.IsCaregiver ? _currentUser.Id : targetUser.Id;
+                string caretakerId = _currentUser.IsCaregiver ? targetUser.Id : _currentUser.Id;
+
                 await _firestoreService.RemoveAcceptedInvitationAsync(
-                      _currentUser.Id,
-                      targetUser.Id,
+                      caregiverId,
+                      caretakerId,
                       _currentUser.Id,
                       _currentUser.Name);
-                await LoadCareTakersAsync();
+
+                await LoadConnectionsAsync();
             }
         }
     }

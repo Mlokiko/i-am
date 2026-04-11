@@ -15,8 +15,7 @@ namespace i_am
             Routing.RegisterRoute(nameof(ManageAccountPage), typeof(ManageAccountPage));
             Routing.RegisterRoute(nameof(InformationPage), typeof(InformationPage));
             Routing.RegisterRoute(nameof(NotificationsPage), typeof(NotificationsPage));
-            Routing.RegisterRoute(nameof(ManageCareTakersPage), typeof(ManageCareTakersPage));
-            Routing.RegisterRoute(nameof(ManageCareGiversPage), typeof(ManageCareGiversPage));
+            Routing.RegisterRoute(nameof(ManageConnectionsPage), typeof(ManageConnectionsPage));
             Routing.RegisterRoute(nameof(EditCareTakerQuestionsPage), typeof(EditCareTakerQuestionsPage));
             Routing.RegisterRoute(nameof(DailyActivityPage), typeof(DailyActivityPage));
             Routing.RegisterRoute(nameof(CalendarPage), typeof(CalendarPage));

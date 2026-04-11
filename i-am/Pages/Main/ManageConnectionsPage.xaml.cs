@@ -1,12 +1,12 @@
 using i_am.ViewModels;
 
-namespace i_am.Pages.CareGiver;
+namespace i_am.Pages.Main;
 
-public partial class ManageCareTakersPage : ContentPage
+public partial class ManageConnectionsPage : ContentPage
 {
-    private readonly ManageCareTakersViewModel _viewModel;
+    private readonly ManageConnectionsViewModel _viewModel;
 
-    public ManageCareTakersPage(ManageCareTakersViewModel viewModel)
+    public ManageConnectionsPage(ManageConnectionsViewModel viewModel)
     {
         InitializeComponent();
         _viewModel = viewModel;

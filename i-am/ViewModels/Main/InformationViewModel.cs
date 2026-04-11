@@ -12,9 +12,16 @@ namespace i_am.ViewModels
 
             try
             {
+                // Usuwamy spacje i inne znaki niebędące cyframi/plusem
+                string cleanedNumber = new string(phoneNumber.Where(c => char.IsDigit(c) || c == '+').ToArray());
+
                 if (PhoneDialer.Default.IsSupported)
                 {
-                    PhoneDialer.Default.Open(phoneNumber);
+                    PhoneDialer.Default.Open(cleanedNumber);
+                }
+                else
+                {
+                    await Shell.Current.DisplayAlert("Błąd", "Twoje urządzenie nie obsługuje funkcji wybierania numeru.", "OK");
                 }
             }
             catch (Exception ex)

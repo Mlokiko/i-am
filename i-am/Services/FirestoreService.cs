@@ -140,6 +140,31 @@ namespace i_am.Services
             }
         }
 
+        public async Task RemoveFcmTokenAsync()
+        {
+            string? uid = GetCurrentUserId();
+            if (string.IsNullOrEmpty(uid)) return;
+
+            try
+            {
+                var firestore = CrossFirebaseFirestore.Current;
+                var userDoc = firestore.GetCollection("users").GetDocument(uid);
+
+                // Zastępujemy token pustym stringiem, aby powiadomienia przestały trafiać na to urządzenie
+                await userDoc.UpdateDataAsync(new Dictionary<object, object>
+                {
+                    { "fcmToken", string.Empty }
+                });
+
+                // Opcjonalnie, jeśli chcesz całkowicie usunąć token z urządzenia:
+                // await Plugin.Firebase.CloudMessaging.CrossFirebaseCloudMessaging.Current.DeleteTokenAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Błąd podczas usuwania tokenu FCM: {ex.Message}");
+            }
+        }
+
 
 
         #endregion

@@ -60,6 +60,9 @@ namespace i_am.ViewModels
             {
                 try
                 {
+                    // Teoretycznie nie trzeba tego robić, bo w usuniętym koncie zawarty jest token
+                    // await _firestoreService.RemoveFcmTokenAsync();
+
                     await _firestoreService.DeleteAccountAndProfileAsync();
 
                     // Wyczyść zapisany typ konta

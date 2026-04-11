@@ -45,6 +45,11 @@
                         Text="Zarządzaj Opiekunami" />
 
                     <Button
+                        Command="{Binding GoToSettingsCommand}"
+                        HorizontalOptions="Fill"
+                        Text="Ustawienia" />
+
+                    <Button
                         Command="{Binding GoToManageAccountCommand}"
                         HorizontalOptions="Fill"
                         Text="Zarządzaj swoim kontem" />

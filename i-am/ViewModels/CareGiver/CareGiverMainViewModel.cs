@@ -30,6 +30,9 @@ namespace i_am.ViewModels
         private async Task GoToManageCareTakersAsync() => await Shell.Current.GoToAsync(nameof(ManageConnectionsPage));
 
         [RelayCommand]
+        private async Task GoToSettingsAsync() => await Shell.Current.GoToAsync(nameof(SettingsPage));
+
+        [RelayCommand]
         private async Task GoToManageAccountAsync() => await Shell.Current.GoToAsync(nameof(ManageAccountPage));
 
         [RelayCommand]
@@ -45,6 +48,8 @@ namespace i_am.ViewModels
 
                 if (confirm)
                 {
+                    await _firestoreService.RemoveFcmTokenAsync();
+
                     // Usuwa lokalny cache
                     Preferences.Default.Remove("IsCaregiver");
 

@@ -45,6 +45,11 @@
                         Text="Zarządzaj Podopiecznymi" />
 
                     <Button
+                        Command="{Binding GoToSettingsCommand}"
+                        HorizontalOptions="Fill"
+                        Text="Ustawienia" />
+
+                    <Button
                         Command="{Binding GoToManageAccountCommand}"
                         HorizontalOptions="Fill"
                         Text="Zarządzaj swoim kontem" />
@@ -64,7 +69,8 @@
                     FontSize="12"
                     HorizontalOptions="Center"
                     Text="Informacje alarmowe"
-                    TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}">
+                    TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                Dark={StaticResource Gray400}}">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToInformationCommand}" />
                     </Label.GestureRecognizers>

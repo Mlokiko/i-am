@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.Input;
 using i_am.Services;
+using System.Collections.ObjectModel;
 
 namespace i_am.ViewModels
 {
@@ -74,6 +75,13 @@ namespace i_am.ViewModels
                 "Ciemny" => AppTheme.Dark,
                 _ => AppTheme.Unspecified
             };
+        }
+
+        [RelayCommand]
+        private void OpenSystemSettings()
+        {
+            // Otwiera natywne, systemowe ustawienia dla tej konkretnej aplikacji (Android/iOS)
+            AppInfo.Current.ShowSettingsUI();
         }
     }
 }

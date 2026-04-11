@@ -51,6 +51,8 @@ namespace i_am
             builder.Services.AddTransient<i_am.Pages.Main.ManageConnectionsPage>();
             builder.Services.AddTransient<i_am.ViewModels.SettingsViewModel>();
             builder.Services.AddTransient<i_am.Pages.Main.SettingsPage>();
+            builder.Services.AddTransient<i_am.ViewModels.PermissionsViewModel>();
+            builder.Services.AddTransient<i_am.Pages.Main.PermissionsPage>();
 
             builder.Services.AddTransient<i_am.ViewModels.CareGiverMainViewModel>();
             builder.Services.AddTransient<CareGiverMainPage>();

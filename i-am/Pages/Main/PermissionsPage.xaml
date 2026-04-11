@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="i_am.Pages.Main.PermissionsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:i_am.ViewModels"
+    x:DataType="vm:PermissionsViewModel"
+    Shell.NavBarIsVisible="False">
+
+    <Grid Padding="20">
+        <VerticalStackLayout Spacing="25" VerticalOptions="Center">
+
+            <Image
+                Margin="0,0,0,20"
+                HeightRequest="150"
+                HorizontalOptions="Center"
+                Source="{AppThemeBinding Light=i_am_logo_black.svg,
+                                         Dark=i_am_logo_white.svg}" />
+
+            <Label
+                HorizontalTextAlignment="Center"
+                Text="Aby w pełni korzystać z możliwości aplikacji, potrzebujemy Twojej zgody na kilka rzeczy."
+                TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                            Dark={StaticResource Gray400}}" />
+
+            <Border
+                Padding="15"
+                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                  Dark={StaticResource SurfaceDark}}"
+                Stroke="{Binding NotificationStatusColor}"
+                StrokeShape="RoundRectangle 12"
+                StrokeThickness="2">
+                <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
+
+                    <VerticalStackLayout
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Spacing="5">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            Text="Powiadomienia Push" />
+                        <Label
+                            FontSize="13"
+                            Text="Służą do przypominania o codziennych ankietach, aktywności podopiecznych oraz informowaniu o statusie zaproszeń."
+                            TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                        Dark={StaticResource Gray400}}" />
+                    </VerticalStackLayout>
+
+                    <Button
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Command="{Binding RequestNotificationsCommand}"
+                        Text="Zezwól"
+                        VerticalOptions="Center">
+                        <Button.Triggers>
+                            <DataTrigger
+                                Binding="{Binding IsNotificationGranted}"
+                                TargetType="Button"
+                                Value="True">
+                                <Setter Property="IsVisible" Value="False" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+
+                    <Label
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        FontAttributes="Bold"
+                        IsVisible="{Binding IsNotificationGranted}"
+                        Text="Przyznano"
+                        TextColor="Green"
+                        VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Label
+                HorizontalTextAlignment="Center"
+                Text="Uprawnienio można potem zmienić w Ustawieniach."
+                TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                            Dark={StaticResource Gray400}}" />
+
+            <Button
+                Margin="0,40,0,0"
+                Command="{Binding FinishOnboardingCommand}"
+                FontAttributes="Bold"
+                HeightRequest="50"
+                Text="Rozpocznij" />
+
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

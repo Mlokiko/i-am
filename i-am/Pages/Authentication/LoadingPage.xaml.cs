@@ -17,6 +17,17 @@ public partial class LoadingPage : ContentPage
         base.OnAppearing();
         await Task.Delay(100);
 
+        // 1. Sprawdzamy czy to pierwsze uruchomienie
+        bool isFirstLaunch = Preferences.Default.Get("IsFirstLaunch", true);
+
+        if (isFirstLaunch)
+        {
+            // Kierujemy na ekran uprawnieñ i przerywamy dalsze ³adowanie
+            await Shell.Current.GoToAsync($"//{nameof(Main.PermissionsPage)}");
+            return;
+        }
+
+        // 2. Jeœli to nie jest pierwsze uruchomienie, sprawdzamy logowanie
         if (_firestoreService.IsUserLoggedIn())
         {
             await _firestoreService.UpdateFcmTokenAsync();

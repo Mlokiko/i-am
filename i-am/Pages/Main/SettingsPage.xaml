@@ -84,6 +84,43 @@
                 </Border>
             </VerticalStackLayout>
 
+            <VerticalStackLayout Spacing="10">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    Text="Uprawnienia systemowe"
+                    TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                Dark={StaticResource PrimaryDarkText}}" />
+
+                <Border
+                    Padding="15"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                      Dark={StaticResource SurfaceDark}}"
+                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
+                                             Dark={StaticResource Gray600}}"
+                    StrokeShape="RoundRectangle 12">
+                    <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                        <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                Text="Zarządzaj uprawnieniami" />
+                            <Label
+                                FontSize="13"
+                                Text="Otwórz ustawienia systemu, aby zmienić dostęp do powiadomień"
+                                TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                            Dark={StaticResource Gray400}}" />
+                        </VerticalStackLayout>
+
+                        <Button
+                            Grid.Column="1"
+                            Command="{Binding OpenSystemSettingsCommand}"
+                            Text="Otwórz"
+                            VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

@@ -108,7 +108,8 @@ namespace i_am.Services
 
             try
             {
-                // 1. Sprawdzenie i prośba o uprawnienia (Systemowe okienko)
+                // Nie wiem czy to tutaj nie jest zdublowane, pytamy o uprawnienia już w PermissionsPage, ale dla pewności sprawdzamy to jeszcze raz tutaj, bo bez tego aplikacja będzie crashować przy próbie pobrania tokenu na urządzeniach z Androidem 13+ które nie mają nadanych uprawnień do powiadomień
+                // Sprawdzenie i prośba o uprawnienia (Systemowe okienko)
                 var status = await Permissions.CheckStatusAsync<Permissions.PostNotifications>();
 
                 if (status != PermissionStatus.Granted)

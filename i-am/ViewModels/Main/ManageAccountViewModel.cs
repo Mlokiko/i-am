@@ -2,8 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using i_am.Pages.Authentication;
 using i_am.Services;
-using System.Data;
-using static Java.Util.Jar.Attributes;
+using System.Collections.ObjectModel;
 
 namespace i_am.ViewModels
 {
@@ -11,7 +10,7 @@ namespace i_am.ViewModels
     {
         private readonly FirestoreService _firestoreService;
 
-        // Właściwości bindowane do UI
+        // Właściwości bindowane do UI (Podgląd)
         [ObservableProperty] private string name = "Wczytywanie...";
         [ObservableProperty] private string email = "...";
         [ObservableProperty] private string phoneNumber = "...";
@@ -20,12 +19,28 @@ namespace i_am.ViewModels
         [ObservableProperty] private string role = "...";
         [ObservableProperty] private string createdAt = "...";
 
+        // --- ZMIENNE DLA TRYBU EDYCJI ---
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsNotEditing))]
+        private bool isEditing;
+
+        public bool IsNotEditing => !IsEditing;
+
+        [ObservableProperty] private string editPhoneNumber = string.Empty;
+        [ObservableProperty] private string editSex = string.Empty;
+
+        public ObservableCollection<string> SexOptions { get; } = new()
+        {
+            "Mężczyzna",
+            "Kobieta",
+            "Inne"
+        };
+
         public ManageAccountViewModel(FirestoreService firestoreService)
         {
             _firestoreService = firestoreService;
         }
 
-        // Metoda ładująca dane przy wejściu na ekran
         public async Task InitializeAsync()
         {
             string? uid = _firestoreService.GetCurrentUserId();
@@ -37,7 +52,7 @@ namespace i_am.ViewModels
                 {
                     Name = profile.Name;
                     Email = profile.Email;
-                    PhoneNumber = string.IsNullOrEmpty(profile.PhoneNumber) ? "Nie podano" : profile.PhoneNumber;
+                    PhoneNumber = string.IsNullOrWhiteSpace(profile.PhoneNumber) ? "Nie podano" : profile.PhoneNumber;
                     BirthDate = profile.BirthDate.ToLocalTime().ToString("yyyy.MM.dd");
                     Sex = profile.Sex;
                     Role = profile.IsCaregiver ? "Opiekun" : "Podopieczny";
@@ -46,7 +61,46 @@ namespace i_am.ViewModels
             }
         }
 
-        // Komenda do usuwania konta
+        // --- KOMENDY EDYCJI ---
+        [RelayCommand]
+        private void EnableEditMode()
+        {
+            EditPhoneNumber = PhoneNumber == "Nie podano" ? string.Empty : PhoneNumber;
+            EditSex = Sex;
+            IsEditing = true;
+        }
+
+        [RelayCommand]
+        private void CancelEdit()
+        {
+            IsEditing = false;
+        }
+
+        [RelayCommand]
+        private async Task SaveChangesAsync()
+        {
+            string? uid = _firestoreService.GetCurrentUserId();
+            if (string.IsNullOrEmpty(uid)) return;
+
+            try
+            {
+                // Zapisz w bazie danych
+                await _firestoreService.UpdateUserProfileAsync(uid, EditPhoneNumber, EditSex);
+
+                // Zaktualizuj widok podglądu
+                PhoneNumber = string.IsNullOrWhiteSpace(EditPhoneNumber) ? "Nie podano" : EditPhoneNumber;
+                Sex = EditSex;
+
+                IsEditing = false;
+                await Shell.Current.DisplayAlert("Sukces", "Twoje dane zostały zaktualizowane.", "OK");
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Błąd", ex.Message, "OK");
+            }
+        }
+
+        // --- KOMENDA USUWANIA KONTA ---
         [RelayCommand]
         private async Task DeleteAccountAsync()
         {
@@ -60,15 +114,9 @@ namespace i_am.ViewModels
             {
                 try
                 {
-                    // Teoretycznie nie trzeba tego robić, bo w usuwanym za chwilę koncie zawarty jest token
-                    // await _firestoreService.RemoveFcmTokenAsync();
-
+                    await _firestoreService.RemoveFcmTokenAsync();
                     await _firestoreService.DeleteAccountAndProfileAsync();
-
-                    // Wyczyść zapisany typ konta
                     Preferences.Default.Remove("IsCaregiver");
-
-                    // Przekieruj do LandingPage (wymaga podwójnego ukośnika dla resetu stosu nawigacji w Shell)
                     await Shell.Current.GoToAsync($"//{nameof(LandingPage)}");
                 }
                 catch (Exception ex)

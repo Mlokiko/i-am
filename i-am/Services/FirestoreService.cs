@@ -166,6 +166,25 @@ namespace i_am.Services
             }
         }
 
+        public async Task UpdateUserProfileAsync(string uid, string phoneNumber, string sex)
+        {
+            try
+            {
+                var firestore = CrossFirebaseFirestore.Current;
+                var userDoc = firestore.GetCollection("users").GetDocument(uid);
+
+                await userDoc.UpdateDataAsync(new Dictionary<object, object>
+                {
+                    { "phoneNumber", phoneNumber },
+                    { "sex", sex }
+                });
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Nie udało się zaktualizować profilu: {ex.Message}");
+            }
+        }
+
 
 
         #endregion

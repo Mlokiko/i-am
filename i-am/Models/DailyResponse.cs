@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Plugin.Firebase.Firestore;
+﻿using Plugin.Firebase.Firestore;
 
 namespace i_am.Models
 {

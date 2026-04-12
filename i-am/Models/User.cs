@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Plugin.Firebase.Firestore;
+﻿using Plugin.Firebase.Firestore;
 
 namespace i_am.Models
 {

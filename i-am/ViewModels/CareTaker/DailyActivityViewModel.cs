@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using i_am.Models;
 using i_am.Services;
-using Microsoft.Maui.Graphics;
 
 namespace i_am.ViewModels
 {

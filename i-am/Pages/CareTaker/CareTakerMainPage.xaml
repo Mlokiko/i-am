@@ -32,7 +32,7 @@
                     <Button
                         Command="{Binding GoToDailyActivityCommand}"
                         HorizontalOptions="Fill"
-                        Text="Codzienna aktywność" />
+                        Text="Codzienna Aktywność" />
 
                     <Button
                         Command="{Binding GoToCalendarCommand}"

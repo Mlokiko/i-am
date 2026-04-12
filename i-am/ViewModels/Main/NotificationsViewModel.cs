@@ -1,8 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using i_am.Models;
-using i_am.Pages.CareGiver;
-using i_am.Pages.CareTaker;
 using i_am.Pages.Main;
 using i_am.Services;
 using System.Collections.ObjectModel;

@@ -6,7 +6,6 @@ using i_am.Pages.CareGiver;
 using i_am.Pages.CareTaker;
 using i_am.Services;
 using System.Text.RegularExpressions;
-using static Java.Util.Jar.Attributes;
 
 namespace i_am.ViewModels
 {

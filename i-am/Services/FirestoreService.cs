@@ -2,6 +2,7 @@
 using Plugin.Firebase.Auth;
 using Plugin.Firebase.CloudMessaging;
 using Plugin.Firebase.Firestore;
+using Plugin.Firebase.Storage;
 
 namespace i_am.Services
 {
@@ -750,6 +751,23 @@ namespace i_am.Services
             catch (Exception)
             {
                 return new List<DailyResponse>();
+            }
+        }
+        public async Task<string> UploadDailyPhotoAsync(string uid, string dateId, string suffix, FileResult photo)
+        {
+            try
+            {
+                var storage = CrossFirebaseStorage.Current;
+                // Zmieniono nazwę pliku, np. 2026-04-12_front.jpg
+                var reference = storage.GetRootReference().GetChild($"daily_photos/{uid}/{dateId}_{suffix}.jpg");
+
+                await reference.PutFile(photo.FullPath).AwaitAsync();
+                return await reference.GetDownloadUrlAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Błąd wgrywania zdjęcia: {ex.Message}");
+                return string.Empty;
             }
         }
 

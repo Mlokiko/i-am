@@ -20,6 +20,13 @@ namespace i_am.ViewModels
         public DateTime Date { get; set; }
         public bool IsEmpty { get; set; } // Oznacza pustą kratkę przed 1. dniem miesiąca
         public string DayText => IsEmpty ? "" : Date.Day.ToString();
+        public bool HasFrontPhoto => Response != null && !string.IsNullOrEmpty(Response.FrontPhotoUrl);
+        public string FrontPhotoUrl => Response?.FrontPhotoUrl ?? string.Empty;
+
+        public bool HasRearPhoto => Response != null && !string.IsNullOrEmpty(Response.RearPhotoUrl);
+        public string RearPhotoUrl => Response?.RearPhotoUrl ?? string.Empty;
+
+        public bool HasAnyPhoto => HasFrontPhoto || HasRearPhoto;
 
         public DailyResponse? Response { get; set; }
         public bool HasData => Response != null;
@@ -87,6 +94,26 @@ namespace i_am.ViewModels
         [ObservableProperty] private string selectedCareTakerName = "Kliknij, aby wybrać...";
         [ObservableProperty] private CalendarDayItem? selectedDay;
         [ObservableProperty] private bool isDayDetailsVisible;
+
+        [ObservableProperty] private bool isPhotoEnlarged;
+        [ObservableProperty] private string enlargedPhotoUrl = string.Empty;
+
+        [RelayCommand]
+        private void EnlargePhoto(string url)
+        {
+            if (!string.IsNullOrEmpty(url))
+            {
+                EnlargedPhotoUrl = url;
+                IsPhotoEnlarged = true;
+            }
+        }
+
+        [RelayCommand]
+        private void CloseEnlargedPhoto()
+        {
+            IsPhotoEnlarged = false;
+            EnlargedPhotoUrl = string.Empty;
+        }
 
         public CalendarViewModel(FirestoreService firestoreService)
         {

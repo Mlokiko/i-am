@@ -19,6 +19,12 @@ namespace i_am.Models
 
         [FirestoreProperty("answers")]
         public List<GivenAnswer> Answers { get; set; } = new();
+
+        [FirestoreProperty("frontPhotoUrl")]
+        public string FrontPhotoUrl { get; set; } = string.Empty;
+
+        [FirestoreProperty("rearPhotoUrl")]
+        public string RearPhotoUrl { get; set; } = string.Empty;
     }
 
     public class GivenAnswer : IFirestoreObject

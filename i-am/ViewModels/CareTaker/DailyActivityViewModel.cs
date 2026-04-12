@@ -94,6 +94,17 @@ namespace i_am.ViewModels
         private readonly FirestoreService _firestoreService;
         private string _myUid = string.Empty;
 
+        private FileResult? _capturedPhoto;
+
+        private FileResult? _frontPhoto;
+        private FileResult? _rearPhoto;
+
+        [ObservableProperty] private ImageSource? frontPhotoPreview;
+        [ObservableProperty] private bool isFrontPhotoCaptured;
+
+        [ObservableProperty] private ImageSource? rearPhotoPreview;
+        [ObservableProperty] private bool isRearPhotoCaptured;
+
         [ObservableProperty] private bool isLoading = true;
         [ObservableProperty] private bool hasAlreadySubmitted;
 
@@ -197,6 +208,15 @@ namespace i_am.ViewModels
                     response.TotalScore += answer.PointsAwarded;
                 }
 
+                if (_frontPhoto != null)
+                {
+                    response.FrontPhotoUrl = await _firestoreService.UploadDailyPhotoAsync(_myUid, response.Id, "front", _frontPhoto);
+                }
+                if (_rearPhoto != null)
+                {
+                    response.RearPhotoUrl = await _firestoreService.UploadDailyPhotoAsync(_myUid, response.Id, "rear", _rearPhoto);
+                }
+
                 if (response.TotalScore <= -3) response.EvaluationStatus = "Sugeruje zaburzenie (Krytyczne)";
                 else if (response.TotalScore <= -2) response.EvaluationStatus = "Sugeruje stan zaniżony (Ostrzeżenie)";
                 else if (response.TotalScore <= -1) response.EvaluationStatus = "Niewspierające doznania";
@@ -213,6 +233,47 @@ namespace i_am.ViewModels
             {
                 IsLoading = false;
             }
+        }
+
+        [RelayCommand]
+        private async Task TakeFrontPhotoAsync()
+        {
+            _frontPhoto = await CapturePhotoHelperAsync();
+            if (_frontPhoto != null)
+            {
+                var stream = await _frontPhoto.OpenReadAsync();
+                FrontPhotoPreview = ImageSource.FromStream(() => stream);
+                IsFrontPhotoCaptured = true;
+            }
+        }
+
+        [RelayCommand]
+        private async Task TakeRearPhotoAsync()
+        {
+            _rearPhoto = await CapturePhotoHelperAsync();
+            if (_rearPhoto != null)
+            {
+                var stream = await _rearPhoto.OpenReadAsync();
+                RearPhotoPreview = ImageSource.FromStream(() => stream);
+                IsRearPhotoCaptured = true;
+            }
+        }
+
+        // Funkcja pomocnicza, żeby nie powielać kodu błędu aparatu
+        private async Task<FileResult?> CapturePhotoHelperAsync()
+        {
+            try
+            {
+                if (MediaPicker.Default.IsCaptureSupported)
+                    return await MediaPicker.Default.CapturePhotoAsync();
+
+                await Shell.Current.DisplayAlert("Błąd", "Twój telefon nie obsługuje tej funkcji.", "OK");
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Błąd", $"Nie udało się otworzyć aparatu: {ex.Message}", "OK");
+            }
+            return null;
         }
     }
 }

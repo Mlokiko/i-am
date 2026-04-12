@@ -94,8 +94,6 @@ namespace i_am.ViewModels
         private readonly FirestoreService _firestoreService;
         private string _myUid = string.Empty;
 
-        private FileResult? _capturedPhoto;
-
         private FileResult? _frontPhoto;
         private FileResult? _rearPhoto;
 

@@ -296,19 +296,25 @@
         <Grid IsVisible="{Binding IsPhotoEnlarged}" ZIndex="100">
             <BoxView BackgroundColor="Black" Opacity="0.95">
                 <BoxView.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding CloseEnlargedPhotoCommand}" />
+                    <TapGestureRecognizer Tapped="OnClosePhotoTapped" />
                 </BoxView.GestureRecognizers>
             </BoxView>
 
             <Image
+                x:Name="EnlargedImage"
                 Margin="10"
                 Aspect="AspectFit"
-                Source="{Binding EnlargedPhotoUrl}" />
+                Source="{Binding EnlargedPhotoUrl}">
+                <Image.GestureRecognizers>
+                    <PinchGestureRecognizer PinchUpdated="OnPinchUpdated" />
+                    <PanGestureRecognizer PanUpdated="OnPanUpdated" />
+                </Image.GestureRecognizers>
+            </Image>
 
             <Button
                 Margin="20"
                 BackgroundColor="Transparent"
-                Command="{Binding CloseEnlargedPhotoCommand}"
+                Clicked="OnClosePhotoTapped"
                 FontSize="30"
                 HorizontalOptions="End"
                 Text="✕"

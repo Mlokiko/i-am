@@ -74,6 +74,106 @@
                 </Grid>
             </Border>
 
+            <Border
+                Padding="15"
+                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                  Dark={StaticResource SurfaceDark}}"
+                Stroke="{Binding CameraStatusColor}"
+                StrokeShape="RoundRectangle 12"
+                StrokeThickness="2">
+                <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
+                    <VerticalStackLayout
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Spacing="5">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            Text="Aparat" />
+                        <Label
+                            FontSize="13"
+                            Text="Służy do robienia zdjęć twarzy oraz otoczenia na potrzeby dziennego raportu."
+                            TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                        Dark={StaticResource Gray400}}" />
+                    </VerticalStackLayout>
+
+                    <Button
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Command="{Binding RequestCameraCommand}"
+                        Text="Zezwól"
+                        VerticalOptions="Center">
+                        <Button.Triggers>
+                            <DataTrigger
+                                Binding="{Binding IsCameraGranted}"
+                                TargetType="Button"
+                                Value="True">
+                                <Setter Property="IsVisible" Value="False" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+
+                    <Label
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        FontAttributes="Bold"
+                        IsVisible="{Binding IsCameraGranted}"
+                        Text="Przyznano"
+                        TextColor="Green"
+                        VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border
+                Padding="15"
+                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
+                                                  Dark={StaticResource SurfaceDark}}"
+                Stroke="{Binding StorageStatusColor}"
+                StrokeShape="RoundRectangle 12"
+                StrokeThickness="2">
+                <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
+                    <VerticalStackLayout
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Spacing="5">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            Text="Pliki i multimedia" />
+                        <Label
+                            FontSize="13"
+                            Text="Służy do zapisywania zrobionych zdjęć oraz ich bezpiecznego wczytywania."
+                            TextColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                        Dark={StaticResource Gray400}}" />
+                    </VerticalStackLayout>
+
+                    <Button
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Command="{Binding RequestStorageCommand}"
+                        Text="Zezwól"
+                        VerticalOptions="Center">
+                        <Button.Triggers>
+                            <DataTrigger
+                                Binding="{Binding IsStorageGranted}"
+                                TargetType="Button"
+                                Value="True">
+                                <Setter Property="IsVisible" Value="False" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+
+                    <Label
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        FontAttributes="Bold"
+                        IsVisible="{Binding IsStorageGranted}"
+                        Text="Przyznano"
+                        TextColor="Green"
+                        VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
             <Label
                 HorizontalTextAlignment="Center"
                 Text="Uprawnienio można potem zmienić w Ustawieniach."

@@ -6,50 +6,97 @@ namespace i_am.ViewModels
 {
     public partial class PermissionsViewModel : ObservableObject
     {
-        [ObservableProperty]
-        private bool isNotificationGranted;
+        // --- POWIADOMIENIA ---
+        [ObservableProperty] private bool isNotificationGranted;
+        [ObservableProperty] private Color notificationStatusColor = Colors.DodgerBlue;
 
-        // Domyślny kolor to niebieski (standardowy stan przed zapytaniem)
-        [ObservableProperty]
-        private Color notificationStatusColor = Colors.DodgerBlue;
+        // --- KAMERA ---
+        [ObservableProperty] private bool isCameraGranted;
+        [ObservableProperty] private Color cameraStatusColor = Colors.DodgerBlue;
+
+        // --- PAMIĘĆ / MULTIMEDIA ---
+        [ObservableProperty] private bool isStorageGranted;
+        [ObservableProperty] private Color storageStatusColor = Colors.DodgerBlue;
 
         public async Task CheckCurrentPermissionsAsync()
         {
-            var status = await Permissions.CheckStatusAsync<Permissions.PostNotifications>();
-            UpdateUI(status);
+            var notifStatus = await Permissions.CheckStatusAsync<Permissions.PostNotifications>();
+            UpdateUI(notifStatus, "Notifications");
+
+            var cameraStatus = await Permissions.CheckStatusAsync<Permissions.Camera>();
+            UpdateUI(cameraStatus, "Camera");
+
+            // W zależności od wersji Androida (13+) może tu być wymagane Permissions.Photos
+            // Domyślnie używamy StorageRead do odczytu multimediów
+            var storageStatus = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
+            UpdateUI(storageStatus, "Storage");
         }
 
         [RelayCommand]
         private async Task RequestNotificationsAsync()
         {
-            // Zapisujemy, że użytkownik właśnie podjął próbę zapytania o uprawnienia
             Preferences.Default.Set("HasAskedForNotifications", true);
-
             var status = await Permissions.RequestAsync<Permissions.PostNotifications>();
-            UpdateUI(status);
+            UpdateUI(status, "Notifications");
         }
 
-        private void UpdateUI(PermissionStatus status)
+        [RelayCommand]
+        private async Task RequestCameraAsync()
         {
-            IsNotificationGranted = status == PermissionStatus.Granted;
+            Preferences.Default.Set("HasAskedForCamera", true);
+            var status = await Permissions.RequestAsync<Permissions.Camera>();
+            UpdateUI(status, "Camera");
+        }
 
-            // Sprawdzamy, czy aplikacja kiedykolwiek zapytała o uprawnienia
-            bool hasAsked = Preferences.Default.Get("HasAskedForNotifications", false);
+        [RelayCommand]
+        private async Task RequestStorageAsync()
+        {
+            Preferences.Default.Set("HasAskedForStorage", true);
+            var status = await Permissions.RequestAsync<Permissions.StorageRead>();
+            UpdateUI(status, "Storage");
+        }
 
-            if (status == PermissionStatus.Granted)
+        // Zunifikowana metoda aktualizacji UI
+        private void UpdateUI(PermissionStatus status, string type)
+        {
+            bool isGranted = status == PermissionStatus.Granted;
+            Color statusColor;
+
+            bool hasAsked = type switch
             {
-                // Przyznano -> Zielony
-                NotificationStatusColor = Colors.Green;
+                "Notifications" => Preferences.Default.Get("HasAskedForNotifications", false),
+                "Camera" => Preferences.Default.Get("HasAskedForCamera", false),
+                "Storage" => Preferences.Default.Get("HasAskedForStorage", false),
+                _ => false
+            };
+
+            if (isGranted)
+            {
+                statusColor = Colors.Green;
             }
             else if (!hasAsked)
             {
-                // Jeszcze nie kliknięto "Zezwól" -> Wymuszamy Niebieski
-                NotificationStatusColor = Colors.DodgerBlue;
+                statusColor = Colors.DodgerBlue;
             }
             else
             {
-                // Zapytano, ale odrzucono lub zablokowano -> Czerwony
-                NotificationStatusColor = Colors.Red;
+                statusColor = Colors.Red;
+            }
+
+            switch (type)
+            {
+                case "Notifications":
+                    IsNotificationGranted = isGranted;
+                    NotificationStatusColor = statusColor;
+                    break;
+                case "Camera":
+                    IsCameraGranted = isGranted;
+                    CameraStatusColor = statusColor;
+                    break;
+                case "Storage":
+                    IsStorageGranted = isGranted;
+                    StorageStatusColor = statusColor;
+                    break;
             }
         }
 

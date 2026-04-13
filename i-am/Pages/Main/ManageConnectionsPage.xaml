@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:i_am.Models"
     xmlns:vm="clr-namespace:i_am.ViewModels"
+    x:Name="RootPage"
     Title="{Binding PageTitle}"
     x:DataType="vm:ManageConnectionsViewModel">
 
@@ -100,7 +101,7 @@
                                         Grid.Column="1"
                                         BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight},
                                                                           Dark={StaticResource DangerDark}}"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageConnectionsViewModel}}, Path=CancelInvitationCommand}"
+                                        Command="{Binding BindingContext.CancelInvitationCommand, Source={x:Reference RootPage}}"
                                         CommandParameter="{Binding .}"
                                         CornerRadius="6"
                                         HeightRequest="35"
@@ -121,7 +122,7 @@
 
                                         <Button
                                             BackgroundColor="{StaticResource Success}"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageConnectionsViewModel}}, Path=AcceptCommand}"
+                                            Command="{Binding BindingContext.AcceptCommand, Source={x:Reference RootPage}}"
                                             CommandParameter="{Binding .}"
                                             CornerRadius="6"
                                             HeightRequest="35"
@@ -130,7 +131,7 @@
                                         <Button
                                             BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight},
                                                                               Dark={StaticResource DangerDark}}"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageConnectionsViewModel}}, Path=RejectCommand}"
+                                            Command="{Binding BindingContext.RejectCommand, Source={x:Reference RootPage}}"
                                             CommandParameter="{Binding .}"
                                             CornerRadius="6"
                                             HeightRequest="35"
@@ -184,7 +185,7 @@
                                         Grid.Column="1"
                                         BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight},
                                                                           Dark={StaticResource DangerDark}}"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageConnectionsViewModel}}, Path=RemoveConnectionCommand}"
+                                        Command="{Binding BindingContext.RemoveConnectionCommand, Source={x:Reference RootPage}}"
                                         CommandParameter="{Binding .}"
                                         CornerRadius="6"
                                         HeightRequest="35"

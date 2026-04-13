@@ -186,6 +186,21 @@ namespace i_am.Services
             }
         }
 
+        public IDisposable ListenForUserProfileUpdates(string uid, Action<User> onUpdate)
+        {
+            var firestore = CrossFirebaseFirestore.Current;
+
+            return firestore.GetCollection("users")
+                .GetDocument(uid)
+                .AddSnapshotListener<User>((snapshot) =>
+                {
+                    if (snapshot.Data != null)
+                    {
+                        onUpdate?.Invoke(snapshot.Data);
+                    }
+                });
+        }
+
 
 
         #endregion

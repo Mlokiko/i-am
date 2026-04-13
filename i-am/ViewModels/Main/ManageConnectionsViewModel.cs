@@ -13,6 +13,7 @@ namespace i_am.ViewModels
 
         private IDisposable? _sentListener;
         private IDisposable? _receivedListener;
+        private IDisposable? _userProfileListener;
 
         private List<Invitation> _rawSent = new();
         private List<Invitation> _rawReceived = new();
@@ -63,7 +64,11 @@ namespace i_am.ViewModels
                 }
             }
 
-            await LoadConnectionsAsync();
+            _userProfileListener = _firestoreService.ListenForUserProfileUpdates(myUid, async (updatedUser) =>
+            {
+                _currentUser = updatedUser;
+                await LoadConnectionsAsync();
+            });
 
             _sentListener = _firestoreService.ListenForSentInvitations(myUid, (freshList) =>
             {
@@ -90,6 +95,7 @@ namespace i_am.ViewModels
         {
             _sentListener?.Dispose();
             _receivedListener?.Dispose();
+            _userProfileListener?.Dispose();
         }
 
         private void UpdateCombinedInvitationsList()
@@ -166,7 +172,6 @@ namespace i_am.ViewModels
         {
             if (inv == null) return;
             await _firestoreService.AcceptInvitationAsync(inv);
-            await LoadConnectionsAsync(); // Odświeża listę po akceptacji
         }
 
         [RelayCommand]
@@ -192,8 +197,6 @@ namespace i_am.ViewModels
                       caretakerId,
                       _currentUser.Id,
                       _currentUser.Name);
-
-                await LoadConnectionsAsync();
             }
         }
     }

@@ -26,9 +26,17 @@ namespace i_am.ViewModels
         [RelayCommand]
         private async Task LoginAsync()
         {
+            // 1. Walidacja pustości pól
             if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
             {
                 await Shell.Current.DisplayAlert("Błąd", "Wypełnij wszystkie pola", "OK");
+                return;
+            }
+
+            // 2. Sprawdzenie połączenia z internetem przed akcją
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+            {
+                await Shell.Current.DisplayAlert("Brak połączenia", "Sprawdź swoje połączenie z internetem i spróbuj ponownie.", "OK");
                 return;
             }
 
@@ -37,7 +45,7 @@ namespace i_am.ViewModels
                 string uid = await _firestoreService.LoginAsync(Email, Password);
                 var profile = await _firestoreService.GetUserProfileAsync(uid);
 
-                // Czyszczenie pól
+                // Czyszczenie pól po udanym zalogowaniu
                 Email = string.Empty;
                 Password = string.Empty;
 
@@ -55,7 +63,9 @@ namespace i_am.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Logowanie nie powiodło się", ex.Message, "OK");
+                // 3. Tłumaczenie błędu na polski
+                string errorMessage = TranslateFirebaseError(ex.Message);
+                await Shell.Current.DisplayAlert("Logowanie nie powiodło się", errorMessage, "OK");
             }
         }
 
@@ -63,6 +73,52 @@ namespace i_am.ViewModels
         private async Task GoToRegisterAsync()
         {
             await Shell.Current.GoToAsync(nameof(RegisterPage));
+        }
+
+        /// <summary>
+        /// Metoda tłumacząca surowe błędy Firebase (zawarte w ex.Message) na przyjazne komunikaty.
+        /// </summary>
+        private string TranslateFirebaseError(string errorMessage)
+        {
+            string lowerError = errorMessage.ToLower();
+
+            // Błędne dane (email lub hasło)
+            if (lowerError.Contains("the supplied auth credential is incorrect, malformed or has expired"))
+            {
+                return "Nieprawidłowy adres email lub hasło.";
+            }
+
+            // Format emaila
+            if (lowerError.Contains("the email address is badly formatted."))
+            {
+                return "Podany adres email ma nieprawidłowy format.";
+            }
+
+            // Zbyt wiele prób logowania
+            if (lowerError.Contains("too-many-requests"))
+            {
+                return "Zbyt wiele nieudanych prób logowania. Ze względów bezpieczeństwa konto zostało tymczasowo zablokowane. Spróbuj ponownie później.";
+            }
+
+            // Konto wyłączone przez administratora (w Firebase Console)
+            if (lowerError.Contains("user-disabled"))
+            {
+                return "To konto zostało zablokowane.";
+            }
+
+            // Brak połączenia z internetem
+            if (lowerError.Contains("network error"))
+            {
+                return "Urządzenie nie ma połączenia z internetem.";
+            }
+
+            // Inne problemy z siecią, które przepuściło Connectivity (np. timeout serwera)
+            if (lowerError.Contains("network-request-failed") || lowerError.Contains("timeout") || lowerError.Contains("offline"))
+            {
+                return "Wystąpił problem z serwerem lub połączeniem sieciowym. Spróbuj ponownie za chwilę.";
+            }
+
+            return "Wystąpił nieoczekiwany błąd. Spróbuj ponownie później.";
         }
     }
 }

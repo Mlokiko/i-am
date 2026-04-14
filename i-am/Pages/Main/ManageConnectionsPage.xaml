@@ -22,9 +22,7 @@
                     <Label
                         FontAttributes="Bold"
                         FontSize="18"
-                        Text="{Binding InviteLabelText}"
-                        TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                    Dark={StaticResource PrimaryDarkText}}" />
+                        Text="{Binding InviteLabelText}" />
                     <Entry
                         ClearButtonVisibility="WhileEditing"
                         Keyboard="Email"

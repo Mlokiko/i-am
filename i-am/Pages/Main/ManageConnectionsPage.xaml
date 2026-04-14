@@ -83,14 +83,14 @@
                                                     TargetType="Label"
                                                     Value="Pending">
                                                     <Setter Property="Text" Value="Oczekujące..." />
-                                                    <Setter Property="TextColor" Value="{StaticResource Warning}" />
+                                                    <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource WarningLight}, Dark={StaticResource WarningDark}}" />
                                                 </DataTrigger>
                                                 <DataTrigger
                                                     Binding="{Binding Status}"
                                                     TargetType="Label"
                                                     Value="Rejected">
                                                     <Setter Property="Text" Value="Odrzucone" />
-                                                    <Setter Property="TextColor" Value="{StaticResource Danger}" />
+                                                    <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource WarningLight}, Dark={StaticResource WarningDark}}" />
                                                 </DataTrigger>
                                             </Label.Triggers>
                                         </Label>
@@ -120,7 +120,8 @@
                                         </HorizontalStackLayout.Triggers>
 
                                         <Button
-                                            BackgroundColor="{StaticResource Success}"
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource SuccessLight},
+                                                                              Dark={StaticResource SuccessDark}}"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageConnectionsViewModel}}, Path=AcceptCommand}"
                                             CommandParameter="{Binding .}"
                                             CornerRadius="6"

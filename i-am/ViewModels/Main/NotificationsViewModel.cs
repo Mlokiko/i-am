@@ -21,7 +21,7 @@ namespace i_am.ViewModels
 
         public void Initialize()
         {
-            string? myUid = _firestoreService.GetCurrentUserId();
+            string? myUid = Preferences.Get("UserId", string.Empty);
             if (string.IsNullOrEmpty(myUid)) return;
 
             _notificationListener = _firestoreService.ListenForNotifications(myUid, (freshList) =>

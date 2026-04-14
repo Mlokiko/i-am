@@ -71,7 +71,7 @@ namespace i_am.ViewModels
         {
             if (CareTakers.Any()) return;
 
-            string? myUid = _firestoreService.GetCurrentUserId();
+            string? myUid = Preferences.Get("UserId", string.Empty);
             if (string.IsNullOrEmpty(myUid)) return;
 
             var profile = await _firestoreService.GetUserProfileAsync(myUid);

@@ -43,7 +43,7 @@ namespace i_am.ViewModels
 
         public async Task InitializeAsync()
         {
-            string? uid = _firestoreService.GetCurrentUserId();
+            string? uid = Preferences.Get("UserId", string.Empty);
             if (!string.IsNullOrEmpty(uid))
             {
                 var profile = await _firestoreService.GetUserProfileAsync(uid);
@@ -79,7 +79,7 @@ namespace i_am.ViewModels
         [RelayCommand]
         private async Task SaveChangesAsync()
         {
-            string? uid = _firestoreService.GetCurrentUserId();
+            string? uid = Preferences.Get("UserId", string.Empty);
             if (string.IsNullOrEmpty(uid)) return;
 
             try
@@ -117,6 +117,7 @@ namespace i_am.ViewModels
                     await _firestoreService.RemoveFcmTokenAsync();
                     await _firestoreService.DeleteAccountAndProfileAsync();
                     Preferences.Default.Remove("IsCaregiver");
+                    Preferences.Default.Remove("UserId");
                     await Shell.Current.GoToAsync($"//{nameof(LandingPage)}");
                 }
                 catch (Exception ex)

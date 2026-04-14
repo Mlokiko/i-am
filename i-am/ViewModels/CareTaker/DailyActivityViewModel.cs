@@ -115,7 +115,7 @@ namespace i_am.ViewModels
         public async Task InitializeAsync()
         {
             IsLoading = true;
-            _myUid = _firestoreService.GetCurrentUserId() ?? string.Empty;
+            _myUid = Preferences.Default.Get("UserId", string.Empty);
 
             if (string.IsNullOrEmpty(_myUid)) return;
 

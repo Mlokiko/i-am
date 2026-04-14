@@ -52,6 +52,7 @@ namespace i_am.ViewModels
 
                     // Usuwa lokalny cache
                     Preferences.Default.Remove("IsCaregiver");
+                    Preferences.Default.Remove("UserId");
 
                     // Firebase czyści sesje
                     await _firestoreService.SignOutAsync();

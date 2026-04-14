@@ -104,7 +104,7 @@ namespace i_am.Services
         // Każde logowanie powinno aktualizować token FCM, żeby mieć pewność, że powiadomienia push będą docierać do właściwego urządzenia (np. jeśli ktoś się zaloguje na nowym telefonie, stary token przestaje być ważny)
         public async Task UpdateFcmTokenAsync()
         {
-            string? uid = GetCurrentUserId();
+            string? uid = Preferences.Get("UserId", string.Empty);
             if (string.IsNullOrEmpty(uid)) return;
 
             try
@@ -144,7 +144,7 @@ namespace i_am.Services
 
         public async Task RemoveFcmTokenAsync()
         {
-            string? uid = GetCurrentUserId();
+            string? uid = Preferences.Get("UserId", string.Empty);
             if (string.IsNullOrEmpty(uid)) return;
 
             try
@@ -346,7 +346,7 @@ namespace i_am.Services
         public async Task AcceptInvitationAsync(Invitation request)
         {
             var firestore = CrossFirebaseFirestore.Current;
-            string? myUid = GetCurrentUserId();
+            string? myUid = Preferences.Get("UserId", string.Empty);
             var batch = firestore.CreateBatch();
             if (string.IsNullOrEmpty(myUid)) return;
 
@@ -383,7 +383,7 @@ namespace i_am.Services
         public async Task RejectInvitationAsync(Invitation invitation)
         {
             var firestore = CrossFirebaseFirestore.Current;
-            string? myUid = GetCurrentUserId();
+            string? myUid = Preferences.Get("UserId", string.Empty);
             if (string.IsNullOrEmpty(myUid)) return;
 
             // Aktualizacja statusu zaproszenia na "Rejected"

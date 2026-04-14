@@ -38,7 +38,7 @@ namespace i_am.ViewModels
 
         public async Task InitializeAsync()
         {
-            string? myUid = _firestoreService.GetCurrentUserId();
+            string? myUid = Preferences.Get("UserId", string.Empty);
             if (string.IsNullOrEmpty(myUid)) return;
 
             _currentUser = await _firestoreService.GetUserProfileAsync(myUid);

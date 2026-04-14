@@ -126,7 +126,7 @@ namespace i_am.ViewModels
             if (CareTakers.Any()) return;
 
             IsLoading = true;
-            _myUid = _firestoreService.GetCurrentUserId() ?? string.Empty;
+            _myUid = Preferences.Default.Get("UserId", string.Empty);
             IsCareGiver = Preferences.Default.Get("IsCaregiver", false);
 
             if (IsCareGiver)

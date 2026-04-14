@@ -23,7 +23,6 @@ namespace i_am.ViewModels
             _firestoreService = firestoreService;
         }
 
-        // Zamiast zdarzenia "Clicked" używamy Komend (Commands)
         [RelayCommand]
         private async Task LoginAsync()
         {
@@ -44,6 +43,7 @@ namespace i_am.ViewModels
 
                 if (profile != null)
                 {
+                    Preferences.Default.Set("UserId", profile.Id);
                     Preferences.Default.Set("IsCaregiver", profile.IsCaregiver);
                     await _firestoreService.UpdateFcmTokenAsync();
 

@@ -150,8 +150,7 @@ namespace i_am.ViewModels
 
                 if (success)
                 {
-                    // Nie potrzebujemy tego alertu, bo lista zaproszeń odświeży się automatycznie dzięki listenerowi.
-                    //await Shell.Current.DisplayAlert("Sukces", "Zaproszenie zostało wysłane.", "OK");
+                    await Shell.Current.DisplayAlert("Sukces", "Zaproszenie zostało wysłane.", "OK");
                     InviteEmail = string.Empty;
                 }
             }

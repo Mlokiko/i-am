@@ -5,7 +5,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:i_am.Models"
     xmlns:vm="clr-namespace:i_am.ViewModels"
-    x:Name="NotificationsRoot"
     Title="Powiadomienia"
     x:DataType="vm:NotificationsViewModel">
 
@@ -77,7 +76,7 @@
                                                             Dark={StaticResource Gray400}}"
                                 VerticalOptions="Start">
                                 <Label.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding BindingContext.DismissNotificationCommand, Source={x:Reference NotificationsRoot}}" CommandParameter="{Binding .}" />
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NotificationsViewModel}}, Path=DismissNotificationCommand}" CommandParameter="{Binding .}" />
                                 </Label.GestureRecognizers>
                             </Label>
 
@@ -88,7 +87,7 @@
                                 Margin="0,15,0,0"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource Gray500},
                                                                   Dark={StaticResource Gray600}}"
-                                Command="{Binding BindingContext.NotificationActionCommand, Source={x:Reference NotificationsRoot}}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NotificationsViewModel}}, Path=NotificationActionCommand}"
                                 CommandParameter="{Binding .}"
                                 CornerRadius="8"
                                 HeightRequest="40"

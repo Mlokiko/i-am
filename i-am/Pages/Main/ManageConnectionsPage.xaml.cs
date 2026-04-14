@@ -13,10 +13,13 @@ public partial class ManageConnectionsPage : ContentPage
         BindingContext = _viewModel;
     }
 
-    protected override async void OnAppearing()
+    protected override void OnAppearing()
     {
         base.OnAppearing();
-        await _viewModel.InitializeAsync();
+        Dispatcher.Dispatch(async () =>
+        {
+            await _viewModel.InitializeAsync();
+        });
     }
 
     protected override void OnDisappearing()

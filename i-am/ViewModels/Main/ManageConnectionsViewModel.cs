@@ -24,16 +24,37 @@ namespace i_am.ViewModels
         [ObservableProperty]
         private string inviteEmail = string.Empty;
 
-        // --- DYNAMICZNE TEKSTY DLA UI ---
-        [ObservableProperty] private string pageTitle = "Zarządzanie połączeniami";
-        [ObservableProperty] private string inviteLabelText = "Zaproś";
-        [ObservableProperty] private string invitePlaceholder = "Adres email";
-        [ObservableProperty] private string listTitleText = "Moi przypisani użytkownicy";
-        [ObservableProperty] private string emptyListText = "Brak połączeń.";
+        [ObservableProperty] private string pageTitle = "";
+        [ObservableProperty] private string inviteLabelText = "";
+        [ObservableProperty] private string invitePlaceholder = "";
+        [ObservableProperty] private string listTitleText = "";
+        [ObservableProperty] private string emptyListText = "";
 
         public ManageConnectionsViewModel(FirestoreService firestoreService)
         {
             _firestoreService = firestoreService;
+            bool isCaregiver = Preferences.Default.Get("IsCaregiver", false);
+            SetUiTexts(isCaregiver);
+        }
+
+        private void SetUiTexts(bool isCaregiver)
+        {
+            if (isCaregiver)
+            {
+                PageTitle = "Zarządzaj Podopiecznymi";
+                InviteLabelText = "Zaproś Podopiecznego";
+                InvitePlaceholder = "Adres email podopiecznego";
+                ListTitleText = "Moi Podopieczni";
+                EmptyListText = "Nie masz jeszcze żadnych podopiecznych.";
+            }
+            else
+            {
+                PageTitle = "Zarządzaj Opiekunami";
+                InviteLabelText = "Zaproś Opiekuna";
+                InvitePlaceholder = "Adres email opiekuna";
+                ListTitleText = "Moi Opiekunowie";
+                EmptyListText = "Nie masz jeszcze żadnych opiekunów.";
+            }
         }
 
         public async Task InitializeAsync()
@@ -42,27 +63,6 @@ namespace i_am.ViewModels
             if (string.IsNullOrEmpty(myUid)) return;
 
             _currentUser = await _firestoreService.GetUserProfileAsync(myUid);
-
-            // Ustawiamy teksty na podstawie roli
-            if (_currentUser != null)
-            {
-                if (_currentUser.IsCaregiver)
-                {
-                    PageTitle = "Zarządzaj Podopiecznymi";
-                    InviteLabelText = "Zaproś Podopiecznego";
-                    InvitePlaceholder = "Adres email podopiecznego";
-                    ListTitleText = "Moi Podopieczni";
-                    EmptyListText = "Nie masz jeszcze żadnych podopiecznych.";
-                }
-                else
-                {
-                    PageTitle = "Zarządzaj Opiekunami";
-                    InviteLabelText = "Zaproś Opiekuna";
-                    InvitePlaceholder = "Adres email opiekuna";
-                    ListTitleText = "Moi Opiekunowie";
-                    EmptyListText = "Nie masz jeszcze żadnych opiekunów.";
-                }
-            }
 
             _userProfileListener = _firestoreService.ListenForUserProfileUpdates(myUid, async (updatedUser) =>
             {
@@ -109,9 +109,7 @@ namespace i_am.ViewModels
         {
             if (_currentUser == null) return;
 
-            // Wybieramy odpowiednią listę ID w zależności od roli
             var targetIds = _currentUser.IsCaregiver ? _currentUser.CaretakersID : _currentUser.CaregiversID;
-
             var connectionsList = await _firestoreService.GetUsersByIdsAsync(targetIds);
 
             MainThread.BeginInvokeOnMainThread(() =>
@@ -150,8 +148,6 @@ namespace i_am.ViewModels
 
                 if (success)
                 {
-                    // Nie potrzebujemy tego alertu, bo lista zaproszeń odświeży się automatycznie dzięki listenerowi.
-                    //await Shell.Current.DisplayAlert("Sukces", "Zaproszenie zostało wysłane.", "OK");
                     InviteEmail = string.Empty;
                 }
             }
@@ -188,7 +184,6 @@ namespace i_am.ViewModels
             bool confirm = await Shell.Current.DisplayAlert("Usuń", $"Czy na pewno usunąć użytkownika {targetUser.Name} z listy?", "Tak", "Anuluj");
             if (confirm)
             {
-                // FirestoreService.RemoveAcceptedInvitationAsync wymaga kolejności: caregiverId, caretakerId
                 string caregiverId = _currentUser.IsCaregiver ? _currentUser.Id : targetUser.Id;
                 string caretakerId = _currentUser.IsCaregiver ? targetUser.Id : _currentUser.Id;
 

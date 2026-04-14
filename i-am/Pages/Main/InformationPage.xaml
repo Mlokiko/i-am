@@ -20,23 +20,15 @@
                     HorizontalOptions="Center"
                     Text="Szybki kontakt" />
 
-                <Border
-                    Padding="15"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                      Dark={StaticResource SurfaceDark}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                             Dark={StaticResource Gray600}}"
-                    StrokeShape="RoundRectangle 12">
+                <Border Style="{StaticResource CardBorderStyle}">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding OpenPhoneDialerCommand}" CommandParameter="999" />
                     </Border.GestureRecognizers>
                     <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
                         <Label
                             Grid.Column="0"
-                            FontAttributes="Bold"
-                            FontSize="16"
-                            Text="Pogotowie ratunkowe"
-                            VerticalOptions="Center" />
+                            Style="{StaticResource TitleLabelStyle}"
+                            Text="Pogotowie ratunkowe" />
                         <Label
                             Grid.Column="1"
                             FontAttributes="Bold"
@@ -48,23 +40,15 @@
                     </Grid>
                 </Border>
 
-                <Border
-                    Padding="15"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                      Dark={StaticResource SurfaceDark}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                             Dark={StaticResource Gray600}}"
-                    StrokeShape="RoundRectangle 12">
+                <Border Style="{StaticResource CardBorderStyle}">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding OpenPhoneDialerCommand}" CommandParameter="112" />
                     </Border.GestureRecognizers>
                     <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
                         <Label
                             Grid.Column="0"
-                            FontAttributes="Bold"
-                            FontSize="16"
-                            Text="Numer alarmowy"
-                            VerticalOptions="Center" />
+                            Style="{StaticResource TitleLabelStyle}"
+                            Text="Numer alarmowy" />
                         <Label
                             Grid.Column="1"
                             FontAttributes="Bold"
@@ -76,23 +60,15 @@
                     </Grid>
                 </Border>
 
-                <Border
-                    Padding="15"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                      Dark={StaticResource SurfaceDark}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                             Dark={StaticResource Gray600}}"
-                    StrokeShape="RoundRectangle 12">
+                <Border Style="{StaticResource CardBorderStyle}">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding OpenPhoneDialerCommand}" CommandParameter="800012005" />
                     </Border.GestureRecognizers>
                     <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
                         <Label
                             Grid.Column="0"
-                            FontAttributes="Bold"
-                            FontSize="16"
-                            Text="Telefon Pogadania"
-                            VerticalOptions="Center" />
+                            Style="{StaticResource TitleLabelStyle}"
+                            Text="Telefon Pogadania" />
                         <Label
                             Grid.Column="1"
                             FontAttributes="Bold"
@@ -104,21 +80,13 @@
                     </Grid>
                 </Border>
 
-                <Border
-                    Padding="15"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                      Dark={StaticResource SurfaceDark}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                             Dark={StaticResource Gray600}}"
-                    StrokeShape="RoundRectangle 12">
+                <Border Style="{StaticResource CardBorderStyle}">
                     <VerticalStackLayout Spacing="12">
                         <Grid ColumnDefinitions="*, Auto">
                             <Label
                                 Grid.Column="0"
-                                FontAttributes="Bold"
-                                FontSize="16"
-                                Text="Wsparcie dla Dorosłych"
-                                VerticalOptions="Center" />
+                                Style="{StaticResource TitleLabelStyle}"
+                                Text="Wsparcie dla Dorosłych" />
                             <Label
                                 Grid.Column="1"
                                 FontAttributes="Bold"
@@ -132,15 +100,11 @@
                                 </Label.GestureRecognizers>
                             </Label>
                         </Grid>
-
-                        <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" />
-
+                        <BoxView Margin="0" Style="{StaticResource DividerStyle}" />
                         <HorizontalStackLayout HorizontalOptions="End" Spacing="5">
                             <Label
-                                FontSize="14"
+                                Style="{StaticResource SubtitleLabelStyle}"
                                 Text="Czat:"
-                                TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                            Dark={StaticResource Gray400}}"
                                 VerticalOptions="Center" />
                             <Label
                                 FontAttributes="Bold"
@@ -157,21 +121,13 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <Border
-                    Padding="15"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                      Dark={StaticResource SurfaceDark}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                             Dark={StaticResource Gray600}}"
-                    StrokeShape="RoundRectangle 12">
+                <Border Style="{StaticResource CardBorderStyle}">
                     <VerticalStackLayout Spacing="12">
                         <Grid ColumnDefinitions="*, Auto">
                             <Label
                                 Grid.Column="0"
-                                FontAttributes="Bold"
-                                FontSize="16"
-                                Text="Telefon Zaufania Dzieci"
-                                VerticalOptions="Center" />
+                                Style="{StaticResource TitleLabelStyle}"
+                                Text="Telefon Zaufania Dzieci" />
                             <Label
                                 Grid.Column="1"
                                 FontAttributes="Bold"
@@ -185,15 +141,11 @@
                                 </Label.GestureRecognizers>
                             </Label>
                         </Grid>
-
-                        <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" />
-
+                        <BoxView Margin="0" Style="{StaticResource DividerStyle}" />
                         <HorizontalStackLayout HorizontalOptions="End" Spacing="5">
                             <Label
-                                FontSize="14"
+                                Style="{StaticResource SubtitleLabelStyle}"
                                 Text="Czat:"
-                                TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                            Dark={StaticResource Gray400}}"
                                 VerticalOptions="Center" />
                             <Label
                                 FontAttributes="Bold"
@@ -210,21 +162,13 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <Border
-                    Padding="15"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                      Dark={StaticResource SurfaceDark}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                             Dark={StaticResource Gray600}}"
-                    StrokeShape="RoundRectangle 12">
+                <Border Style="{StaticResource CardBorderStyle}">
                     <VerticalStackLayout Spacing="12">
                         <Grid ColumnDefinitions="*, Auto">
                             <Label
                                 Grid.Column="0"
-                                FontAttributes="Bold"
-                                FontSize="16"
-                                Text="Telefon Zaufania Dorosłych"
-                                VerticalOptions="Center" />
+                                Style="{StaticResource TitleLabelStyle}"
+                                Text="Telefon Zaufania Dorosłych" />
                             <Label
                                 Grid.Column="1"
                                 FontAttributes="Bold"
@@ -238,15 +182,11 @@
                                 </Label.GestureRecognizers>
                             </Label>
                         </Grid>
-
-                        <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" />
-
+                        <BoxView Margin="0" Style="{StaticResource DividerStyle}" />
                         <HorizontalStackLayout HorizontalOptions="End" Spacing="5">
                             <Label
-                                FontSize="14"
+                                Style="{StaticResource SubtitleLabelStyle}"
                                 Text="Strona:"
-                                TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                            Dark={StaticResource Gray400}}"
                                 VerticalOptions="Center" />
                             <Label
                                 FontAttributes="Bold"
@@ -271,14 +211,7 @@
                     FontSize="22"
                     HorizontalOptions="Center"
                     Text="O depresji" />
-
-                <Border
-                    Padding="20"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                      Dark={StaticResource SurfaceDark}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                             Dark={StaticResource Gray600}}"
-                    StrokeShape="RoundRectangle 12">
+                <Border Style="{StaticResource CardBorderStyle}">
                     <VerticalStackLayout Spacing="30">
                         <Label
                             FontSize="15"

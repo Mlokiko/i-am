@@ -24,35 +24,12 @@
 
             <ScrollView>
                 <VerticalStackLayout Spacing="10">
-                    <Button
-                        Command="{Binding GoToNotificationsCommand}"
-                        HorizontalOptions="Fill"
-                        Text="Powiadomienia" />
-
-                    <Button
-                        Command="{Binding GoToDailyActivityCommand}"
-                        HorizontalOptions="Fill"
-                        Text="Codzienna Aktywność" />
-
-                    <Button
-                        Command="{Binding GoToCalendarCommand}"
-                        HorizontalOptions="Fill"
-                        Text="Kalendarz" />
-
-                    <Button
-                        Command="{Binding GoToManageCareGiversCommand}"
-                        HorizontalOptions="Fill"
-                        Text="Zarządzaj Opiekunami" />
-
-                    <Button
-                        Command="{Binding GoToSettingsCommand}"
-                        HorizontalOptions="Fill"
-                        Text="Ustawienia" />
-
-                    <Button
-                        Command="{Binding GoToManageAccountCommand}"
-                        HorizontalOptions="Fill"
-                        Text="Zarządzaj swoim kontem" />
+                    <Button Command="{Binding GoToNotificationsCommand}" Text="Powiadomienia" />
+                    <Button Command="{Binding GoToDailyActivityCommand}" Text="Codzienna Aktywność" />
+                    <Button Command="{Binding GoToCalendarCommand}" Text="Kalendarz" />
+                    <Button Command="{Binding GoToManageCareGiversCommand}" Text="Zarządzaj Opiekunami" />
+                    <Button Command="{Binding GoToSettingsCommand}" Text="Ustawienia" />
+                    <Button Command="{Binding GoToManageAccountCommand}" Text="Zarządzaj swoim kontem" />
                 </VerticalStackLayout>
             </ScrollView>
 
@@ -60,24 +37,19 @@
                 <Button
                     Margin="0,10,0,0"
                     Command="{Binding LogoutCommand}"
-                    HorizontalOptions="Fill"
                     Style="{StaticResource DangerButtonStyle}"
                     Text="Wyloguj się" />
-
                 <Label
                     Padding="20"
-                    FontSize="12"
                     HorizontalOptions="Center"
-                    Text="Informacje alarmowe"
-                    TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                Dark={StaticResource Gray400}}">
+                    Style="{StaticResource SubtitleLabelStyle}"
+                    Text="Informacje alarmowe">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToInformationCommand}" />
                     </Label.GestureRecognizers>
                 </Label>
-
             </VerticalStackLayout>
+
         </VerticalStackLayout>
     </Grid>
-
 </ContentPage>

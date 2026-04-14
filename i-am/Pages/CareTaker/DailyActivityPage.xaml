@@ -33,9 +33,8 @@
             <Label
                 FontSize="16"
                 HorizontalTextAlignment="Center"
-                Text="Twój dzisiejszy raport został już wysłany do opiekuna. Wróć tu jutro!"
-                TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                            Dark={StaticResource Gray400}}" />
+                Style="{StaticResource SubtitleLabelStyle}"
+                Text="Twój dzisiejszy raport został już wysłany do opiekuna. Wróć tu jutro!" />
         </VerticalStackLayout>
 
         <ScrollView>
@@ -96,11 +95,9 @@
                                                 Stroke="{Binding BorderColor}"
                                                 StrokeShape="RoundRectangle 8"
                                                 StrokeThickness="2">
-
                                                 <Border.GestureRecognizers>
                                                     <TapGestureRecognizer Command="{Binding ToggleCommand}" />
                                                 </Border.GestureRecognizers>
-
                                                 <Label
                                                     FontAttributes="{Binding TextFontAttributes}"
                                                     HorizontalOptions="Start"
@@ -108,7 +105,6 @@
                                                     Text="{Binding Option.Text}"
                                                     TextColor="{Binding TxtColor}"
                                                     VerticalOptions="Center" />
-
                                             </Border>
                                         </DataTemplate>
                                     </BindableLayout.ItemTemplate>
@@ -116,12 +112,11 @@
 
                                 <Border
                                     Padding="10"
-                                    BackgroundColor="{Binding EditorBgColor}"
                                     IsVisible="{Binding IsOpen}"
-                                    Stroke="{Binding EditorBorderColor}"
-                                    StrokeShape="RoundRectangle 8">
+                                    Style="{StaticResource InputBorderStyle}">
                                     <Editor
                                         AutoSize="TextChanges"
+                                        BackgroundColor="Transparent"
                                         MinimumHeightRequest="80"
                                         Placeholder="Twoja odpowiedź..."
                                         Text="{Binding OpenText}"
@@ -140,7 +135,6 @@
                         Text="Zdjęcia dnia (Opcjonalne)" />
 
                     <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
-
                         <VerticalStackLayout Grid.Column="0" Spacing="5">
                             <Border
                                 Padding="2"
@@ -177,9 +171,7 @@
                                 FontSize="12"
                                 HeightRequest="35"
                                 IsVisible="{Binding IsFrontPhotoCaptured}"
-                                Text="Zmień"
-                                TextColor="{AppThemeBinding Light=Black,
-                                                            Dark=White}" />
+                                Text="Zmień" />
                         </VerticalStackLayout>
 
                         <VerticalStackLayout Grid.Column="1" Spacing="5">
@@ -218,13 +210,11 @@
                                 FontSize="12"
                                 HeightRequest="35"
                                 IsVisible="{Binding IsRearPhotoCaptured}"
-                                Text="Zmień"
-                                TextColor="{AppThemeBinding Light=Black,
-                                                            Dark=White}" />
+                                Text="Zmień" />
                         </VerticalStackLayout>
-
                     </Grid>
                 </VerticalStackLayout>
+
                 <Button
                     Margin="0,20,0,40"
                     BackgroundColor="{StaticResource Primary}"
@@ -233,7 +223,6 @@
                     HeightRequest="50"
                     Text="Wyślij Raport"
                     TextColor="White" />
-
             </VerticalStackLayout>
         </ScrollView>
     </Grid>

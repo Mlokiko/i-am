@@ -14,26 +14,14 @@
         <VerticalStackLayout Padding="15" Spacing="20">
 
             <VerticalStackLayout IsVisible="{Binding IsCareTakerSelectionVisible}" Spacing="5">
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="16"
-                    Text="Wybierz podopiecznego:"
-                    TextColor="{AppThemeBinding Light=Black,
-                                                Dark=White}" />
-                <Border
-                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                      Dark={StaticResource SurfaceDark}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                             Dark={StaticResource Gray600}}"
-                    StrokeShape="RoundRectangle 8">
+                <Label Style="{StaticResource FormLabelStyle}" Text="Wybierz podopiecznego:" />
+                <Border Padding="0" Style="{StaticResource CardBorderStyle}">
                     <Grid HeightRequest="50">
                         <Label
                             Margin="15,0,0,0"
                             FontSize="15"
                             HorizontalOptions="Start"
                             Text="{Binding SelectedCareTakerName}"
-                            TextColor="{AppThemeBinding Light=Black,
-                                                        Dark=White}"
                             VerticalOptions="Center" />
                         <Button
                             BackgroundColor="Transparent"
@@ -45,7 +33,6 @@
             </VerticalStackLayout>
 
             <VerticalStackLayout IsVisible="{Binding IsQuestionsVisible}" Spacing="15">
-
                 <Grid
                     Margin="0,10,0,0"
                     ColumnDefinitions="*, Auto"
@@ -55,45 +42,31 @@
                         FontAttributes="Bold"
                         FontSize="16"
                         Text="Lista pytań"
-                        TextColor="{AppThemeBinding Light=Black,
-                                                    Dark=White}"
                         VerticalOptions="Center" />
                     <Button
                         Grid.Column="1"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource Primary},
-                                                          Dark={StaticResource PrimaryDark}}"
                         Command="{Binding OpenNewQuestionEditorCommand}"
                         HeightRequest="40"
-                        Text="Dodaj pytanie"
-                        TextColor="White" />
+                        Text="Dodaj pytanie" />
                 </Grid>
 
                 <ActivityIndicator
                     Margin="0,20,0,0"
                     HorizontalOptions="Center"
                     IsRunning="{Binding IsLoadingQuestions}"
-                    IsVisible="{Binding IsLoadingQuestions}"
-                    Color="{AppThemeBinding Light={StaticResource Primary},
-                                            Dark={StaticResource PrimaryDark}}" />
+                    IsVisible="{Binding IsLoadingQuestions}" />
 
                 <Label
                     Padding="20"
                     HorizontalOptions="Center"
                     IsVisible="{Binding HasNoQuestions}"
-                    Text="Brak pytań. Dodaj pierwsze używając przycisku wyżej."
-                    TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                Dark={StaticResource Gray400}}" />
+                    Style="{StaticResource SubtitleLabelStyle}"
+                    Text="Brak pytań. Dodaj pierwsze używając przycisku wyżej." />
 
                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding Questions}" Spacing="10">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="vm:QuestionItemViewModel">
-                            <Border
-                                Padding="15"
-                                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                                  Dark={StaticResource SurfaceDark}}"
-                                Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                                         Dark={StaticResource Gray600}}"
-                                StrokeShape="RoundRectangle 8">
+                            <Border Style="{StaticResource CardBorderStyle}">
                                 <Grid ColumnDefinitions="*, Auto" RowSpacing="5">
                                     <VerticalStackLayout
                                         Grid.Column="0"
@@ -103,15 +76,12 @@
                                         <Label
                                             FontAttributes="Bold"
                                             FontSize="15"
-                                            Text="{Binding Text}"
-                                            TextColor="{AppThemeBinding Light=Black,
-                                                                        Dark=White}" />
+                                            Text="{Binding Text}" />
                                         <HorizontalStackLayout Spacing="8">
                                             <Label
                                                 FontSize="12"
-                                                Text="{Binding TypeText}"
-                                                TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                                            Dark={StaticResource Gray400}}" />
+                                                Style="{StaticResource SubtitleLabelStyle}"
+                                                Text="{Binding TypeText}" />
                                             <Label
                                                 FontAttributes="Bold"
                                                 FontSize="12"
@@ -145,16 +115,13 @@
                                             Clicked="OnEditQuestionClicked"
                                             CommandParameter="{Binding Template}"
                                             HeightRequest="35"
-                                            Text="Edytuj"
-                                            TextColor="White" />
+                                            Text="Edytuj" />
                                         <Button
-                                            BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight},
-                                                                              Dark={StaticResource DangerDark}}"
                                             Clicked="OnDeleteQuestionClicked"
                                             CommandParameter="{Binding Template}"
                                             HeightRequest="35"
-                                            Text="Usuń"
-                                            TextColor="White" />
+                                            Style="{StaticResource DangerButtonStyle}"
+                                            Text="Usuń" />
                                     </VerticalStackLayout>
                                 </Grid>
                             </Border>
@@ -164,46 +131,26 @@
             </VerticalStackLayout>
 
             <VerticalStackLayout IsVisible="{Binding IsEditorVisible}" Spacing="15">
-
                 <Label
                     Margin="0,0,0,10"
                     FontAttributes="Bold"
                     FontSize="20"
                     HorizontalOptions="Center"
-                    Text="{Binding EditorTitle}"
-                    TextColor="{AppThemeBinding Light=Black,
-                                                Dark=White}" />
+                    Text="{Binding EditorTitle}" />
 
-                <Label
-                    FontAttributes="Bold"
-                    Text="Treść pytania:"
-                    TextColor="{AppThemeBinding Light=Black,
-                                                Dark=White}" />
-                <Border
-                    Padding="5"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                      Dark={StaticResource SurfaceDark}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                             Dark={StaticResource Gray600}}"
-                    StrokeShape="RoundRectangle 8">
+                <Label Style="{StaticResource FormLabelStyle}" Text="Treść pytania:" />
+                <Border Style="{StaticResource InputBorderStyle}">
                     <Editor
+                        AutoSize="TextChanges"
                         BackgroundColor="Transparent"
-                        HeightRequest="80"
+                        MinimumHeightRequest="80"
                         Placeholder="np. Jak się dzisiaj czujesz?"
-                        PlaceholderColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                           Dark={StaticResource Gray400}}"
-                        Text="{Binding EditorQuestionText}"
-                        TextColor="{AppThemeBinding Light=Black,
-                                                    Dark=White}" />
+                        Text="{Binding EditorQuestionText}" />
                 </Border>
 
                 <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
                     <VerticalStackLayout Grid.Column="0" Spacing="5">
-                        <Label
-                            FontAttributes="Bold"
-                            Text="Typ pytania:"
-                            TextColor="{AppThemeBinding Light=Black,
-                                                        Dark=White}" />
+                        <Label Style="{StaticResource FormLabelStyle}" Text="Typ pytania:" />
                         <HorizontalStackLayout Spacing="5">
                             <Button
                                 BackgroundColor="{AppThemeBinding Light={StaticResource Primary},
@@ -212,8 +159,7 @@
                                 CommandParameter="Zamknięte"
                                 HeightRequest="40"
                                 Opacity="{Binding ClosedTypeOpacity}"
-                                Text="Zamk."
-                                TextColor="White" />
+                                Text="Zamk." />
                             <Button
                                 BackgroundColor="{AppThemeBinding Light={StaticResource Primary},
                                                                   Dark={StaticResource PrimaryDark}}"
@@ -221,27 +167,18 @@
                                 CommandParameter="Otwarte"
                                 HeightRequest="40"
                                 Opacity="{Binding OpenTypeOpacity}"
-                                Text="Otw."
-                                TextColor="White" />
+                                Text="Otw." />
                         </HorizontalStackLayout>
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Grid.Column="1" Spacing="5">
-                        <Label
-                            FontAttributes="Bold"
-                            Text="Tylko losowe?"
-                            TextColor="{AppThemeBinding Light=Black,
-                                                        Dark=White}" />
+                        <Label Style="{StaticResource FormLabelStyle}" Text="Tylko losowe?" />
                         <Switch HorizontalOptions="Start" IsToggled="{Binding EditorIsRandomPool}" />
                     </VerticalStackLayout>
                 </Grid>
 
                 <VerticalStackLayout IsVisible="{Binding IsClosedType}" Spacing="10">
-                    <Label
-                        FontAttributes="Bold"
-                        Text="Maks. liczba odpowiedzi:"
-                        TextColor="{AppThemeBinding Light=Black,
-                                                    Dark=White}" />
+                    <Label Style="{StaticResource FormLabelStyle}" Text="Maks. liczba odpowiedzi:" />
                     <HorizontalStackLayout Spacing="15" VerticalOptions="Center">
                         <Button
                             BackgroundColor="{AppThemeBinding Light={StaticResource Gray500},
@@ -250,14 +187,11 @@
                             FontAttributes="Bold"
                             HeightRequest="45"
                             Text="-"
-                            TextColor="White"
                             WidthRequest="45" />
                         <Label
                             FontAttributes="Bold"
                             FontSize="20"
                             Text="{Binding EditorMaxSelections, StringFormat='{0}'}"
-                            TextColor="{AppThemeBinding Light=Black,
-                                                        Dark=White}"
                             VerticalOptions="Center" />
                         <Button
                             BackgroundColor="{AppThemeBinding Light={StaticResource Gray500},
@@ -266,7 +200,6 @@
                             FontAttributes="Bold"
                             HeightRequest="45"
                             Text="+"
-                            TextColor="White"
                             WidthRequest="45" />
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
@@ -275,70 +208,42 @@
                     <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
                         <Label
                             Grid.Column="0"
-                            FontAttributes="Bold"
-                            Text="Odpowiedzi i ich punkty:"
-                            TextColor="{AppThemeBinding Light=Black,
-                                                        Dark=White}"
-                            VerticalOptions="Center" />
+                            Style="{StaticResource FormLabelStyle}"
+                            Text="Odpowiedzi i ich punkty:" />
                         <Button
                             Grid.Column="1"
-                            BackgroundColor="{AppThemeBinding Light={StaticResource Primary},
-                                                              Dark={StaticResource PrimaryDark}}"
                             Command="{Binding AddOptionCommand}"
                             HeightRequest="35"
-                            Text="Dodaj"
-                            TextColor="White" />
+                            Text="Dodaj" />
                     </Grid>
 
                     <VerticalStackLayout BindableLayout.ItemsSource="{Binding EditorOptions}" Spacing="10">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="vm:EditorOptionItem">
                                 <Grid ColumnDefinitions="*, 70, Auto" ColumnSpacing="10">
-                                    <Border
-                                        Grid.Column="0"
-                                        BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                                          Dark={StaticResource SurfaceDark}}"
-                                        Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                                                 Dark={StaticResource Gray600}}"
-                                        StrokeShape="RoundRectangle 8">
+                                    <Border Grid.Column="0" Style="{StaticResource CompactInputBorderStyle}">
                                         <Entry
-                                            Margin="10,0"
+                                            Margin="5,0"
                                             BackgroundColor="Transparent"
                                             Placeholder="Odpowiedź"
-                                            PlaceholderColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                                               Dark={StaticResource Gray400}}"
-                                            Text="{Binding Text}"
-                                            TextColor="{AppThemeBinding Light=Black,
-                                                                        Dark=White}" />
+                                            Text="{Binding Text}" />
                                     </Border>
-                                    <Border
-                                        Grid.Column="1"
-                                        BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                                          Dark={StaticResource SurfaceDark}}"
-                                        Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                                                 Dark={StaticResource Gray600}}"
-                                        StrokeShape="RoundRectangle 8">
+                                    <Border Grid.Column="1" Style="{StaticResource CompactInputBorderStyle}">
                                         <Entry
                                             Margin="5,0"
                                             BackgroundColor="Transparent"
                                             HorizontalTextAlignment="Center"
                                             Keyboard="Numeric"
                                             Placeholder="Pkt"
-                                            PlaceholderColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                                               Dark={StaticResource Gray400}}"
-                                            Text="{Binding Points}"
-                                            TextColor="{AppThemeBinding Light=Black,
-                                                                        Dark=White}" />
+                                            Text="{Binding Points}" />
                                     </Border>
                                     <Button
                                         Grid.Column="2"
                                         Padding="0"
-                                        BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight},
-                                                                          Dark={StaticResource DangerDark}}"
                                         Clicked="OnRemoveOptionClicked"
                                         CommandParameter="{Binding .}"
+                                        Style="{StaticResource DangerButtonStyle}"
                                         Text="X"
-                                        TextColor="White"
                                         WidthRequest="45" />
                                 </Grid>
                             </DataTemplate>
@@ -356,8 +261,7 @@
                                                           Dark={StaticResource Gray600}}"
                         Command="{Binding CancelEditCommand}"
                         HeightRequest="50"
-                        Text="Anuluj"
-                        TextColor="White" />
+                        Text="Anuluj" />
                     <Button
                         Grid.Column="1"
                         BackgroundColor="{AppThemeBinding Light={StaticResource SuccessLight},
@@ -365,8 +269,7 @@
                         Command="{Binding SaveQuestionCommand}"
                         FontAttributes="Bold"
                         HeightRequest="50"
-                        Text="Zapisz"
-                        TextColor="White" />
+                        Text="Zapisz" />
                 </Grid>
 
             </VerticalStackLayout>

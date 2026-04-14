@@ -11,31 +11,13 @@
         <VerticalStackLayout Padding="20" Spacing="25">
 
             <VerticalStackLayout Spacing="10">
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="16"
-                    Text="Wygląd"
-                    TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                Dark={StaticResource PrimaryDarkText}}" />
+                <Label Style="{StaticResource HeaderLabelStyle}" Text="Wygląd" />
 
-                <Border
-                    Padding="15"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                      Dark={StaticResource SurfaceDark}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                             Dark={StaticResource Gray600}}"
-                    StrokeShape="RoundRectangle 12">
+                <Border Style="{StaticResource CardBorderStyle}">
                     <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
                         <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="16"
-                                Text="Motyw aplikacji" />
-                            <Label
-                                FontSize="13"
-                                Text="Wybierz preferowany wygląd"
-                                TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                            Dark={StaticResource Gray400}}" />
+                            <Label Style="{StaticResource TitleLabelStyle}" Text="Motyw aplikacji" />
+                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="Wybierz preferowany wygląd" />
                         </VerticalStackLayout>
 
                         <Picker
@@ -49,31 +31,13 @@
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="10">
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="16"
-                    Text="Powiadomienia"
-                    TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                Dark={StaticResource PrimaryDarkText}}" />
+                <Label Style="{StaticResource HeaderLabelStyle}" Text="Powiadomienia" />
 
-                <Border
-                    Padding="15"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                      Dark={StaticResource SurfaceDark}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                             Dark={StaticResource Gray600}}"
-                    StrokeShape="RoundRectangle 12">
+                <Border Style="{StaticResource CardBorderStyle}">
                     <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
                         <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="16"
-                                Text="Powiadomienia Push" />
-                            <Label
-                                FontSize="13"
-                                Text="Otrzymuj alerty i przypomnienia"
-                                TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                            Dark={StaticResource Gray400}}" />
+                            <Label Style="{StaticResource TitleLabelStyle}" Text="Powiadomienia Push" />
+                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="Otrzymuj alerty i przypomnienia" />
                         </VerticalStackLayout>
 
                         <Switch
@@ -85,31 +49,13 @@
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="10">
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="16"
-                    Text="Uprawnienia systemowe"
-                    TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                Dark={StaticResource PrimaryDarkText}}" />
+                <Label Style="{StaticResource HeaderLabelStyle}" Text="Uprawnienia systemowe" />
 
-                <Border
-                    Padding="15"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                      Dark={StaticResource SurfaceDark}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                             Dark={StaticResource Gray600}}"
-                    StrokeShape="RoundRectangle 12">
+                <Border Style="{StaticResource CardBorderStyle}">
                     <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
                         <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="16"
-                                Text="Zarządzaj uprawnieniami" />
-                            <Label
-                                FontSize="13"
-                                Text="Otwórz ustawienia systemu, aby zmienić dostęp do powiadomień"
-                                TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                            Dark={StaticResource Gray400}}" />
+                            <Label Style="{StaticResource TitleLabelStyle}" Text="Zarządzaj uprawnieniami" />
+                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="Otwórz ustawienia systemu, aby zmienić dostęp do powiadomień" />
                         </VerticalStackLayout>
 
                         <Button

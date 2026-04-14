@@ -19,32 +19,23 @@
 
             <Label
                 HorizontalTextAlignment="Center"
-                Text="Aby w pełni korzystać z możliwości aplikacji, potrzebujemy Twojej zgody na kilka rzeczy."
-                TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                            Dark={StaticResource Gray400}}" />
+                Style="{StaticResource SubtitleLabelStyle}"
+                Text="Aby w pełni korzystać z możliwości aplikacji, potrzebujemy Twojej zgody na kilka rzeczy." />
 
             <Border
-                Padding="15"
-                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                  Dark={StaticResource SurfaceDark}}"
                 Stroke="{Binding NotificationStatusColor}"
-                StrokeShape="RoundRectangle 12"
-                StrokeThickness="2">
+                StrokeThickness="2"
+                Style="{StaticResource CardBorderStyle}">
                 <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
-
                     <VerticalStackLayout
                         Grid.Row="0"
                         Grid.Column="0"
                         Spacing="5">
                         <Label
-                            FontAttributes="Bold"
                             FontSize="18"
+                            Style="{StaticResource TitleLabelStyle}"
                             Text="Powiadomienia Push" />
-                        <Label
-                            FontSize="13"
-                            Text="Służą do przypominania o codziennych ankietach, aktywności podopiecznych oraz informowaniu o statusie zaproszeń."
-                            TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                        Dark={StaticResource Gray400}}" />
+                        <Label Style="{StaticResource SubtitleLabelStyle}" Text="Służą do przypominania o codziennych ankietach, aktywności podopiecznych oraz informowaniu o statusie zaproszeń." />
                     </VerticalStackLayout>
 
                     <Button
@@ -75,26 +66,19 @@
             </Border>
 
             <Border
-                Padding="15"
-                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                  Dark={StaticResource SurfaceDark}}"
                 Stroke="{Binding CameraStatusColor}"
-                StrokeShape="RoundRectangle 12"
-                StrokeThickness="2">
+                StrokeThickness="2"
+                Style="{StaticResource CardBorderStyle}">
                 <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
                     <VerticalStackLayout
                         Grid.Row="0"
                         Grid.Column="0"
                         Spacing="5">
                         <Label
-                            FontAttributes="Bold"
                             FontSize="18"
+                            Style="{StaticResource TitleLabelStyle}"
                             Text="Aparat" />
-                        <Label
-                            FontSize="13"
-                            Text="Służy do robienia zdjęć twarzy oraz otoczenia na potrzeby dziennego raportu."
-                            TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                        Dark={StaticResource Gray400}}" />
+                        <Label Style="{StaticResource SubtitleLabelStyle}" Text="Służy do robienia zdjęć twarzy oraz otoczenia na potrzeby dziennego raportu." />
                     </VerticalStackLayout>
 
                     <Button
@@ -125,26 +109,19 @@
             </Border>
 
             <Border
-                Padding="15"
-                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                  Dark={StaticResource SurfaceDark}}"
                 Stroke="{Binding StorageStatusColor}"
-                StrokeShape="RoundRectangle 12"
-                StrokeThickness="2">
+                StrokeThickness="2"
+                Style="{StaticResource CardBorderStyle}">
                 <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
                     <VerticalStackLayout
                         Grid.Row="0"
                         Grid.Column="0"
                         Spacing="5">
                         <Label
-                            FontAttributes="Bold"
                             FontSize="18"
+                            Style="{StaticResource TitleLabelStyle}"
                             Text="Pliki i multimedia" />
-                        <Label
-                            FontSize="13"
-                            Text="Służy do zapisywania zrobionych zdjęć oraz ich bezpiecznego wczytywania."
-                            TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                        Dark={StaticResource Gray400}}" />
+                        <Label Style="{StaticResource SubtitleLabelStyle}" Text="Służy do zapisywania zrobionych zdjęć oraz ich bezpiecznego wczytywania." />
                     </VerticalStackLayout>
 
                     <Button
@@ -176,9 +153,8 @@
 
             <Label
                 HorizontalTextAlignment="Center"
-                Text="Uprawnienia można potem zmienić w Ustawieniach."
-                TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                            Dark={StaticResource Gray400}}" />
+                Style="{StaticResource SubtitleLabelStyle}"
+                Text="Uprawnienia można potem zmienić w Ustawieniach." />
 
             <Button
                 Margin="0,40,0,0"

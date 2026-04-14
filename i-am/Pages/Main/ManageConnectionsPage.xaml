@@ -11,51 +11,42 @@
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="25">
 
-            <Border
-                Padding="15"
-                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                  Dark={StaticResource SurfaceDark}}"
-                Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                         Dark={StaticResource Gray600}}"
-                StrokeShape="RoundRectangle 12">
+            <Border Style="{StaticResource CardBorderStyle}">
                 <VerticalStackLayout Spacing="10">
                     <Label
-                        FontAttributes="Bold"
                         FontSize="18"
+                        Style="{StaticResource TitleLabelStyle}"
                         Text="{Binding InviteLabelText}" />
-                    <Entry
-                        ClearButtonVisibility="WhileEditing"
-                        Keyboard="Email"
-                        Placeholder="{Binding InvitePlaceholder}"
-                        Text="{Binding InviteEmail}" />
+
+                    <Border Style="{StaticResource InputBorderStyle}">
+                        <Entry
+                            ClearButtonVisibility="WhileEditing"
+                            Keyboard="Email"
+                            Placeholder="{Binding InvitePlaceholder}"
+                            Text="{Binding InviteEmail}" />
+                    </Border>
+
                     <Button Command="{Binding InviteCommand}" Text="Wyślij Zaproszenie" />
                 </VerticalStackLayout>
             </Border>
 
             <VerticalStackLayout Spacing="10">
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="16"
-                    Text="Aktywne zaproszenia" />
+                <Label Style="{StaticResource TitleLabelStyle}" Text="Aktywne zaproszenia" />
+
                 <CollectionView ItemsSource="{Binding AllInvitations}">
                     <CollectionView.EmptyView>
                         <Label
                             Padding="20"
                             HorizontalOptions="Center"
-                            Text="Brak aktywnych zaproszeń."
-                            TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                        Dark={StaticResource Gray400}}" />
+                            Style="{StaticResource SubtitleLabelStyle}"
+                            Text="Brak aktywnych zaproszeń." />
                     </CollectionView.EmptyView>
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:Invitation">
                             <Border
                                 Margin="0,0,0,10"
                                 Padding="12"
-                                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                                  Dark={StaticResource SurfaceDark}}"
-                                Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                                         Dark={StaticResource Gray600}}"
-                                StrokeShape="RoundRectangle 8">
+                                Style="{StaticResource CardBorderStyle}">
                                 <Grid ColumnDefinitions="*, Auto">
                                     <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
                                         <Label FontAttributes="Bold" FontSize="14">
@@ -96,15 +87,13 @@
 
                                     <Button
                                         Grid.Column="1"
-                                        BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight},
-                                                                          Dark={StaticResource DangerDark}}"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageConnectionsViewModel}}, Path=CancelInvitationCommand}"
                                         CommandParameter="{Binding .}"
                                         CornerRadius="6"
                                         HeightRequest="35"
                                         IsVisible="{Binding IsSentByMe}"
+                                        Style="{StaticResource DangerButtonStyle}"
                                         Text="Usuń"
-                                        TextColor="White"
                                         VerticalOptions="Center" />
 
                                     <HorizontalStackLayout Grid.Column="1" Spacing="10">
@@ -126,15 +115,15 @@
                                             HeightRequest="35"
                                             Text="Akceptuj"
                                             TextColor="White" />
+
                                         <Button
-                                            BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight},
-                                                                              Dark={StaticResource DangerDark}}"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageConnectionsViewModel}}, Path=RejectCommand}"
                                             CommandParameter="{Binding .}"
                                             CornerRadius="6"
                                             HeightRequest="35"
+                                            Style="{StaticResource DangerButtonStyle}"
                                             Text="Odrzuć"
-                                            TextColor="White" />
+                                            VerticalOptions="Center" />
                                     </HorizontalStackLayout>
                                 </Grid>
                             </Border>
@@ -144,51 +133,33 @@
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="10">
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="16"
-                    Text="{Binding ListTitleText}" />
+                <Label Style="{StaticResource TitleLabelStyle}" Text="{Binding ListTitleText}" />
+
                 <CollectionView ItemsSource="{Binding Connections}">
                     <CollectionView.EmptyView>
                         <Label
                             Padding="20"
                             HorizontalOptions="Center"
-                            Text="{Binding EmptyListText}"
-                            TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                        Dark={StaticResource Gray400}}" />
+                            Style="{StaticResource SubtitleLabelStyle}"
+                            Text="{Binding EmptyListText}" />
                     </CollectionView.EmptyView>
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:User">
-                            <Border
-                                Margin="0,0,0,10"
-                                Padding="15"
-                                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                                  Dark={StaticResource SurfaceDark}}"
-                                Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                                         Dark={StaticResource Gray600}}"
-                                StrokeShape="RoundRectangle 12">
+                            <Border Margin="0,0,0,10" Style="{StaticResource CardBorderStyle}">
                                 <Grid ColumnDefinitions="*, Auto">
                                     <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
-                                        <Label
-                                            FontAttributes="Bold"
-                                            FontSize="16"
-                                            Text="{Binding Name}" />
-                                        <Label
-                                            FontSize="13"
-                                            Text="{Binding Email}"
-                                            TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                                        Dark={StaticResource Gray400}}" />
+                                        <Label Style="{StaticResource TitleLabelStyle}" Text="{Binding Name}" />
+                                        <Label Style="{StaticResource SubtitleLabelStyle}" Text="{Binding Email}" />
                                     </VerticalStackLayout>
+
                                     <Button
                                         Grid.Column="1"
-                                        BackgroundColor="{AppThemeBinding Light={StaticResource DangerLight},
-                                                                          Dark={StaticResource DangerDark}}"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageConnectionsViewModel}}, Path=RemoveConnectionCommand}"
                                         CommandParameter="{Binding .}"
                                         CornerRadius="6"
                                         HeightRequest="35"
+                                        Style="{StaticResource DangerButtonStyle}"
                                         Text="Usuń"
-                                        TextColor="White"
                                         VerticalOptions="Center" />
                                 </Grid>
                             </Border>

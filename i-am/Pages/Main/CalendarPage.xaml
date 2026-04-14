@@ -13,20 +13,13 @@
 
                 <VerticalStackLayout IsVisible="{Binding IsCareGiver}" Spacing="10">
                     <Label FontAttributes="Bold" Text="Wybierz podopiecznego:" />
-                    <Border
-                        BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                          Dark={StaticResource SurfaceDark}}"
-                        Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                                 Dark={StaticResource Gray600}}"
-                        StrokeShape="RoundRectangle 8">
+                    <Border Padding="0" Style="{StaticResource CardBorderStyle}">
                         <Grid HeightRequest="50">
                             <Label
                                 Margin="15,0,0,0"
                                 FontSize="15"
                                 HorizontalOptions="Start"
                                 Text="{Binding SelectedCareTakerName}"
-                                TextColor="{AppThemeBinding Light=Black,
-                                                            Dark=White}"
                                 VerticalOptions="Center" />
                             <Button
                                 BackgroundColor="Transparent"
@@ -38,6 +31,7 @@
                 </VerticalStackLayout>
 
                 <VerticalStackLayout IsVisible="{Binding HasCareTakerSelected}" Spacing="15">
+
                     <Grid
                         Margin="0,0,0,10"
                         ColumnDefinitions="Auto, *, Auto"
@@ -192,6 +186,7 @@
                                          Dark={StaticResource Gray600}}"
                 StrokeShape="RoundRectangle 20,20,0,0">
                 <Grid Padding="0,0,0,30" RowDefinitions="Auto, Auto">
+
                     <Grid
                         Grid.Row="0"
                         Padding="20"
@@ -236,7 +231,6 @@
                                         IsVisible="{Binding SelectedDay.HasFrontPhoto}"
                                         StrokeShape="RoundRectangle 12"
                                         StrokeThickness="0">
-
                                         <Grid HeightRequest="150">
                                             <ActivityIndicator
                                                 HorizontalOptions="Center"
@@ -245,7 +239,6 @@
                                                 VerticalOptions="Center"
                                                 Color="{AppThemeBinding Light={StaticResource Primary},
                                                                         Dark={StaticResource PrimaryDark}}" />
-
                                             <Image
                                                 x:Name="FrontImg"
                                                 Aspect="AspectFill"
@@ -262,7 +255,6 @@
                                         IsVisible="{Binding SelectedDay.HasRearPhoto}"
                                         StrokeShape="RoundRectangle 12"
                                         StrokeThickness="0">
-
                                         <Grid HeightRequest="150">
                                             <ActivityIndicator
                                                 HorizontalOptions="Center"
@@ -271,7 +263,6 @@
                                                 VerticalOptions="Center"
                                                 Color="{AppThemeBinding Light={StaticResource Primary},
                                                                         Dark={StaticResource PrimaryDark}}" />
-
                                             <Image
                                                 x:Name="RearImg"
                                                 Aspect="AspectFill"
@@ -288,13 +279,7 @@
                             <VerticalStackLayout BindableLayout.ItemsSource="{Binding SelectedDayAnswers}" Spacing="15">
                                 <BindableLayout.ItemTemplate>
                                     <DataTemplate x:DataType="vm:GivenAnswerDisplay">
-                                        <Border
-                                            Padding="15"
-                                            BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                                              Dark={StaticResource SurfaceDark}}"
-                                            Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                                                     Dark={StaticResource Gray600}}"
-                                            StrokeShape="RoundRectangle 8">
+                                        <Border Style="{StaticResource CardBorderStyle}">
                                             <VerticalStackLayout Spacing="5">
                                                 <Label
                                                     FontAttributes="Bold"
@@ -306,9 +291,8 @@
                                                     TextColor="{StaticResource Primary}" />
                                                 <Label
                                                     FontAttributes="Italic"
-                                                    Text="{Binding OpenTextResponse}"
-                                                    TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                                                Dark={StaticResource Gray400}}" />
+                                                    Style="{StaticResource SubtitleLabelStyle}"
+                                                    Text="{Binding OpenTextResponse}" />
                                                 <Label
                                                     Margin="0,5,0,0"
                                                     FontSize="12"
@@ -327,7 +311,6 @@
         </Grid>
 
         <Grid IsVisible="{Binding IsPhotoEnlarged}" ZIndex="100">
-
             <BoxView BackgroundColor="Black" Opacity="0.95">
                 <BoxView.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnClosePhotoTapped" />

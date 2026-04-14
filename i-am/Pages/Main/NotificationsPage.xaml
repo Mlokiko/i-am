@@ -9,7 +9,6 @@
     x:DataType="vm:NotificationsViewModel">
 
     <Grid Padding="20">
-
         <CollectionView ItemsSource="{Binding NotificationsList}">
 
             <CollectionView.EmptyView>
@@ -24,40 +23,25 @@
                     <Label
                         FontSize="18"
                         HorizontalOptions="Center"
-                        Text="Brak nowych powiadomień"
-                        TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                    Dark={StaticResource Gray400}}" />
+                        Style="{StaticResource SubtitleLabelStyle}"
+                        Text="Brak nowych powiadomień" />
                 </VerticalStackLayout>
             </CollectionView.EmptyView>
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:AppNotification">
-
-                    <Border
-                        Margin="0,0,0,15"
-                        Padding="15"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                          Dark={StaticResource SurfaceDark}}"
-                        Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                                 Dark={StaticResource Gray600}}"
-                        StrokeShape="RoundRectangle 12">
-
+                    <Border Margin="0,0,0,15" Style="{StaticResource CardBorderStyle}">
                         <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
 
                             <VerticalStackLayout
                                 Grid.Row="0"
                                 Grid.Column="0"
                                 Spacing="5">
-                                <Label
-                                    FontAttributes="Bold"
-                                    FontSize="16"
-                                    Text="{Binding Title}" />
+                                <Label Style="{StaticResource TitleLabelStyle}" Text="{Binding Title}" />
                                 <Label
                                     FontSize="14"
-                                    Text="{Binding Message}"
-                                    TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                                Dark={StaticResource Gray400}}" />
-
+                                    Style="{StaticResource SubtitleLabelStyle}"
+                                    Text="{Binding Message}" />
                                 <Label
                                     FontSize="12"
                                     Text="{Binding CreatedAt, StringFormat='{0:dd.MM.yyyy HH:mm}'}"
@@ -71,9 +55,8 @@
                                 FontAttributes="Bold"
                                 FontSize="20"
                                 HorizontalOptions="End"
+                                Style="{StaticResource SubtitleLabelStyle}"
                                 Text="✕"
-                                TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                            Dark={StaticResource Gray400}}"
                                 VerticalOptions="Start">
                                 <Label.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NotificationsViewModel}}, Path=DismissNotificationCommand}" CommandParameter="{Binding .}" />

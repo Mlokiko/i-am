@@ -4,25 +4,28 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:i_am.ViewModels"
-    x:DataType="vm:LoginViewModel"
-    Title="Logowanie">
+    Title="Logowanie"
+    x:DataType="vm:LoginViewModel">
     <ScrollView>
-        <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
+        <VerticalStackLayout
+            Padding="30"
+            Spacing="20"
+            VerticalOptions="Center">
 
-            <Border Padding="12,0" BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" StrokeShape="RoundRectangle 12" StrokeThickness="1">
+            <Border Style="{StaticResource InputBorderStyle}">
                 <Entry
-                    Text="{Binding Email}"
                     ClearButtonVisibility="WhileEditing"
                     Keyboard="Email"
-                    Placeholder="Email" />
+                    Placeholder="Email"
+                    Text="{Binding Email}" />
             </Border>
 
-            <Border Padding="12,0" BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}" Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" StrokeShape="RoundRectangle 12" StrokeThickness="1">
+            <Border Style="{StaticResource InputBorderStyle}">
                 <Entry
-                    Text="{Binding Password}"
                     ClearButtonVisibility="WhileEditing"
                     IsPassword="True"
-                    Placeholder="Hasło" />
+                    Placeholder="Hasło"
+                    Text="{Binding Password}" />
             </Border>
 
             <Button
@@ -31,8 +34,8 @@
                 Text="Login" />
 
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
-                <Label Text="Nie masz konta?" TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray400}}" VerticalOptions="Center" />
-                <Label FontAttributes="Bold" Text="Zarejestruj." TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" VerticalOptions="Center">
+                <Label Style="{StaticResource SubtitleLabelStyle}" Text="Nie masz konta?" />
+                <Label Style="{StaticResource LinkLabelStyle}" Text="Zarejestruj.">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToRegisterCommand}" />
                     </Label.GestureRecognizers>

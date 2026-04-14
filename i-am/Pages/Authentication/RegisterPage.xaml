@@ -6,32 +6,21 @@
     xmlns:vm="clr-namespace:i_am.ViewModels"
     Title="Rejestracja"
     x:DataType="vm:RegisterViewModel">
+
     <ScrollView>
         <VerticalStackLayout Padding="30" Spacing="15">
 
             <Label
                 Margin="0,15,0,5"
-                FontAttributes="Bold"
-                FontSize="16"
+                Style="{StaticResource FormLabelStyle}"
                 Text="Email" />
-            <Border
-                Padding="12,0"
-                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                  Dark={StaticResource SurfaceDark}}"
-                Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                         Dark={StaticResource Gray500}}"
-                StrokeShape="RoundRectangle 12"
-                StrokeThickness="1">
+            <Border Style="{StaticResource InputBorderStyle}">
                 <Border.Triggers>
                     <DataTrigger
                         Binding="{Binding ShowEmailError}"
                         TargetType="Border"
                         Value="True">
-                        <Setter Property="Stroke">
-                            <Setter.Value>
-                                <SolidColorBrush Color="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" />
-                            </Setter.Value>
-                        </Setter>
+                        <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" />
                         <Setter Property="StrokeThickness" Value="2" />
                     </DataTrigger>
                 </Border.Triggers>
@@ -52,63 +41,33 @@
                 Margin="0,10,0,5"
                 Spacing="8"
                 VerticalOptions="End">
-                <Label
-                    Margin="0,10,0,5"
-                    FontAttributes="Bold"
-                    FontSize="16"
-                    Text="Hasło" />
-                <Border
-                    BackgroundColor="Transparent"
-                    HeightRequest="24"
-                    HorizontalOptions="Center"
-                    Stroke="{AppThemeBinding Light={StaticResource Primary},
-                                             Dark={StaticResource PrimaryDark}}"
-                    StrokeShape="RoundRectangle 15"
-                    StrokeThickness="2"
-                    VerticalOptions="Center"
-                    WidthRequest="24">
-                    <Label
-                        FontAttributes="Bold"
-                        HorizontalOptions="Center"
-                        Text="?"
-                        TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                    Dark={StaticResource PrimaryDark}}"
-                        VerticalOptions="Center" />
+                <Label Style="{StaticResource FormLabelStyle}" Text="Hasło" />
+                <Border Style="{StaticResource CircleIconBorderStyle}">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding ShowInfoCommand}" CommandParameter="Password" />
                     </Border.GestureRecognizers>
+                    <Label Style="{StaticResource CircleIconLabelStyle}" />
                 </Border>
             </HorizontalStackLayout>
-            <Border
-                Padding="12,0"
-                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                  Dark={StaticResource SurfaceDark}}"
-                Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                         Dark={StaticResource Gray500}}"
-                StrokeShape="RoundRectangle 12"
-                StrokeThickness="1">
+            <Border Style="{StaticResource InputBorderStyle}">
                 <Border.Triggers>
                     <DataTrigger
                         Binding="{Binding ShowPasswordError}"
                         TargetType="Border"
                         Value="True">
-                        <Setter Property="Stroke">
-                            <Setter.Value>
-                                <SolidColorBrush Color="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" />
-                            </Setter.Value>
-                        </Setter>
+                        <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" />
                         <Setter Property="StrokeThickness" Value="2" />
                     </DataTrigger>
                 </Border.Triggers>
-                <Grid>
+                <Grid ColumnDefinitions="*, Auto">
                     <Entry
+                        Grid.Column="0"
                         IsPassword="{Binding IsPasswordHidden}"
                         Placeholder="np. MojeB@rdzoSiln3HaSlO"
                         Text="{Binding Password}" />
                     <Label
-                        Margin="0,0,15,0"
+                        Grid.Column="1"
                         FontAttributes="Bold"
-                        HorizontalOptions="End"
                         TextColor="{AppThemeBinding Light={StaticResource Primary},
                                                     Dark={StaticResource PrimaryDark}}"
                         VerticalOptions="Center">
@@ -142,39 +101,27 @@
 
             <Label
                 Margin="0,10,0,5"
-                FontAttributes="Bold"
-                FontSize="16"
+                Style="{StaticResource FormLabelStyle}"
                 Text="Potwierdź hasło" />
-            <Border
-                Padding="12,0"
-                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                  Dark={StaticResource SurfaceDark}}"
-                Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                         Dark={StaticResource Gray500}}"
-                StrokeShape="RoundRectangle 12"
-                StrokeThickness="1">
+            <Border Style="{StaticResource InputBorderStyle}">
                 <Border.Triggers>
                     <DataTrigger
                         Binding="{Binding ShowConfirmPasswordError}"
                         TargetType="Border"
                         Value="True">
-                        <Setter Property="Stroke">
-                            <Setter.Value>
-                                <SolidColorBrush Color="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" />
-                            </Setter.Value>
-                        </Setter>
+                        <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" />
                         <Setter Property="StrokeThickness" Value="2" />
                     </DataTrigger>
                 </Border.Triggers>
-                <Grid>
+                <Grid ColumnDefinitions="*, Auto">
                     <Entry
+                        Grid.Column="0"
                         IsPassword="{Binding IsPasswordHidden}"
                         Placeholder="Powtórz hasło"
                         Text="{Binding ConfirmPassword}" />
                     <Label
-                        Margin="0,0,15,0"
+                        Grid.Column="1"
                         FontAttributes="Bold"
-                        HorizontalOptions="End"
                         TextColor="{AppThemeBinding Light={StaticResource Primary},
                                                     Dark={StaticResource PrimaryDark}}"
                         VerticalOptions="Center">
@@ -210,51 +157,21 @@
                 Margin="0,10,0,5"
                 Spacing="8"
                 VerticalOptions="End">
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="16"
-                    Text="Nazwa użytkownika"
-                    VerticalOptions="Center" />
-                <Border
-                    BackgroundColor="Transparent"
-                    HeightRequest="24"
-                    HorizontalOptions="Center"
-                    Stroke="{AppThemeBinding Light={StaticResource Primary},
-                                             Dark={StaticResource PrimaryDark}}"
-                    StrokeShape="RoundRectangle 15"
-                    StrokeThickness="2"
-                    VerticalOptions="Center"
-                    WidthRequest="24">
-                    <Label
-                        FontAttributes="Bold"
-                        HorizontalOptions="Center"
-                        Text="?"
-                        TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                    Dark={StaticResource PrimaryDark}}"
-                        VerticalOptions="Center" />
+                <Label Style="{StaticResource FormLabelStyle}" Text="Nazwa użytkownika" />
+                <Border Style="{StaticResource CircleIconBorderStyle}">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding ShowInfoCommand}" CommandParameter="Name" />
                     </Border.GestureRecognizers>
+                    <Label Style="{StaticResource CircleIconLabelStyle}" />
                 </Border>
             </HorizontalStackLayout>
-            <Border
-                Padding="12,0"
-                BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                  Dark={StaticResource SurfaceDark}}"
-                Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                         Dark={StaticResource Gray500}}"
-                StrokeShape="RoundRectangle 12"
-                StrokeThickness="1">
+            <Border Style="{StaticResource InputBorderStyle}">
                 <Border.Triggers>
                     <DataTrigger
                         Binding="{Binding ShowNameError}"
                         TargetType="Border"
                         Value="True">
-                        <Setter Property="Stroke">
-                            <Setter.Value>
-                                <SolidColorBrush Color="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" />
-                            </Setter.Value>
-                        </Setter>
+                        <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" />
                         <Setter Property="StrokeThickness" Value="2" />
                     </DataTrigger>
                 </Border.Triggers>
@@ -272,67 +189,28 @@
                 Margin="0,10,0,5"
                 Spacing="8"
                 VerticalOptions="End">
-                <Label
-                    FontAttributes="Bold"
-                    FontSize="16"
-                    Text="Numer telefonu"
-                    VerticalOptions="Center" />
-                <Border
-                    BackgroundColor="Transparent"
-                    HeightRequest="24"
-                    HorizontalOptions="Center"
-                    Stroke="{AppThemeBinding Light={StaticResource Primary},
-                                             Dark={StaticResource PrimaryDark}}"
-                    StrokeShape="RoundRectangle 15"
-                    StrokeThickness="2"
-                    VerticalOptions="Center"
-                    WidthRequest="24">
-                    <Label
-                        FontAttributes="Bold"
-                        HorizontalOptions="Center"
-                        Text="?"
-                        TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                    Dark={StaticResource PrimaryDark}}"
-                        VerticalOptions="Center" />
+                <Label Style="{StaticResource FormLabelStyle}" Text="Numer telefonu" />
+                <Border Style="{StaticResource CircleIconBorderStyle}">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding ShowInfoCommand}" CommandParameter="Phone" />
                     </Border.GestureRecognizers>
+                    <Label Style="{StaticResource CircleIconLabelStyle}" />
                 </Border>
             </HorizontalStackLayout>
             <Grid ColumnDefinitions="Auto, *" ColumnSpacing="10">
-                <Border
-                    Grid.Column="0"
-                    Padding="12,0"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                      Dark={StaticResource SurfaceDark}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                             Dark={StaticResource Gray500}}"
-                    StrokeShape="RoundRectangle 12"
-                    StrokeThickness="1">
+                <Border Grid.Column="0" Style="{StaticResource InputBorderStyle}">
                     <Entry
                         Keyboard="Telephone"
                         Text="{Binding PhonePrefix}"
                         WidthRequest="50" />
                 </Border>
-                <Border
-                    Grid.Column="1"
-                    Padding="12,0"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight},
-                                                      Dark={StaticResource SurfaceDark}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Gray200},
-                                             Dark={StaticResource Gray500}}"
-                    StrokeShape="RoundRectangle 12"
-                    StrokeThickness="1">
+                <Border Grid.Column="1" Style="{StaticResource InputBorderStyle}">
                     <Border.Triggers>
                         <DataTrigger
                             Binding="{Binding ShowPhoneError}"
                             TargetType="Border"
                             Value="True">
-                            <Setter Property="Stroke">
-                                <Setter.Value>
-                                    <SolidColorBrush Color="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" />
-                                </Setter.Value>
-                            </Setter>
+                            <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource DangerLight}, Dark={StaticResource DangerDark}}" />
                             <Setter Property="StrokeThickness" Value="2" />
                         </DataTrigger>
                     </Border.Triggers>
@@ -349,92 +227,60 @@
                 Text="Podaj poprawny numer (min. 9 cyfr)"
                 TextColor="{AppThemeBinding Light={StaticResource DangerLight},
                                             Dark={StaticResource DangerDark}}" />
+
             <HorizontalStackLayout
                 Margin="0,10,0,5"
                 Spacing="8"
                 VerticalOptions="End">
-                <Label
-                    Margin="0,10,0,5"
-                    FontAttributes="Bold"
-                    FontSize="16"
-                    Text="Data urodzenia" />
-                <Border
-                    BackgroundColor="Transparent"
-                    HeightRequest="24"
-                    HorizontalOptions="Center"
-                    Stroke="{AppThemeBinding Light={StaticResource Primary},
-                                             Dark={StaticResource PrimaryDark}}"
-                    StrokeShape="RoundRectangle 15"
-                    StrokeThickness="2"
-                    VerticalOptions="Center"
-                    WidthRequest="24">
-                    <Label
-                        FontAttributes="Bold"
-                        HorizontalOptions="Center"
-                        Text="?"
-                        TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                    Dark={StaticResource PrimaryDark}}"
-                        VerticalOptions="Center" />
+                <Label Style="{StaticResource FormLabelStyle}" Text="Data urodzenia" />
+                <Border Style="{StaticResource CircleIconBorderStyle}">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding ShowInfoCommand}" CommandParameter="birthdate" />
                     </Border.GestureRecognizers>
+                    <Label Style="{StaticResource CircleIconLabelStyle}" />
                 </Border>
             </HorizontalStackLayout>
-            <DatePicker
-                x:Name="BirthdatePicker"
-                Date="{Binding Birthdate}"
-                Format="dd/MM/yyyy" />
+            <Border Style="{StaticResource InputBorderStyle}">
+                <DatePicker
+                    x:Name="BirthdatePicker"
+                    Date="{Binding Birthdate}"
+                    Format="dd/MM/yyyy" />
+            </Border>
+
             <HorizontalStackLayout
                 Margin="0,10,0,5"
                 Spacing="8"
                 VerticalOptions="End">
-                <Label
-                    Margin="0,10,0,5"
-                    FontAttributes="Bold"
-                    FontSize="16"
-                    Text="Płeć" />
-                <Border
-                    BackgroundColor="Transparent"
-                    HeightRequest="24"
-                    HorizontalOptions="Center"
-                    Stroke="{AppThemeBinding Light={StaticResource Primary},
-                                             Dark={StaticResource PrimaryDark}}"
-                    StrokeShape="RoundRectangle 15"
-                    StrokeThickness="2"
-                    VerticalOptions="Center"
-                    WidthRequest="24">
-                    <Label
-                        FontAttributes="Bold"
-                        HorizontalOptions="Center"
-                        Text="?"
-                        TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                    Dark={StaticResource PrimaryDark}}"
-                        VerticalOptions="Center" />
+                <Label Style="{StaticResource FormLabelStyle}" Text="Płeć" />
+                <Border Style="{StaticResource CircleIconBorderStyle}">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding ShowInfoCommand}" CommandParameter="sex" />
                     </Border.GestureRecognizers>
+                    <Label Style="{StaticResource CircleIconLabelStyle}" />
                 </Border>
             </HorizontalStackLayout>
             <Grid>
-                <Picker
-                    x:Name="SexPicker"
-                    Title=""
-                    SelectedItem="{Binding SelectedSex}">
-                    <Picker.ItemsSource>
-                        <x:Array Type="{x:Type x:String}">
-                            <x:String>Mężczyzna</x:String>
-                            <x:String>Kobieta</x:String>
-                            <x:String>Inne</x:String>
-                        </x:Array>
-                    </Picker.ItemsSource>
-                </Picker>
-
+                <Border Style="{StaticResource InputBorderStyle}">
+                    <Picker
+                        x:Name="SexPicker"
+                        Title=""
+                        SelectedItem="{Binding SelectedSex}">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Mężczyzna</x:String>
+                                <x:String>Kobieta</x:String>
+                                <x:String>Inne</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                </Border>
                 <Label
-                    Margin="10,0"
+                    Margin="15,0"
                     InputTransparent="True"
                     IsVisible="False"
                     Text="Kliknij aby wybrać z listy"
-                    TextColor="Gray"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray400},
+                                                Dark={StaticResource Gray500}}"
                     VerticalOptions="Center">
                     <Label.Triggers>
                         <DataTrigger
@@ -455,27 +301,21 @@
                 <Switch IsToggled="{Binding IsCaregiver}" VerticalOptions="Center" />
             </HorizontalStackLayout>
 
-            <Button Command="{Binding RegisterCommand}" Text="Stwórz konto" />
+            <Button
+                Margin="0,10,0,0"
+                Command="{Binding RegisterCommand}"
+                Text="Stwórz konto" />
 
             <ActivityIndicator
-                Margin="0,10,0,0"
                 HorizontalOptions="Center"
                 IsRunning="{Binding IsLoading}"
                 IsVisible="{Binding IsLoading}"
-                Color="White" />
+                Color="{AppThemeBinding Light={StaticResource Primary},
+                                        Dark={StaticResource PrimaryDark}}" />
 
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
-                <Label
-                    Text="Masz już konto?"
-                    TextColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                Dark={StaticResource Gray400}}"
-                    VerticalOptions="Center" />
-                <Label
-                    FontAttributes="Bold"
-                    Text="Zaloguj się."
-                    TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                Dark={StaticResource PrimaryDark}}"
-                    VerticalOptions="Center">
+                <Label Style="{StaticResource SubtitleLabelStyle}" Text="Masz już konto?" />
+                <Label Style="{StaticResource LinkLabelStyle}" Text="Zaloguj się.">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToLoginCommand}" />
                     </Label.GestureRecognizers>

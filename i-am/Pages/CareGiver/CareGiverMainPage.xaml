@@ -11,7 +11,7 @@
             FontAttributes="Bold"
             FontSize="30"
             HorizontalOptions="Center"
-            Text="Panel Główny"
+            Text="I AM"
             TextColor="White"
             VerticalOptions="Center" />
     </Shell.TitleView>

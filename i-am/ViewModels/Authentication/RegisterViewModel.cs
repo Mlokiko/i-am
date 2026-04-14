@@ -190,6 +190,8 @@ namespace i_am.ViewModels
                 "Password" => "Wymagania hasła",
                 "Name" => "Dlaczego potrzebujemy Twojej nazwy?",
                 "Phone" => "Dlaczego potrzebujemy twój numer telefonu?",
+                "birthdate" => "Dlaczego potrzebujemy twojej daty urodzenia?",
+                "sex" => "Dlaczego potrzebujemy twojej płci?",
                 _ => "Informacja"
             };
 
@@ -198,6 +200,8 @@ namespace i_am.ViewModels
                 "Password" => "Hasło musi mieć co najmniej 8 znaków, zawierać co najmniej jedną wielką literę, jedną małą literę i jedną cyfrę.",
                 "Name" => "Twoja nazwa użytkownika będzie widoczna w aplikacji dla Twoich opiekunów lub podopiecznych.",
                 "Phone" => "Numer telefonu jest używany do szybkiego kontaktu w nagłych wypadkach.",
+                "birthdate" => "Twoja data urodzenia pomaga nam dostosować funkcje aplikacji do Twojego wieku.",
+                "sex" => "Twoja płeć pomaga nam lepiej zrozumieć Twoje potrzeby zdrowotne i dostosować funkcje aplikacji.",
                 _ => ""
             };
 

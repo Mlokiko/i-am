@@ -176,7 +176,7 @@
 
             <Label
                 HorizontalTextAlignment="Center"
-                Text="Uprawnienio można potem zmienić w Ustawieniach."
+                Text="Uprawnienia można potem zmienić w Ustawieniach."
                 TextColor="{AppThemeBinding Light={StaticResource Gray500},
                                             Dark={StaticResource Gray400}}" />
 

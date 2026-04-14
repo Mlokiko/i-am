@@ -11,21 +11,19 @@
     <Grid>
         <VerticalStackLayout
             HorizontalOptions="Center"
-            Spacing="30"
-            VerticalOptions="Center">
+            VerticalOptions="Center"
+            Spacing="30">
 
             <Image
                 Aspect="AspectFit"
                 HeightRequest="200"
+                WidthRequest="200"
                 HorizontalOptions="Center"
-                Source="i_am_logo.svg"
-                WidthRequest="200" />
+                Source="i_am_logo.svg" />
 
             <ActivityIndicator
-                HeightRequest="50"
                 HorizontalOptions="Center"
                 IsRunning="True"
-                WidthRequest="50"
                 Color="White" />
 
             <Label

@@ -15,8 +15,6 @@ public partial class LoadingPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await Task.Delay(100);
-
         // 1. Sprawdzamy czy to pierwsze uruchomienie
         bool isFirstLaunch = Preferences.Default.Get("IsFirstLaunch", true);
 

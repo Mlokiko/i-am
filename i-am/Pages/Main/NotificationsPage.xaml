@@ -92,7 +92,7 @@
                                 CornerRadius="8"
                                 HeightRequest="40"
                                 HorizontalOptions="End"
-                                Text="Zrozumiałem"
+                                Text="Ok"
                                 TextColor="White">
                                 <Button.Triggers>
                                     <DataTrigger

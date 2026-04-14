@@ -45,7 +45,8 @@
                         <Button
                             Grid.Column="0"
                             Padding="0"
-                            BackgroundColor="{StaticResource Primary}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Primary},
+                                                              Dark={StaticResource PrimaryDark}}"
                             Command="{Binding ChangeMonthCommand}"
                             CommandParameter="Prev"
                             Text="&lt;"
@@ -60,7 +61,8 @@
                         <Button
                             Grid.Column="2"
                             Padding="0"
-                            BackgroundColor="{StaticResource Primary}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Primary},
+                                                              Dark={StaticResource PrimaryDark}}"
                             Command="{Binding ChangeMonthCommand}"
                             CommandParameter="Next"
                             Text="&gt;"
@@ -75,49 +77,56 @@
                                 FontSize="12"
                                 HorizontalTextAlignment="Center"
                                 Text="Pn"
-                                TextColor="{StaticResource Primary}" />
+                                TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                            Dark={StaticResource PrimaryDark}}" />
                             <Label
                                 Grid.Column="1"
                                 FontAttributes="Bold"
                                 FontSize="12"
                                 HorizontalTextAlignment="Center"
                                 Text="Wt"
-                                TextColor="{StaticResource Primary}" />
+                                TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                            Dark={StaticResource PrimaryDark}}" />
                             <Label
                                 Grid.Column="2"
                                 FontAttributes="Bold"
                                 FontSize="12"
                                 HorizontalTextAlignment="Center"
                                 Text="Śr"
-                                TextColor="{StaticResource Primary}" />
+                                TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                            Dark={StaticResource PrimaryDark}}" />
                             <Label
                                 Grid.Column="3"
                                 FontAttributes="Bold"
                                 FontSize="12"
                                 HorizontalTextAlignment="Center"
                                 Text="Cz"
-                                TextColor="{StaticResource Primary}" />
+                                TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                            Dark={StaticResource PrimaryDark}}" />
                             <Label
                                 Grid.Column="4"
                                 FontAttributes="Bold"
                                 FontSize="12"
                                 HorizontalTextAlignment="Center"
                                 Text="Pt"
-                                TextColor="{StaticResource Primary}" />
+                                TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                            Dark={StaticResource PrimaryDark}}" />
                             <Label
                                 Grid.Column="5"
                                 FontAttributes="Bold"
                                 FontSize="12"
                                 HorizontalTextAlignment="Center"
                                 Text="Sb"
-                                TextColor="{StaticResource Primary}" />
+                                TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                            Dark={StaticResource PrimaryDark}}" />
                             <Label
                                 Grid.Column="6"
                                 FontAttributes="Bold"
                                 FontSize="12"
                                 HorizontalTextAlignment="Center"
                                 Text="Nd"
-                                TextColor="{StaticResource Primary}" />
+                                TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                            Dark={StaticResource PrimaryDark}}" />
                         </Grid>
 
                         <FlexLayout
@@ -221,33 +230,57 @@
                                     FontSize="14"
                                     Text="Zdjęcia dnia:" />
                                 <Grid ColumnDefinitions="*, *" ColumnSpacing="15">
+
                                     <Border
                                         Grid.Column="0"
                                         IsVisible="{Binding SelectedDay.HasFrontPhoto}"
                                         StrokeShape="RoundRectangle 12"
                                         StrokeThickness="0">
-                                        <Image
-                                            Aspect="AspectFill"
-                                            HeightRequest="150"
-                                            Source="{Binding SelectedDay.FrontPhotoUrl}">
-                                            <Image.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding EnlargePhotoCommand}" CommandParameter="{Binding SelectedDay.FrontPhotoUrl}" />
-                                            </Image.GestureRecognizers>
-                                        </Image>
+
+                                        <Grid HeightRequest="150">
+                                            <ActivityIndicator
+                                                HorizontalOptions="Center"
+                                                IsRunning="{Binding Source={x:Reference FrontImg}, Path=IsLoading}"
+                                                IsVisible="{Binding Source={x:Reference FrontImg}, Path=IsLoading}"
+                                                VerticalOptions="Center"
+                                                Color="{AppThemeBinding Light={StaticResource Primary},
+                                                                        Dark={StaticResource PrimaryDark}}" />
+
+                                            <Image
+                                                x:Name="FrontImg"
+                                                Aspect="AspectFill"
+                                                Source="{Binding SelectedDay.FrontPhotoUrl}">
+                                                <Image.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding EnlargePhotoCommand}" CommandParameter="{Binding SelectedDay.FrontPhotoUrl}" />
+                                                </Image.GestureRecognizers>
+                                            </Image>
+                                        </Grid>
                                     </Border>
+
                                     <Border
                                         Grid.Column="1"
                                         IsVisible="{Binding SelectedDay.HasRearPhoto}"
                                         StrokeShape="RoundRectangle 12"
                                         StrokeThickness="0">
-                                        <Image
-                                            Aspect="AspectFill"
-                                            HeightRequest="150"
-                                            Source="{Binding SelectedDay.RearPhotoUrl}">
-                                            <Image.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding EnlargePhotoCommand}" CommandParameter="{Binding SelectedDay.RearPhotoUrl}" />
-                                            </Image.GestureRecognizers>
-                                        </Image>
+
+                                        <Grid HeightRequest="150">
+                                            <ActivityIndicator
+                                                HorizontalOptions="Center"
+                                                IsRunning="{Binding Source={x:Reference RearImg}, Path=IsLoading}"
+                                                IsVisible="{Binding Source={x:Reference RearImg}, Path=IsLoading}"
+                                                VerticalOptions="Center"
+                                                Color="{AppThemeBinding Light={StaticResource Primary},
+                                                                        Dark={StaticResource PrimaryDark}}" />
+
+                                            <Image
+                                                x:Name="RearImg"
+                                                Aspect="AspectFill"
+                                                Source="{Binding SelectedDay.RearPhotoUrl}">
+                                                <Image.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding EnlargePhotoCommand}" CommandParameter="{Binding SelectedDay.RearPhotoUrl}" />
+                                                </Image.GestureRecognizers>
+                                            </Image>
+                                        </Grid>
                                     </Border>
                                 </Grid>
                             </VerticalStackLayout>
@@ -294,11 +327,22 @@
         </Grid>
 
         <Grid IsVisible="{Binding IsPhotoEnlarged}" ZIndex="100">
+
             <BoxView BackgroundColor="Black" Opacity="0.95">
                 <BoxView.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnClosePhotoTapped" />
                 </BoxView.GestureRecognizers>
             </BoxView>
+
+            <ActivityIndicator
+                HeightRequest="50"
+                HorizontalOptions="Center"
+                IsRunning="{Binding Source={x:Reference EnlargedImage}, Path=IsLoading}"
+                IsVisible="{Binding Source={x:Reference EnlargedImage}, Path=IsLoading}"
+                VerticalOptions="Center"
+                WidthRequest="50"
+                ZIndex="101"
+                Color="White" />
 
             <Image
                 x:Name="EnlargedImage"

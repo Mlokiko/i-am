@@ -287,7 +287,7 @@ namespace i_am.Services
 
             if (existingReceived.Documents.Any())
             {
-                throw new Exception("Ten użytkownik wysłał już zaproszenie do Ciebie. Sprawdź swoje powiadomienia.");
+                throw new Exception("Ten użytkownik wysłał już zaproszenie do Ciebie.");
             }
 
             var request = new Invitation
@@ -306,7 +306,7 @@ namespace i_am.Services
             {
                 ReceiverId = receiver.Id,
                 Title = "Nowe zaproszenie",
-                Message = $"Masz nowe zaproszenie do współpracy od {senderName}.",
+                Message = $"Masz nowe zaproszenie od {senderName}.",
                 Type = "NewInvitation"
             };
 
@@ -372,7 +372,7 @@ namespace i_am.Services
             {
                 ReceiverId = request.SenderId,
                 Title = "Zaproszenie zaakceptowane",
-                Message = $"{myName} zaakceptował(a) Twoje zaproszenie do współpracy.",
+                Message = $"{myName} zaakceptował(a) Twoje zaproszenie.",
                 Type = "InvitationAccepted"
             };
 

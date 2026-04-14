@@ -31,16 +31,16 @@ namespace i_am.ViewModels
         private readonly FirestoreService _firestoreService;
         private QuestionTemplate? _editingTemplate;
 
-        public ObservableCollection<User> CareTakers { get; } = new();
-        public ObservableCollection<QuestionItemViewModel> Questions { get; } = new();
-        public ObservableCollection<EditorOptionItem> EditorOptions { get; } = new();
+        // ZMIANA 1: Zwykłe właściwości zmieniamy na obserwowalne przez [ObservableProperty]
+        [ObservableProperty] private ObservableCollection<User> careTakers = new();
+        [ObservableProperty] private ObservableCollection<QuestionItemViewModel> questions = new();
+        [ObservableProperty] private ObservableCollection<EditorOptionItem> editorOptions = new();
 
         [ObservableProperty] private User? selectedCareTaker;
         [ObservableProperty] private string selectedCareTakerName = "Kliknij, aby wybrać...";
 
         [ObservableProperty] private bool isQuestionsVisible = false;
         [ObservableProperty] private bool isEditorVisible = false;
-
         [ObservableProperty] private bool isCareTakerSelectionVisible = true;
 
         [ObservableProperty] private bool isLoadingQuestions = false;
@@ -88,8 +88,9 @@ namespace i_am.ViewModels
                     IsEditorVisible = false;
                     IsCareTakerSelectionVisible = true;
                     HasNoQuestions = false;
-                    CareTakers.Clear();
-                    foreach (var ct in careTakersList) CareTakers.Add(ct);
+
+                    // ZMIANA 2: Przypisanie nowej kolekcji zamiast Clear() i Add() w pętli
+                    CareTakers = new ObservableCollection<User>(careTakersList);
                 });
             }
         }
@@ -111,6 +112,7 @@ namespace i_am.ViewModels
                     SelectedCareTakerName = selected.Name;
                     IsQuestionsVisible = true;
                     IsEditorVisible = false;
+                    IsCareTakerSelectionVisible = true;
                     await LoadQuestionsAsync(selected.Id);
                 }
             }
@@ -120,17 +122,18 @@ namespace i_am.ViewModels
         {
             IsLoadingQuestions = true;
             HasNoQuestions = false;
-            Questions.Clear();
 
             var questionsList = await _firestoreService.GetQuestionTemplatesAsync(careTakerId);
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                Questions.Clear();
-                foreach (var q in questionsList.OrderBy(x => x.OrderIndex))
-                {
-                    Questions.Add(new QuestionItemViewModel { Template = q });
-                }
+                // ZMIANA 3: Błyskawiczne ładowanie pytań - transformacja LINQ i jednorazowe przypisanie
+                var newQuestions = questionsList
+                    .OrderBy(x => x.OrderIndex)
+                    .Select(q => new QuestionItemViewModel { Template = q });
+
+                Questions = new ObservableCollection<QuestionItemViewModel>(newQuestions);
+
                 IsLoadingQuestions = false;
                 HasNoQuestions = Questions.Count == 0;
             });
@@ -165,13 +168,16 @@ namespace i_am.ViewModels
             EditorIsRandomPool = false;
             EditorMaxSelections = 1;
 
-            EditorOptions.Clear();
-            EditorOptions.Add(new EditorOptionItem { Text = "Tak", Points = "5" });
-            EditorOptions.Add(new EditorOptionItem { Text = "Nie", Points = "0" });
+            // ZMIANA 4: Szybkie przypisanie opcji startowych dla edytora
+            EditorOptions = new ObservableCollection<EditorOptionItem>
+            {
+                new EditorOptionItem { Text = "Tak", Points = "5" },
+                new EditorOptionItem { Text = "Nie", Points = "0" }
+            };
 
             IsQuestionsVisible = false;
-            IsCareTakerSelectionVisible = false;
             IsEditorVisible = true;
+            IsCareTakerSelectionVisible = false;
         }
 
         [RelayCommand]
@@ -186,13 +192,16 @@ namespace i_am.ViewModels
             EditorIsRandomPool = template.IsRandomPool;
             EditorMaxSelections = template.MaxSelections < 1 ? 1 : template.MaxSelections;
 
-            EditorOptions.Clear();
+            // ZMIANA 5: Błyskawiczne ładowanie istniejących odpowiedzi z bazy
             if (template.Options != null)
             {
-                foreach (var opt in template.Options)
-                {
-                    EditorOptions.Add(new EditorOptionItem { Text = opt.Text, Points = opt.Points.ToString() });
-                }
+                var loadedOptions = template.Options.Select(opt =>
+                    new EditorOptionItem { Text = opt.Text, Points = opt.Points.ToString() });
+                EditorOptions = new ObservableCollection<EditorOptionItem>(loadedOptions);
+            }
+            else
+            {
+                EditorOptions = new ObservableCollection<EditorOptionItem>();
             }
 
             IsQuestionsVisible = false;
@@ -213,6 +222,8 @@ namespace i_am.ViewModels
             }
         }
 
+        // UWAGA: Pojedyncze dodawanie i usuwanie opcji w edytorze zostaje bez zmian,
+        // ponieważ reagują na kliknięcia użytkownika pojedynczo.
         [RelayCommand]
         private void AddOption() => EditorOptions.Add(new EditorOptionItem { Text = "", Points = "0" });
 

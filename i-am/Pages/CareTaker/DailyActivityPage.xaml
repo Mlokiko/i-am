@@ -103,8 +103,12 @@
 
                                                 <Label
                                                     FontAttributes="{Binding TextFontAttributes}"
+                                                    HorizontalOptions="Start"
+                                                    LineBreakMode="WordWrap"
                                                     Text="{Binding Option.Text}"
-                                                    TextColor="{Binding TxtColor}" />
+                                                    TextColor="{Binding TxtColor}"
+                                                    VerticalOptions="Center" />
+
                                             </Border>
                                         </DataTemplate>
                                     </BindableLayout.ItemTemplate>

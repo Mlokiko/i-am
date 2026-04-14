@@ -13,7 +13,7 @@
     <ScrollView>
         <VerticalStackLayout Padding="15" Spacing="20">
 
-            <VerticalStackLayout Spacing="5">
+            <VerticalStackLayout IsVisible="{Binding IsCareTakerSelectionVisible}" Spacing="5">
                 <Label
                     FontAttributes="Bold"
                     FontSize="16"
@@ -60,7 +60,8 @@
                         VerticalOptions="Center" />
                     <Button
                         Grid.Column="1"
-                        BackgroundColor="{StaticResource Primary}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Primary},
+                                                          Dark={StaticResource PrimaryDark}}"
                         Command="{Binding OpenNewQuestionEditorCommand}"
                         HeightRequest="40"
                         Text="Dodaj pytanie"
@@ -72,7 +73,8 @@
                     HorizontalOptions="Center"
                     IsRunning="{Binding IsLoadingQuestions}"
                     IsVisible="{Binding IsLoadingQuestions}"
-                    Color="{StaticResource Primary}" />
+                    Color="{AppThemeBinding Light={StaticResource Primary},
+                                            Dark={StaticResource PrimaryDark}}" />
 
                 <Label
                     Padding="20"
@@ -115,19 +117,22 @@
                                                 FontSize="12"
                                                 IsVisible="{Binding IsDaily}"
                                                 Text="Codzienne"
-                                                TextColor="{StaticResource Primary}" />
+                                                TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                                            Dark={StaticResource PrimaryDark}}" />
                                             <Label
                                                 FontAttributes="Bold"
                                                 FontSize="12"
                                                 IsVisible="{Binding IsRandom}"
                                                 Text="Losowe z puli"
-                                                TextColor="{StaticResource Secondary}" />
+                                                TextColor="{AppThemeBinding Light={StaticResource SuccessLight},
+                                                                            Dark={StaticResource SuccessDark}}" />
                                         </HorizontalStackLayout>
                                         <Label
                                             FontSize="12"
                                             IsVisible="{Binding IsClosed}"
                                             Text="{Binding MaxSelectionsText}"
-                                            TextColor="{StaticResource Primary}" />
+                                            TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                                        Dark={StaticResource PrimaryDark}}" />
                                     </VerticalStackLayout>
 
                                     <VerticalStackLayout
@@ -201,7 +206,8 @@
                                                         Dark=White}" />
                         <HorizontalStackLayout Spacing="5">
                             <Button
-                                BackgroundColor="{StaticResource Primary}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Primary},
+                                                                  Dark={StaticResource PrimaryDark}}"
                                 Command="{Binding SetQuestionTypeCommand}"
                                 CommandParameter="Zamknięte"
                                 HeightRequest="40"
@@ -209,7 +215,8 @@
                                 Text="Zamk."
                                 TextColor="White" />
                             <Button
-                                BackgroundColor="{StaticResource Primary}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Primary},
+                                                                  Dark={StaticResource PrimaryDark}}"
                                 Command="{Binding SetQuestionTypeCommand}"
                                 CommandParameter="Otwarte"
                                 HeightRequest="40"
@@ -275,7 +282,8 @@
                             VerticalOptions="Center" />
                         <Button
                             Grid.Column="1"
-                            BackgroundColor="{StaticResource Primary}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Primary},
+                                                              Dark={StaticResource PrimaryDark}}"
                             Command="{Binding AddOptionCommand}"
                             HeightRequest="35"
                             Text="Dodaj"
@@ -352,7 +360,8 @@
                         TextColor="White" />
                     <Button
                         Grid.Column="1"
-                        BackgroundColor="{StaticResource Secondary}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource SuccessLight},
+                                                          Dark={StaticResource SuccessDark}}"
                         Command="{Binding SaveQuestionCommand}"
                         FontAttributes="Bold"
                         HeightRequest="50"

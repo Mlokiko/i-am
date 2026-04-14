@@ -41,6 +41,8 @@ namespace i_am.ViewModels
         [ObservableProperty] private bool isQuestionsVisible = false;
         [ObservableProperty] private bool isEditorVisible = false;
 
+        [ObservableProperty] private bool isCareTakerSelectionVisible = true;
+
         [ObservableProperty] private bool isLoadingQuestions = false;
         [ObservableProperty] private bool hasNoQuestions = false;
 
@@ -84,6 +86,7 @@ namespace i_am.ViewModels
                     SelectedCareTakerName = "Kliknij, aby wybrać...";
                     IsQuestionsVisible = false;
                     IsEditorVisible = false;
+                    IsCareTakerSelectionVisible = true;
                     HasNoQuestions = false;
                     CareTakers.Clear();
                     foreach (var ct in careTakersList) CareTakers.Add(ct);
@@ -167,6 +170,7 @@ namespace i_am.ViewModels
             EditorOptions.Add(new EditorOptionItem { Text = "Nie", Points = "0" });
 
             IsQuestionsVisible = false;
+            IsCareTakerSelectionVisible = false;
             IsEditorVisible = true;
         }
 
@@ -193,6 +197,7 @@ namespace i_am.ViewModels
 
             IsQuestionsVisible = false;
             IsEditorVisible = true;
+            IsCareTakerSelectionVisible = false;
         }
 
         [RelayCommand]
@@ -222,6 +227,7 @@ namespace i_am.ViewModels
         {
             IsEditorVisible = false;
             IsQuestionsVisible = true;
+            IsCareTakerSelectionVisible = true;
         }
 
         [RelayCommand]
@@ -263,6 +269,7 @@ namespace i_am.ViewModels
 
             IsEditorVisible = false;
             IsQuestionsVisible = true;
+            IsCareTakerSelectionVisible = true;
             await LoadQuestionsAsync(SelectedCareTaker.Id);
         }
     }

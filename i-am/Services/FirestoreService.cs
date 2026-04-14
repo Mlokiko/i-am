@@ -255,10 +255,17 @@ namespace i_am.Services
             {
                 throw new Exception("Użytkownik z podanym adresem email nie został znaleziony.");
             }
-
             if (receiver.Id == senderId)
             {
                 throw new Exception("Nie możesz wysłać zaproszenia do samego siebie.");
+            }
+            if (isSenderCaregiver && receiver.IsCaregiver)
+            {
+                throw new Exception("Opiekun nie może zaprosić innego opiekuna. Zaproszenia można wysyłać tylko do podopiecznych.");
+            }
+            if (!isSenderCaregiver && !receiver.IsCaregiver)
+            {
+                throw new Exception("Podopieczny nie może zaprosić innego podopiecznego. Zaproszenia można wysyłać tylko do opiekunów.");
             }
 
             // Sprawdzanie dubli - czy zostało już wysłane takie zaproszenie?

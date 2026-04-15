@@ -58,6 +58,8 @@ namespace i_am
             builder.Services.AddTransient<CareGiverMainPage>();
             builder.Services.AddTransient<i_am.ViewModels.EditCareTakerQuestionsViewModel>();
             builder.Services.AddTransient<i_am.Pages.CareGiver.EditCareTakerQuestionsPage>();
+            builder.Services.AddTransient<i_am.ViewModels.StatisticsViewModel>();
+            builder.Services.AddTransient<i_am.Pages.CareGiver.StatisticsPage>();
 
             builder.Services.AddTransient<i_am.ViewModels.CareTakerMainViewModel>();
             builder.Services.AddTransient<CareTakerMainPage>();

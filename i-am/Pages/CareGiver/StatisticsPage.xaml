@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="i_am.Pages.CareGiver.StatisticsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:i_am.ViewModels"
+    Title="Statystyki Podopiecznego"
+    x:DataType="vm:StatisticsViewModel">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <VerticalStackLayout Spacing="10">
+                <Label FontAttributes="Bold" Text="Wybierz podopiecznego:" />
+                <Border Padding="0" Style="{StaticResource CardBorderStyle}">
+                    <Grid HeightRequest="50">
+                        <Label
+                            Margin="15,0,0,0"
+                            FontSize="15"
+                            HorizontalOptions="Start"
+                            Text="{Binding SelectedCareTakerName}"
+                            VerticalOptions="Center" />
+                        <Button
+                            BackgroundColor="Transparent"
+                            Command="{Binding SelectCareTakerCommand}"
+                            HorizontalOptions="Fill"
+                            VerticalOptions="Fill" />
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+
+            <ActivityIndicator
+                HorizontalOptions="Center"
+                IsRunning="{Binding IsLoading}"
+                IsVisible="{Binding IsLoading}"
+                Color="{StaticResource Primary}" />
+
+            <VerticalStackLayout IsVisible="{Binding IsDataVisible}" Spacing="20">
+
+                <Label Style="{StaticResource HeaderLabelStyle}" Text="Aktywność (Bieżący miesiąc)" />
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <VerticalStackLayout Spacing="5">
+                        <Label Style="{StaticResource TitleLabelStyle}" Text="Wypełnione dni" />
+                        <Label
+                            FontAttributes="Bold"
+                            Style="{StaticResource FormValueLabelStyle}"
+                            Text="{Binding MonthDaysAnswered}"
+                            TextColor="{StaticResource Primary}" />
+
+                        <BoxView
+                            Margin="0,5"
+                            HeightRequest="1"
+                            Color="{AppThemeBinding Light={StaticResource Gray200},
+                                                    Dark={StaticResource Gray500}}" />
+
+                        <Label Style="{StaticResource TitleLabelStyle}" Text="Dołączone zdjęcia" />
+                        <Label
+                            FontAttributes="Bold"
+                            Style="{StaticResource FormValueLabelStyle}"
+                            Text="{Binding MonthPhotosTaken}"
+                            TextColor="{StaticResource Secondary}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Label Style="{StaticResource HeaderLabelStyle}" Text="Średnie wyniki" />
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <Grid
+                        ColumnDefinitions="*, Auto"
+                        RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                        RowSpacing="10">
+
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Text="Bieżący tydzień:"
+                            VerticalOptions="Center" />
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            Text="{Binding CurrentWeekStat}"
+                            VerticalOptions="Center" />
+                        <BoxView
+                            Grid.Row="1"
+                            Grid.ColumnSpan="2"
+                            Style="{StaticResource DividerStyle}" />
+
+                        <Label
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Text="Zeszły tydzień:"
+                            VerticalOptions="Center" />
+                        <Label
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            Text="{Binding LastWeekStat}"
+                            VerticalOptions="Center" />
+                        <BoxView
+                            Grid.Row="3"
+                            Grid.ColumnSpan="2"
+                            Style="{StaticResource DividerStyle}" />
+
+                        <Label
+                            Grid.Row="4"
+                            Grid.Column="0"
+                            Text="Bieżący miesiąc:"
+                            VerticalOptions="Center" />
+                        <Label
+                            Grid.Row="4"
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            Text="{Binding CurrentMonthStat}"
+                            VerticalOptions="Center" />
+                        <BoxView
+                            Grid.Row="5"
+                            Grid.ColumnSpan="2"
+                            Style="{StaticResource DividerStyle}" />
+
+                        <Label
+                            Grid.Row="6"
+                            Grid.Column="0"
+                            Text="Zeszły miesiąc:"
+                            VerticalOptions="Center" />
+                        <Label
+                            Grid.Row="6"
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            Text="{Binding LastMonthStat}"
+                            VerticalOptions="Center" />
+                        <BoxView
+                            Grid.Row="7"
+                            Grid.ColumnSpan="2"
+                            Style="{StaticResource DividerStyle}" />
+
+                        <Label
+                            Grid.Row="8"
+                            Grid.Column="0"
+                            Text="Cały czas:"
+                            VerticalOptions="Center" />
+                        <Label
+                            Grid.Row="8"
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            Text="{Binding AllTimeStat}"
+                            VerticalOptions="Center" />
+
+                    </Grid>
+                </Border>
+
+                <Label Style="{StaticResource HeaderLabelStyle}" Text="Konfiguracja czasu Podopiecznego" />
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Style="{StaticResource TitleLabelStyle}" Text="Cykl 'Doby'" />
+                        <Label Style="{StaticResource SubtitleLabelStyle}" Text="{Binding DayHoursConfig}" />
+
+                        <BoxView
+                            Margin="0,5"
+                            HeightRequest="1"
+                            Color="{AppThemeBinding Light={StaticResource Gray200},
+                                                    Dark={StaticResource Gray500}}" />
+
+                        <Label Style="{StaticResource TitleLabelStyle}" Text="Godziny możliwości odpowiedzi" />
+                        <Label Style="{StaticResource SubtitleLabelStyle}" Text="{Binding ActivityWindowConfig}" />
+                    </VerticalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

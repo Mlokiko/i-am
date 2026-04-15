@@ -57,7 +57,6 @@
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
-		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
 		<MauiImage Update="Resources\Images\i_am_logo_white.svg" BaseSize="300,300" />
 		<MauiImage Update="Resources\Images\i_am_logo_black.svg" BaseSize="300,300" />
 		

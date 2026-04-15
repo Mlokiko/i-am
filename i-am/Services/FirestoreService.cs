@@ -1,4 +1,5 @@
 ﻿using i_am.Models;
+using Java.Nio.FileNio;
 using Plugin.Firebase.Auth;
 using Plugin.Firebase.CloudMessaging;
 using Plugin.Firebase.Firestore;
@@ -71,6 +72,30 @@ namespace i_am.Services
 
             // Plugin zwraca null jeśli dokument nie istnieje
             return snapshot.Data;
+        }
+
+        public async Task<bool> UpdateUserSettingsAsync(string userId, int dayStartHour, bool isRestricted, int startHour, int endHour)
+        {
+            var firestore = CrossFirebaseFirestore.Current;
+            try
+            {
+                await firestore
+                    .GetCollection("users")
+                    .GetDocument(userId)
+                    .UpdateDataAsync(new Dictionary<object, object>
+                    {
+                        { "dayStartHour", dayStartHour },
+                        { "isActivityTimeRestricted", isRestricted },
+                        { "activityRestrictionStartHour", startHour },
+                        { "activityRestrictionEndHour", endHour }
+                    });
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error updating settings: {ex.Message}");
+                return false;
+            }
         }
 
         public async Task DeleteAccountAndProfileAsync()

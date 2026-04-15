@@ -22,6 +22,24 @@ namespace i_am.ViewModels
         [ObservableProperty]
         private bool areNotificationsEnabled;
 
+        [ObservableProperty]
+        private bool isCareTaker;
+
+        [ObservableProperty]
+        private ObservableCollection<string> hoursList = new();
+
+        [ObservableProperty]
+        private string selectedDayStartHour = "04:00";
+
+        [ObservableProperty]
+        private bool isActivityTimeRestricted;
+
+        [ObservableProperty]
+        private string selectedRestrictionStartHour = "18:00";
+
+        [ObservableProperty]
+        private string selectedRestrictionEndHour = "20:00";
+
         // Wstrzykujemy FirestoreService
         public SettingsViewModel(FirestoreService firestoreService)
         {
@@ -31,12 +49,57 @@ namespace i_am.ViewModels
 
             string savedTheme = Preferences.Default.Get("AppTheme", "Systemowy");
             selectedTheme = savedTheme;
+
+            IsCareTaker = !Preferences.Default.Get("IsCaregiver", false);
+
+            HoursList = new ObservableCollection<string>(
+                Enumerable.Range(0, 24).Select(h => $"{h:D2}:00")
+            );
+        }
+        public async Task InitializeAsync()
+        {
+            if (IsCareTaker)
+            {
+                string userId = Preferences.Default.Get("UserId", string.Empty);
+                if (string.IsNullOrEmpty(userId)) return;
+
+                var user = await _firestoreService.GetUserProfileAsync(userId);
+                if (user != null)
+                {
+                    SelectedDayStartHour = $"{user.DayStartHour:D2}:00";
+                    IsActivityTimeRestricted = user.IsActivityTimeRestricted;
+                    SelectedRestrictionStartHour = $"{user.ActivityRestrictionStartHour:D2}:00";
+                    SelectedRestrictionEndHour = $"{user.ActivityRestrictionEndHour:D2}:00";
+                }
+            }
         }
 
-        partial void OnSelectedThemeChanged(string value)
+        [RelayCommand]
+        private async Task SaveSettingsAsync()
         {
-            Preferences.Default.Set("AppTheme", value);
-            ApplyTheme(value);
+            // Zapis lokalny motywu
+            Preferences.Default.Set("AppTheme", SelectedTheme);
+            ApplyTheme(SelectedTheme);
+
+            // Zapis w chmurze (tylko dla podopiecznego)
+            if (IsCareTaker)
+            {
+                string userId = Preferences.Default.Get("UserId", string.Empty);
+                if (!string.IsNullOrEmpty(userId))
+                {
+                    int dayStart = int.Parse(SelectedDayStartHour.Split(':')[0]);
+                    int restrictStart = int.Parse(SelectedRestrictionStartHour.Split(':')[0]);
+                    int restrictEnd = int.Parse(SelectedRestrictionEndHour.Split(':')[0]);
+
+                    bool success = await _firestoreService.UpdateUserSettingsAsync(
+                        userId, dayStart, IsActivityTimeRestricted, restrictStart, restrictEnd);
+
+                    if (success)
+                        await Shell.Current.DisplayAlert("Sukces", "Ustawienia zostały zapisane.", "OK");
+                    else
+                        await Shell.Current.DisplayAlert("Błąd", "Nie udało się zapisać ustawień w chmurze.", "OK");
+                }
+            }
         }
 
         // Dodajemy async, aby móc wywoływać metody z FirestoreService

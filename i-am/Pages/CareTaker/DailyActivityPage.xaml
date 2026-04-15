@@ -36,6 +36,27 @@
                 Style="{StaticResource SubtitleLabelStyle}"
                 Text="Twój dzisiejszy raport został już wysłany do opiekuna. Wróć tu jutro!" />
         </VerticalStackLayout>
+        <VerticalStackLayout
+            Padding="30"
+            HorizontalOptions="Center"
+            IsVisible="{Binding IsOutsideAllowedTime}"
+            Spacing="20"
+            VerticalOptions="Center">
+            <Label
+                FontSize="60"
+                HorizontalOptions="Center"
+                Text="⏳" />
+            <Label
+                FontAttributes="Bold"
+                FontSize="24"
+                HorizontalOptions="Center"
+                Text="Zła godzina" />
+            <Label
+                FontSize="16"
+                HorizontalTextAlignment="Center"
+                Style="{StaticResource SubtitleLabelStyle}"
+                Text="{Binding OutsideTimeMessage}" />
+        </VerticalStackLayout>
 
         <ScrollView>
             <ScrollView.Triggers>
@@ -47,6 +68,12 @@
                 </DataTrigger>
                 <DataTrigger
                     Binding="{Binding IsLoading}"
+                    TargetType="ScrollView"
+                    Value="True">
+                    <Setter Property="IsVisible" Value="False" />
+                </DataTrigger>
+                <DataTrigger
+                    Binding="{Binding IsOutsideAllowedTime}"
                     TargetType="ScrollView"
                     Value="True">
                     <Setter Property="IsVisible" Value="False" />

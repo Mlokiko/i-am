@@ -37,5 +37,17 @@ namespace i_am.Models
         
         [FirestoreProperty("fcmToken")] // Token potrzebny do wysyłania powiadomień Push (FCM)
         public string FcmToken { get; set; } = string.Empty;
+
+        [FirestoreProperty("dayStartHour")]
+        public int DayStartHour { get; set; } = 4; // Domyślnie start o 4:00 rano
+
+        [FirestoreProperty("isActivityTimeRestricted")]
+        public bool IsActivityTimeRestricted { get; set; } = false; // Domyślnie wyłączone ograniczenie
+
+        [FirestoreProperty("activityRestrictionStartHour")]
+        public int ActivityRestrictionStartHour { get; set; } = 4; // Np. od 4:00
+
+        [FirestoreProperty("activityRestrictionEndHour")]
+        public int ActivityRestrictionEndHour { get; set; } = 4; // Do 4:00 następnego dnia
     }
 }

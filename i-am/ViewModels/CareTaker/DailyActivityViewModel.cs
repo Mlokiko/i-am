@@ -92,6 +92,7 @@ namespace i_am.ViewModels
     {
         private readonly FirestoreService _firestoreService;
         private string _myUid = string.Empty;
+        private string _reportingDateId = string.Empty; // Zmienna przechowująca wyliczony dzień
 
         private FileResult? _frontPhoto;
         private FileResult? _rearPhoto;
@@ -105,6 +106,10 @@ namespace i_am.ViewModels
         [ObservableProperty] private bool isLoading = true;
         [ObservableProperty] private bool hasAlreadySubmitted;
 
+        // NOWE FLAGI: Kontrola czasu dla formularza
+        [ObservableProperty] private bool isOutsideAllowedTime;
+        [ObservableProperty] private string outsideTimeMessage = string.Empty;
+
         public ObservableCollection<AnswerFormItem> FormItems { get; } = new();
 
         public DailyActivityViewModel(FirestoreService firestoreService)
@@ -115,16 +120,57 @@ namespace i_am.ViewModels
         public async Task InitializeAsync()
         {
             IsLoading = true;
-            _myUid = Preferences.Default.Get("UserId", string.Empty);
+            IsOutsideAllowedTime = false; // Reset przy wejściu
 
+            _myUid = Preferences.Default.Get("UserId", string.Empty);
             if (string.IsNullOrEmpty(_myUid)) return;
 
-            string reportingDate = _firestoreService.GetReportingDateString();
-            HasAlreadySubmitted = await _firestoreService.HasSubmittedDailyResponseAsync(_myUid, reportingDate);
-
-            if (!HasAlreadySubmitted)
+            try
             {
-                await LoadAndFilterQuestionsAsync();
+                var user = await _firestoreService.GetUserProfileAsync(_myUid);
+                if (user == null)
+                {
+                    IsLoading = false;
+                    return;
+                }
+
+                DateTime now = DateTime.Now;
+
+                // 1. Obliczanie "Dnia Aplikacji" na podstawie DayStartHour (domyślnie 04:00)
+                DateTime appDate = now.Hour < user.DayStartHour ? now.Date.AddDays(-1) : now.Date;
+                _reportingDateId = appDate.ToString("yyyy-MM-dd");
+
+                // 2. Sprawdzanie okna czasowego (jeśli włączone w opcjach)
+                if (user.IsActivityTimeRestricted)
+                {
+                    int currentHour = now.Hour;
+                    int start = user.ActivityRestrictionStartHour;
+                    int end = user.ActivityRestrictionEndHour;
+
+                    bool isAllowed = start < end
+                        ? (currentHour >= start && currentHour < end)
+                        : (currentHour >= start || currentHour < end); // Przejście przez północ
+
+                    if (!isAllowed)
+                    {
+                        IsOutsideAllowedTime = true;
+                        OutsideTimeMessage = $"Twój raport jest dostępny tylko w godzinach {start:D2}:00 - {end:D2}:00.";
+                        IsLoading = false;
+                        return; // Przerywamy ładowanie pytań
+                    }
+                }
+
+                // 3. Sprawdzenie czy użytkownik już dzisiaj (wg aplikacji) wysłał odpowiedź
+                HasAlreadySubmitted = await _firestoreService.HasSubmittedDailyResponseAsync(_myUid, _reportingDateId);
+
+                if (!HasAlreadySubmitted)
+                {
+                    await LoadAndFilterQuestionsAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Błąd", $"Błąd podczas inicjalizacji: {ex.Message}", "OK");
             }
 
             IsLoading = false;
@@ -180,7 +226,7 @@ namespace i_am.ViewModels
                 IsLoading = true;
                 var response = new DailyResponse
                 {
-                    Id = _firestoreService.GetReportingDateString(),
+                    Id = _reportingDateId, // Zmieniono na zaktualizowaną zmienną uwzględniającą początek doby
                     CreatedAt = DateTimeOffset.UtcNow,
                     TotalScore = 0
                 };

@@ -150,6 +150,8 @@ namespace i_am.ViewModels
                 };
 
                 Preferences.Default.Set("IsCaregiver", userProfile.IsCaregiver);
+                Preferences.Default.Set("UserId", uid);
+
                 await _firestoreService.CreateUserProfileAsync(uid, userProfile);
                 await _firestoreService.UpdateFcmTokenAsync();
                 if (!IsCaregiver)

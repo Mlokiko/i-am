@@ -160,7 +160,7 @@ namespace i_am.ViewModels
         [RelayCommand]
         private async Task CancelInvitationAsync(Invitation inv)
         {
-            if (inv != null) await _firestoreService.DeleteInvitationPermanentlyAsync(inv.Id);
+            if (inv != null) await _firestoreService.DeleteInvitationAsync(inv.Id);
         }
 
         [RelayCommand]

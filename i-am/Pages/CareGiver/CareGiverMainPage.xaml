@@ -26,7 +26,7 @@
                 <VerticalStackLayout Spacing="10">
                     <Button Command="{Binding GoToNotificationsCommand}" Text="Powiadomienia" />
                     <Button Command="{Binding GoToCalendarCommand}" Text="Kalendarz" />
-                    <Button Command="{Binding GoToStatisticsCommand}" Text="Statystyki Podopiecznych" />
+                    <Button Command="{Binding GoToStatisticsCommand}" Text="Statystyki Podopiecznego" />
                     <Button Command="{Binding GoToEditCareTakerQuestionsCommand}" Text="Edytuj pytania Podopiecznego" />
                     <Button Command="{Binding GoToManageCareTakersCommand}" Text="Zarządzaj Podopiecznymi" />
                     <Button Command="{Binding GoToSettingsCommand}" Text="Ustawienia" />

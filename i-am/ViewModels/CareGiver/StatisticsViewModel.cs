@@ -135,15 +135,16 @@ namespace i_am.ViewModels
                     return $"{avg:F1} pkt ({list.Count} / {maxDays} dni)";
                 }
 
-                int daysInCurrentMonth = DateTime.DaysInMonth(today.Year, today.Month);
+                // Pobieramy aktualny dzień miesiąca (np. 16 dla 16 kwietnia)
+                int currentDayOfMonth = today.Day;
 
-                // 1. Liczba dni w bieżącym miesiącu (Zgodnie z wymaganiem format: np. 12/30)
-                MonthDaysAnswered = $"{currentMonthResponses.Count} / {daysInCurrentMonth} dni";
+                // 1. Liczba dni w bieżącym miesiącu (Teraz używa currentDayOfMonth)
+                MonthDaysAnswered = $"{currentMonthResponses.Count} / {currentDayOfMonth} dni";
 
-                // 2. Liczba dni ze zdjęciami w tym miesiącu
+                // 2. Liczba dni ze zdjęciami w tym miesiącu (Teraz używa currentDayOfMonth)
                 int frontPhotos = currentMonthResponses.Count(r => !string.IsNullOrEmpty(r.FrontPhotoUrl));
                 int rearPhotos = currentMonthResponses.Count(r => !string.IsNullOrEmpty(r.RearPhotoUrl));
-                MonthPhotosTaken = $"Twarz: {frontPhotos}/{daysInCurrentMonth}, Otoczenie: {rearPhotos}/{daysInCurrentMonth}";
+                MonthPhotosTaken = $"Twarz: {frontPhotos}/{currentDayOfMonth}, Otoczenie: {rearPhotos}/{currentDayOfMonth}";
 
                 // 3. Średnia: Bieżący tydzień
                 CurrentWeekStat = FormatStat(currentWeekResponses, 7);
@@ -151,8 +152,8 @@ namespace i_am.ViewModels
                 // 4. Średnia: Zeszły tydzień
                 LastWeekStat = FormatStat(lastWeekResponses, 7);
 
-                // 5. Średnia: Bieżący miesiąc
-                CurrentMonthStat = FormatStat(currentMonthResponses, daysInCurrentMonth);
+                // 5. Średnia: Bieżący miesiąc (Teraz używa currentDayOfMonth dla poprawnego mianownika)
+                CurrentMonthStat = FormatStat(currentMonthResponses, currentDayOfMonth);
 
                 // 6. Średnia: Zeszły miesiąc
                 int daysInLastMonth = DateTime.DaysInMonth(lastMonthStart.Year, lastMonthStart.Month);

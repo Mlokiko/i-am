@@ -115,7 +115,7 @@ namespace i_am.ViewModels
                 try
                 {
                     await _firestoreService.RemoveFcmTokenAsync();
-                    await _firestoreService.DeleteAccountAndProfileAsync();
+                    await _firestoreService.DeleteUserAsync();
                     Preferences.Default.Remove("IsCaregiver");
                     Preferences.Default.Remove("UserId");
                     await Shell.Current.GoToAsync($"//{nameof(LandingPage)}");

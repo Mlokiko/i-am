@@ -37,7 +37,7 @@
 
             <VerticalStackLayout IsVisible="{Binding IsDataVisible}" Spacing="20">
 
-                <Label Style="{StaticResource HeaderLabelStyle}" Text="Aktywność (Bieżący miesiąc)" />
+                <Label Style="{StaticResource HeaderLabelStyle}" Text="Aktywność w bieżącym miesiącu" />
                 <Border Style="{StaticResource CardBorderStyle}">
                     <VerticalStackLayout Spacing="5">
                         <Label Style="{StaticResource TitleLabelStyle}" Text="Wypełnione dni" />
@@ -62,7 +62,7 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <Label Style="{StaticResource HeaderLabelStyle}" Text="Średnie wyniki" />
+                <Label Style="{StaticResource HeaderLabelStyle}" Text="Średnia wyników" />
                 <Border Style="{StaticResource CardBorderStyle}">
                     <Grid
                         ColumnDefinitions="*, Auto"
@@ -151,7 +151,7 @@
                 <Label Style="{StaticResource HeaderLabelStyle}" Text="Konfiguracja czasu Podopiecznego" />
                 <Border Style="{StaticResource CardBorderStyle}">
                     <VerticalStackLayout Spacing="10">
-                        <Label Style="{StaticResource TitleLabelStyle}" Text="Cykl 'Doby'" />
+                        <Label Style="{StaticResource TitleLabelStyle}" Text="Początek nowego dnia" />
                         <Label Style="{StaticResource SubtitleLabelStyle}" Text="{Binding DayHoursConfig}" />
 
                         <BoxView

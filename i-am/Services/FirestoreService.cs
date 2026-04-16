@@ -1,5 +1,4 @@
 ﻿using i_am.Models;
-using Java.Nio.FileNio;
 using Plugin.Firebase.Auth;
 using Plugin.Firebase.CloudMessaging;
 using Plugin.Firebase.Firestore;
@@ -11,10 +10,19 @@ namespace i_am.Services
     {
         #region User Management
 
+        // Tworzenie użytkownika (Authentication) w Firebase
         public async Task<string> RegisterAsync(string email, string password)
         {
             var user = await CrossFirebaseAuth.Current.CreateUserAsync(email, password);
             return user.Uid;
+        }
+
+        // Tworzenie użytkownika (dokumentu) w Firestore
+        public async Task CreateUserProfileAsync(string uid, User profile)
+        {
+            var firestore = CrossFirebaseFirestore.Current;
+
+            await firestore.GetCollection("users").GetDocument(uid).SetDataAsync(profile);
         }
 
         // wbudowana metoda w plugin nie działa prawidłowo... logowanie nie powinno tworzyć user (sic!), dlatego używam tutaj "własnego" kodu - gada z SDK Firebase bezpośrednio
@@ -43,25 +51,7 @@ namespace i_am.Services
             await CrossFirebaseAuth.Current.SignOutAsync();
         }
 
-        public bool IsUserLoggedIn()
-        {
-            return CrossFirebaseAuth.Current.CurrentUser != null;
-        }
-
-        public string? GetCurrentUserId()
-        {
-            return CrossFirebaseAuth.Current.CurrentUser?.Uid;
-        }
-
-        // Po rejestracji, tworzymy profil użytkownika w Firestore
-        public async Task CreateUserProfileAsync(string uid, User profile)
-        {
-            var firestore = CrossFirebaseFirestore.Current;
-
-            await firestore.GetCollection("users").GetDocument(uid).SetDataAsync(profile);
-        }
-
-        // Potrzebne do odczytania czy użytkownik jest opiekunem czy podopiecznym, żeby odpowiednio przekierować go do właściwego widoku
+        // Odczyt danych użytkownika (cały jego dokument w firestore)
         public async Task<User?> GetUserProfileAsync(string uid)
         {
             var firestore = CrossFirebaseFirestore.Current;
@@ -74,31 +64,8 @@ namespace i_am.Services
             return snapshot.Data;
         }
 
-        public async Task<bool> UpdateUserSettingsAsync(string userId, int dayStartHour, bool isRestricted, int startHour, int endHour)
-        {
-            var firestore = CrossFirebaseFirestore.Current;
-            try
-            {
-                await firestore
-                    .GetCollection("users")
-                    .GetDocument(userId)
-                    .UpdateDataAsync(new Dictionary<object, object>
-                    {
-                        { "dayStartHour", dayStartHour },
-                        { "isActivityTimeRestricted", isRestricted },
-                        { "activityRestrictionStartHour", startHour },
-                        { "activityRestrictionEndHour", endHour }
-                    });
-                return true;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error updating settings: {ex.Message}");
-                return false;
-            }
-        }
-
-        public async Task DeleteAccountAndProfileAsync()
+        // Usuwanie konta użytkownika - najpierw Firestore, potem Authentication 
+        public async Task DeleteUserAsync()
         {
             string? uid = CrossFirebaseAuth.Current.CurrentUser?.Uid;
             if (string.IsNullOrEmpty(uid)) return;
@@ -134,20 +101,10 @@ namespace i_am.Services
 
             try
             {
-                // Nie wiem czy to tutaj nie jest zdublowane, pytamy o uprawnienia już w PermissionsPage, ale dla pewności sprawdzamy to jeszcze raz tutaj, bo bez tego aplikacja będzie crashować przy próbie pobrania tokenu na urządzeniach z Androidem 13+ które nie mają nadanych uprawnień do powiadomień
-                // Sprawdzenie i prośba o uprawnienia (Systemowe okienko)
                 var status = await Permissions.CheckStatusAsync<Permissions.PostNotifications>();
 
                 if (status != PermissionStatus.Granted)
-                {
-                    status = await Permissions.RequestAsync<Permissions.PostNotifications>();
-                }
-
-                if (status != PermissionStatus.Granted)
-                {
-                    Console.WriteLine("[FCM] Użytkownik odmówił uprawnień do powiadomień.");
                     return;
-                }
 
                 await CrossFirebaseCloudMessaging.Current.CheckIfValidAsync();
 
@@ -182,9 +139,6 @@ namespace i_am.Services
                 {
                     { "fcmToken", string.Empty }
                 });
-
-                // Opcjonalnie, jeśli chcesz całkowicie usunąć token z urządzenia:
-                // await Plugin.Firebase.CloudMessaging.CrossFirebaseCloudMessaging.Current.DeleteTokenAsync();
             }
             catch (Exception ex)
             {
@@ -211,21 +165,29 @@ namespace i_am.Services
             }
         }
 
-        public IDisposable ListenForUserProfileUpdates(string uid, Action<User> onUpdate)
+        public async Task<bool> UpdateUserSettingsAsync(string userId, int dayStartHour, bool isRestricted, int startHour, int endHour)
         {
             var firestore = CrossFirebaseFirestore.Current;
-
-            return firestore.GetCollection("users")
-                .GetDocument(uid)
-                .AddSnapshotListener<User>((snapshot) =>
-                {
-                    if (snapshot.Data != null)
+            try
+            {
+                await firestore
+                    .GetCollection("users")
+                    .GetDocument(userId)
+                    .UpdateDataAsync(new Dictionary<object, object>
                     {
-                        onUpdate?.Invoke(snapshot.Data);
-                    }
-                });
+                        { "dayStartHour", dayStartHour },
+                        { "isActivityTimeRestricted", isRestricted },
+                        { "activityRestrictionStartHour", startHour },
+                        { "activityRestrictionEndHour", endHour }
+                    });
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error updating settings: {ex.Message}");
+                return false;
+            }
         }
-
 
 
         #endregion
@@ -340,34 +302,6 @@ namespace i_am.Services
             return true;
         }
 
-        // Listener 1: Invitations sent TO ME
-        public IDisposable ListenForReceivedInvitations(string myUid, Action<List<Invitation>> onUpdate)
-        {
-            var firestore = CrossFirebaseFirestore.Current;
-
-            return firestore.GetCollection("invitations")
-                .WhereEqualsTo("receiverId", myUid)
-                .AddSnapshotListener<Invitation>((snapshot) =>
-                {
-                    var receivedInvitations = snapshot.Documents.Select(doc => doc.Data).ToList();
-                    onUpdate?.Invoke(receivedInvitations);
-                });
-        }
-
-        // Listener 2: Invitations sent BY ME
-        public IDisposable ListenForSentInvitations(string myUid, Action<List<Invitation>> onUpdate)
-        {
-            var firestore = CrossFirebaseFirestore.Current;
-
-            return firestore.GetCollection("invitations")
-                .WhereEqualsTo("senderId", myUid)
-                .AddSnapshotListener<Invitation>((snapshot) =>
-                {
-                    var sentInvitations = snapshot.Documents.Select(doc => doc.Data).ToList();
-                    onUpdate?.Invoke(sentInvitations);
-                });
-        }
-
         public async Task AcceptInvitationAsync(Invitation request)
         {
             var firestore = CrossFirebaseFirestore.Current;
@@ -404,25 +338,23 @@ namespace i_am.Services
             await SendNotificationAsync(notification);
         }
 
-        // NEW: Reject the invitation (changes status, but keeps the document so the sender gets blocked from spamming)
+        // Odrzucenie zaproszenia (zmienia status, nadawca będzie potem w stanie usunąć zaproszenie i wysłać je ponownie)
         public async Task RejectInvitationAsync(Invitation invitation)
         {
             var firestore = CrossFirebaseFirestore.Current;
             string? myUid = Preferences.Get("UserId", string.Empty);
             if (string.IsNullOrEmpty(myUid)) return;
 
-            // Aktualizacja statusu zaproszenia na "Rejected"
             await firestore.GetCollection("invitations")
                            .GetDocument(invitation.Id) // Używamy .Id z przekazanego obiektu
                            .UpdateDataAsync(("status", "Rejected"));
 
-            // -- NOWY KOD DO POWIADOMIEŃ PUSH --
             var myProfile = await GetUserProfileAsync(myUid);
             string myName = myProfile?.Name ?? "Użytkownik";
 
             var notification = new AppNotification
             {
-                ReceiverId = invitation.SenderId, // Wysyłamy do nadawcy
+                ReceiverId = invitation.SenderId,
                 Title = "Zaproszenie odrzucone",
                 Message = $"{myName} odrzucił(a) Twoje zaproszenie.",
                 Type = "InvitationRejected"
@@ -431,7 +363,7 @@ namespace i_am.Services
             await SendNotificationAsync(notification);
         }
 
-        // Delete the invitation entirely (Allows the sender to clear rejected invites and try again)
+        // Usunięcie zaproszenia z FireStore
         public async Task DeleteInvitationAsync(string invitationId)
         {
             var firestore = CrossFirebaseFirestore.Current;
@@ -446,7 +378,7 @@ namespace i_am.Services
             var firestore = CrossFirebaseFirestore.Current;
             var batch = firestore.CreateBatch();
 
-            // 1. Usuń ID z list obu użytkowników
+            // Usuwamy ID z list obu użytkowników
             batch.UpdateData(firestore.GetCollection("users").GetDocument(caregiverId),
                 ("careTakersID", FieldValue.ArrayRemove(caretakerId)));
 
@@ -455,14 +387,14 @@ namespace i_am.Services
 
             await batch.CommitAsync();
 
-            // 2. Ostatecznie i trwale usuwamy zaproszenie z bazy (żadnego "Soft Delete")
+            // Usuwamy zaproszenie
             var queryA = await firestore.GetCollection("invitations")
                 .WhereEqualsTo("senderId", caregiverId)
                 .WhereEqualsTo("receiverId", caretakerId)
                 .GetDocumentsAsync<Invitation>();
 
             foreach (var doc in queryA.Documents)
-                if (!string.IsNullOrEmpty(doc.Data?.Id)) await DeleteInvitationPermanentlyAsync(doc.Data.Id);
+                if (!string.IsNullOrEmpty(doc.Data?.Id)) await DeleteInvitationAsync(doc.Data.Id);
 
             var queryB = await firestore.GetCollection("invitations")
                 .WhereEqualsTo("senderId", caretakerId)
@@ -470,10 +402,9 @@ namespace i_am.Services
                 .GetDocumentsAsync<Invitation>();
 
             foreach (var doc in queryB.Documents)
-                if (!string.IsNullOrEmpty(doc.Data?.Id)) await DeleteInvitationPermanentlyAsync(doc.Data.Id);
+                if (!string.IsNullOrEmpty(doc.Data?.Id)) await DeleteInvitationAsync(doc.Data.Id);
 
-            // 3. WYSYŁANIE NOWEGO POWIADOMIENIA DO DRUGIEJ OSOBY
-            // Kto ma dostać powiadomienie? Ten, którego ID NIE jest ID osoby usuwającej.
+            // Wysyłanie powiadomienia do osoby którą usuwamy
             string targetUserId = (removerUid == caregiverId) ? caretakerId : caregiverId;
 
             var notification = new AppNotification
@@ -487,16 +418,7 @@ namespace i_am.Services
             await SendNotificationAsync(notification);
         }
 
-        // Ostateczne usunięcie z bazy
-        public async Task DeleteInvitationPermanentlyAsync(string invitationId)
-        {
-            var firestore = CrossFirebaseFirestore.Current;
-            await firestore.GetCollection("invitations")
-                           .GetDocument(invitationId)
-                           .DeleteDocumentAsync();
-        }
-
-        // Potrzebne do wyświetlania listy opiekunów/podopiecznych w ManageCareTakers/ManageCareGivers
+        // Potrzebne do wyświetlania listy opiekunów/podopiecznych w ManageConnectionsPage
         public async Task<List<User>> GetUsersByIdsAsync(List<string>? userIds)
         {
             var users = new List<User>();
@@ -514,22 +436,54 @@ namespace i_am.Services
             }
             return users;
         }
+
+        // Nasłuchiwanie własnego profilu (ja lub inny user wpisał mi się do listy CareGiversID/CareTakersID)
+        public IDisposable ListenForUserProfileUpdates(string uid, Action<User> onUpdate)
+        {
+            var firestore = CrossFirebaseFirestore.Current;
+
+            return firestore.GetCollection("users")
+                .GetDocument(uid)
+                .AddSnapshotListener<User>((snapshot) =>
+                {
+                    if (snapshot.Data != null)
+                    {
+                        onUpdate?.Invoke(snapshot.Data);
+                    }
+                });
+        }
+
+        // Nasłuchiwanie zaproszeń skierowanych DO MNIE
+        public IDisposable ListenForReceivedInvitations(string myUid, Action<List<Invitation>> onUpdate)
+        {
+            var firestore = CrossFirebaseFirestore.Current;
+
+            return firestore.GetCollection("invitations")
+                .WhereEqualsTo("receiverId", myUid)
+                .AddSnapshotListener<Invitation>((snapshot) =>
+                {
+                    var receivedInvitations = snapshot.Documents.Select(doc => doc.Data).ToList();
+                    onUpdate?.Invoke(receivedInvitations);
+                });
+        }
+
+        // Nasłuchiwanie zaproszeń wysłanych PRZEZE MNIE
+        public IDisposable ListenForSentInvitations(string myUid, Action<List<Invitation>> onUpdate)
+        {
+            var firestore = CrossFirebaseFirestore.Current;
+
+            return firestore.GetCollection("invitations")
+                .WhereEqualsTo("senderId", myUid)
+                .AddSnapshotListener<Invitation>((snapshot) =>
+                {
+                    var sentInvitations = snapshot.Documents.Select(doc => doc.Data).ToList();
+                    onUpdate?.Invoke(sentInvitations);
+                });
+        }
         #endregion
         #region Pytania i odpowiedzi (Questions & Answers)
 
-        // --- ZARZĄDZANIE SZABLONAMI PYTAŃ ---
-
-        // Zwraca dzisiejszą datę raportowania (doba trwa od 4:00 do 4:00 następnego dnia)
-        public string GetReportingDateString()
-        {
-            var now = DateTime.Now;
-            if (now.Hour < 4)
-            {
-                // Jeśli jest np. 2:00 w nocy w środę, to raport zaliczamy jeszcze do wtorku
-                return now.AddDays(-1).ToString("yyyy-MM-dd");
-            }
-            return now.ToString("yyyy-MM-dd");
-        }
+        // --- ZARZĄDZANIE PYTANIAMI ---
 
         // Pobieranie listy pytań dla konkretnego podopiecznego
         public async Task<List<QuestionTemplate>> GetQuestionTemplatesAsync(string careTakerId)
@@ -538,7 +492,7 @@ namespace i_am.Services
             var snapshot = await firestore.GetCollection("users")
                                           .GetDocument(careTakerId)
                                           .GetCollection("question_templates")
-                                          .GetDocumentsAsync<QuestionTemplate>(); // <-- DODANY TYP TUTAJ
+                                          .GetDocumentsAsync<QuestionTemplate>();
 
             // Skoro snapshot jest już zmapowany, wystarczy wyciągnąć właściwość Data
             var templates = snapshot.Documents.Select(d => d.Data).ToList();
@@ -546,7 +500,7 @@ namespace i_am.Services
             return templates.OrderBy(q => q.OrderIndex).ToList();
         }
 
-        // Zapisywanie lub aktualizacja konkretnego pytania (Dla Opiekuna)
+        // Zapisywanie lub aktualizacja konkretnego pytania
         public async Task SaveQuestionTemplateAsync(string careTakerId, QuestionTemplate template)
         {
             var firestore = CrossFirebaseFirestore.Current;
@@ -564,7 +518,7 @@ namespace i_am.Services
             }
         }
 
-        // Usuwanie pytania (Dla Opiekuna)
+        // Usuwanie pytania
         public async Task DeleteQuestionTemplateAsync(string careTakerId, string templateId)
         {
             var firestore = CrossFirebaseFirestore.Current;
@@ -805,7 +759,7 @@ namespace i_am.Services
             try
             {
                 var storage = CrossFirebaseStorage.Current;
-                // Zmieniono nazwę pliku, np. 2026-04-12_front.jpg
+
                 var reference = storage.GetRootReference().GetChild($"daily_photos/{uid}/{dateId}_{suffix}.jpg");
 
                 await reference.PutFile(photo.FullPath).AwaitAsync();

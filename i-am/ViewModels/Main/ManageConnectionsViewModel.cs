@@ -14,6 +14,7 @@ namespace i_am.ViewModels
         private IDisposable? _sentListener;
         private IDisposable? _receivedListener;
         private IDisposable? _userProfileListener;
+        private IDisposable? _notificationCleanupListener;
 
         private List<Invitation> _rawSent = new();
         private List<Invitation> _rawReceived = new();
@@ -89,13 +90,46 @@ namespace i_am.ViewModels
                     UpdateCombinedInvitationsList();
                 });
             });
-        }
+            // DODANE: Nasłuchiwacz usuwający powiadomienia dotyczące połączeń, gdy jesteśmy na tej stronie
+            _notificationCleanupListener = _firestoreService.ListenForNotifications(myUid, (freshList) =>
+            {
+                // Typy powiadomień, które są powiązane z tą zakładką
+                var connectionNotificationTypes = new[]
+                {
+            "NewInvitation",
+            "InvitationAccepted",
+            "InvitationRejected"
+        };
 
+                var toDelete = freshList.Where(n => connectionNotificationTypes.Contains(n.Type)).ToList();
+
+                foreach (var notification in toDelete)
+                {
+                    if (!string.IsNullOrEmpty(notification.Id))
+                    {
+                        // Task.Run zapobiega blokowaniu wątku Firestore/UI podczas operacji usuwania
+                        _ = Task.Run(async () =>
+                        {
+                            try
+                            {
+                                await _firestoreService.DeleteNotificationAsync(notification.Id);
+                            }
+                            catch (Exception ex)
+                            {
+                                System.Diagnostics.Debug.WriteLine($"Błąd automatycznego usuwania powiadomienia: {ex.Message}");
+                            }
+                        });
+                    }
+                }
+            });
+        }
+         
         public void Cleanup()
         {
             _sentListener?.Dispose();
             _receivedListener?.Dispose();
             _userProfileListener?.Dispose();
+            _notificationCleanupListener?.Dispose();
         }
 
         private void UpdateCombinedInvitationsList()

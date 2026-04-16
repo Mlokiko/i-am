@@ -13,6 +13,7 @@ namespace i_am.ViewModels
 
         [ObservableProperty] private bool isLoading;
         [ObservableProperty] private bool isDataVisible;
+        [ObservableProperty] private bool isSelectionVisible = true;
 
         public ObservableCollection<User> CareTakers { get; } = new();
 
@@ -50,6 +51,27 @@ namespace i_am.ViewModels
                 var fetchedTakers = await _firestoreService.GetUsersByIdsAsync(user.CaretakersID);
                 CareTakers.Clear();
                 foreach (var t in fetchedTakers) CareTakers.Add(t);
+
+                // LOGIKA AUTOMATYCZNEGO WYBORU
+                if (CareTakers.Count == 1)
+                {
+                    IsSelectionVisible = false; // Ukrywamy przycisk wyboru
+
+                    var singleCareTaker = CareTakers.First();
+                    SelectedCareTaker = singleCareTaker;
+                    SelectedCareTakerName = singleCareTaker.Name;
+
+                    // Ładujemy dane w tle
+                    await LoadStatisticsAsync(singleCareTaker);
+                }
+                else if (CareTakers.Count > 1)
+                {
+                    IsSelectionVisible = true; // Pokazujemy wybór, bo jest ich więcej
+                }
+            }
+            else
+            {
+                IsSelectionVisible = false; // Ukrywamy, jeśli w ogóle brak podopiecznych
             }
             IsLoading = false;
         }

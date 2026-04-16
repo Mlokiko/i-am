@@ -27,7 +27,7 @@ public partial class LoadingPage : ContentPage
 
         // 2. Jeœli to nie jest pierwsze uruchomienie, sprawdzamy logowanie
         string userId = Preferences.Default.Get("UserId", string.Empty);
-        if (string.IsNullOrEmpty(userId))
+        if (!string.IsNullOrEmpty(userId))
         {
             await _firestoreService.UpdateFcmTokenAsync();
             bool isCaregiver = Preferences.Default.Get("IsCaregiver", false);

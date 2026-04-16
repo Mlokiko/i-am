@@ -31,7 +31,6 @@ namespace i_am.ViewModels
         private readonly FirestoreService _firestoreService;
         private QuestionTemplate? _editingTemplate;
 
-        // ZMIANA 1: Zwykłe właściwości zmieniamy na obserwowalne przez [ObservableProperty]
         [ObservableProperty] private ObservableCollection<User> careTakers = new();
         [ObservableProperty] private ObservableCollection<QuestionItemViewModel> questions = new();
         [ObservableProperty] private ObservableCollection<EditorOptionItem> editorOptions = new();
@@ -80,17 +79,50 @@ namespace i_am.ViewModels
             if (profile != null && profile.CaretakersID != null && profile.CaretakersID.Any())
             {
                 var careTakersList = await _firestoreService.GetUsersByIdsAsync(profile.CaretakersID);
+
+                // --- NOWA LOGIKA: Automatyczny wybór podopiecznego ---
+                if (careTakersList.Count == 1)
+                {
+                    var singleCareTaker = careTakersList.First();
+
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        CareTakers = new ObservableCollection<User>(careTakersList);
+                        SelectedCareTaker = singleCareTaker;
+                        SelectedCareTakerName = singleCareTaker.Name;
+                        IsCareTakerSelectionVisible = false; // Ukrywamy picker, bo jest tylko 1
+                        IsQuestionsVisible = true;           // Od razu pokazujemy widok pytań
+                        IsEditorVisible = false;
+                        HasNoQuestions = false;
+                    });
+
+                    // Automatycznie ładujemy pytania dla tego jedynego podopiecznego
+                    await LoadQuestionsAsync(singleCareTaker.Id);
+                }
+                else
+                {
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        SelectedCareTaker = null;
+                        SelectedCareTakerName = "Kliknij, aby wybrać...";
+                        IsQuestionsVisible = false;
+                        IsEditorVisible = false;
+                        IsCareTakerSelectionVisible = true; // Pokazujemy picker, bo jest więcej niż 1
+                        HasNoQuestions = false;
+
+                        CareTakers = new ObservableCollection<User>(careTakersList);
+                    });
+                }
+            }
+            else
+            {
+                // Brak podopiecznych
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    SelectedCareTaker = null;
-                    SelectedCareTakerName = "Kliknij, aby wybrać...";
+                    IsCareTakerSelectionVisible = false;
                     IsQuestionsVisible = false;
                     IsEditorVisible = false;
-                    IsCareTakerSelectionVisible = true;
-                    HasNoQuestions = false;
-
-                    // ZMIANA 2: Przypisanie nowej kolekcji zamiast Clear() i Add() w pętli
-                    CareTakers = new ObservableCollection<User>(careTakersList);
+                    HasNoQuestions = true;
                 });
             }
         }
@@ -127,7 +159,6 @@ namespace i_am.ViewModels
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                // ZMIANA 3: Błyskawiczne ładowanie pytań - transformacja LINQ i jednorazowe przypisanie
                 var newQuestions = questionsList
                     .OrderBy(x => x.OrderIndex)
                     .Select(q => new QuestionItemViewModel { Template = q });
@@ -168,7 +199,6 @@ namespace i_am.ViewModels
             EditorIsRandomPool = false;
             EditorMaxSelections = 1;
 
-            // ZMIANA 4: Szybkie przypisanie opcji startowych dla edytora
             EditorOptions = new ObservableCollection<EditorOptionItem>
             {
                 new EditorOptionItem { Text = "Tak", Points = "5" },
@@ -177,7 +207,7 @@ namespace i_am.ViewModels
 
             IsQuestionsVisible = false;
             IsEditorVisible = true;
-            IsCareTakerSelectionVisible = false;
+            IsCareTakerSelectionVisible = false; // Podczas edycji ukrywamy wybór
         }
 
         [RelayCommand]
@@ -192,7 +222,6 @@ namespace i_am.ViewModels
             EditorIsRandomPool = template.IsRandomPool;
             EditorMaxSelections = template.MaxSelections < 1 ? 1 : template.MaxSelections;
 
-            // ZMIANA 5: Błyskawiczne ładowanie istniejących odpowiedzi z bazy
             if (template.Options != null)
             {
                 var loadedOptions = template.Options.Select(opt =>
@@ -206,7 +235,7 @@ namespace i_am.ViewModels
 
             IsQuestionsVisible = false;
             IsEditorVisible = true;
-            IsCareTakerSelectionVisible = false;
+            IsCareTakerSelectionVisible = false; // Podczas edycji ukrywamy wybór
         }
 
         [RelayCommand]
@@ -222,8 +251,6 @@ namespace i_am.ViewModels
             }
         }
 
-        // UWAGA: Pojedyncze dodawanie i usuwanie opcji w edytorze zostaje bez zmian,
-        // ponieważ reagują na kliknięcia użytkownika pojedynczo.
         [RelayCommand]
         private void AddOption() => EditorOptions.Add(new EditorOptionItem { Text = "", Points = "0" });
 
@@ -238,7 +265,8 @@ namespace i_am.ViewModels
         {
             IsEditorVisible = false;
             IsQuestionsVisible = true;
-            IsCareTakerSelectionVisible = true;
+            // Odtworzenie widoczności pickera tylko w przypadku, gdy jest >1 podopiecznego
+            IsCareTakerSelectionVisible = CareTakers.Count > 1;
         }
 
         [RelayCommand]
@@ -280,7 +308,10 @@ namespace i_am.ViewModels
 
             IsEditorVisible = false;
             IsQuestionsVisible = true;
-            IsCareTakerSelectionVisible = true;
+
+            // Odtworzenie widoczności pickera tylko, jeśli jest > 1 podopiecznego
+            IsCareTakerSelectionVisible = CareTakers.Count > 1;
+
             await LoadQuestionsAsync(SelectedCareTaker.Id);
         }
     }

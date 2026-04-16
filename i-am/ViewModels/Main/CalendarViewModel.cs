@@ -86,6 +86,7 @@ namespace i_am.ViewModels
         [ObservableProperty] private bool isLoading = true;
         [ObservableProperty] private bool isCareGiver;
         [ObservableProperty] private bool hasCareTakerSelected;
+        [ObservableProperty] private bool isCareTakerSelectionVisible;
 
         private DateTime _currentMonthDate;
         [ObservableProperty] private string currentMonthName = string.Empty;
@@ -135,17 +136,44 @@ namespace i_am.ViewModels
                 if (profile != null)
                 {
                     var careTakersList = await _firestoreService.GetUsersByIdsAsync(profile.CaretakersID);
-                    MainThread.BeginInvokeOnMainThread(() =>
+
+                    // --- NOWA LOGIKA: Automatyczny wybór ---
+                    if (careTakersList.Count == 1)
                     {
-                        SelectedCareTaker = null;
-                        SelectedCareTakerName = "Kliknij, aby wybrać...";
-                        CareTakers = new ObservableCollection<User>(careTakersList);
-                    });
+                        var singleCareTaker = careTakersList.First();
+
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            CareTakers = new ObservableCollection<User>(careTakersList);
+                            SelectedCareTaker = singleCareTaker;
+                            SelectedCareTakerName = singleCareTaker.Name;
+                            IsCareTakerSelectionVisible = false; // Ukrywa picker
+                        });
+
+                        HasCareTakerSelected = true;
+
+                        // Ładujemy dane kalendarza dla tego jedynego podopiecznego
+                        await LoadResponsesAsync(singleCareTaker.Id);
+                    }
+                    else
+                    {
+                        // Sytuacja gdy jest więcej niż 1 podopieczny (lub brak)
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            SelectedCareTaker = null;
+                            SelectedCareTakerName = "Kliknij, aby wybrać...";
+                            CareTakers = new ObservableCollection<User>(careTakersList);
+                            IsCareTakerSelectionVisible = careTakersList.Count > 1; // Pokaż picker jeśli > 1
+                        });
+
+                        HasCareTakerSelected = false;
+                    }
                 }
-                HasCareTakerSelected = false;
             }
             else
             {
+                // Tryb Podopiecznego
+                IsCareTakerSelectionVisible = false; // Podopieczny nigdy nie widzi wyboru
                 HasCareTakerSelected = true;
                 await LoadResponsesAsync(_myUid);
             }

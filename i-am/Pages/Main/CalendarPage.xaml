@@ -11,7 +11,7 @@
         <ScrollView>
             <VerticalStackLayout Padding="20" Spacing="20">
 
-                <VerticalStackLayout IsVisible="{Binding IsCareGiver}" Spacing="10">
+                <VerticalStackLayout IsVisible="{Binding IsCareTakerSelectionVisible}" Spacing="10">
                     <Label FontAttributes="Bold" Text="Wybierz podopiecznego:" />
                     <Border Padding="0" Style="{StaticResource CardBorderStyle}">
                         <Grid HeightRequest="50">

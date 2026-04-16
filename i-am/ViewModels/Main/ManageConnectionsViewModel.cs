@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using i_am.Models;
+using i_am.Resources.Strings;
 using i_am.Services;
 
 namespace i_am.ViewModels
@@ -153,7 +154,7 @@ namespace i_am.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Błąd", ex.Message, "OK");
+                await Shell.Current.DisplayAlert(AppStrings.Error, ex.Message, AppStrings.OK);
             }
         }
 

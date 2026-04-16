@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:i_am.ViewModels"
+    xmlns:local="clr-namespace:i_am.Resources.Strings"
     x:DataType="vm:CareTakerMainViewModel">
 
     <Shell.TitleView>
@@ -24,12 +25,12 @@
 
             <ScrollView>
                 <VerticalStackLayout Spacing="10">
-                    <Button Command="{Binding GoToNotificationsCommand}" Text="Powiadomienia" />
-                    <Button Command="{Binding GoToDailyActivityCommand}" Text="Codzienna Aktywność" />
-                    <Button Command="{Binding GoToCalendarCommand}" Text="Kalendarz" />
-                    <Button Command="{Binding GoToManageCareGiversCommand}" Text="Zarządzaj Opiekunami" />
-                    <Button Command="{Binding GoToSettingsCommand}" Text="Ustawienia" />
-                    <Button Command="{Binding GoToManageAccountCommand}" Text="Zarządzaj swoim kontem" />
+                    <Button Command="{Binding GoToNotificationsCommand}" Text="{Binding Source={x:Static local:AppStrings.CareTaker_Notifications}}" />
+                    <Button Command="{Binding GoToDailyActivityCommand}" Text="{Binding Source={x:Static local:AppStrings.CareTaker_DailyActivity}}" />
+                    <Button Command="{Binding GoToCalendarCommand}" Text="{Binding Source={x:Static local:AppStrings.CareTaker_Calendar}}" />
+                    <Button Command="{Binding GoToManageCareGiversCommand}" Text="{Binding Source={x:Static local:AppStrings.CareTaker_ManageCareGivers}}" />
+                    <Button Command="{Binding GoToSettingsCommand}" Text="{Binding Source={x:Static local:AppStrings.CareTaker_Settings}}" />
+                    <Button Command="{Binding GoToManageAccountCommand}" Text="{Binding Source={x:Static local:AppStrings.CareTaker_ManageAccount}}" />
                 </VerticalStackLayout>
             </ScrollView>
 
@@ -38,12 +39,12 @@
                     Margin="0,10,0,0"
                     Command="{Binding LogoutCommand}"
                     Style="{StaticResource DangerButtonStyle}"
-                    Text="Wyloguj się" />
+                    Text="{Binding Source={x:Static local:AppStrings.CareTaker_Logout}}" />
                 <Label
                     Padding="20"
                     HorizontalOptions="Center"
                     Style="{StaticResource SubtitleLabelStyle}"
-                    Text="Informacje alarmowe">
+                    Text="{Binding Source={x:Static local:AppStrings.CareTaker_EmergencyInfo}}">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToInformationCommand}" />
                     </Label.GestureRecognizers>

@@ -4,7 +4,8 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:i_am.ViewModels"
-    Title="Rejestracja"
+    xmlns:local="clr-namespace:i_am.Resources.Strings"
+    Title="{Binding Source={x:Static local:AppStrings.Register_Title}}"
     x:DataType="vm:RegisterViewModel">
 
     <ScrollView>
@@ -13,7 +14,7 @@
             <Label
                 Margin="0,15,0,5"
                 Style="{StaticResource FormLabelStyle}"
-                Text="Email" />
+                Text="{Binding Source={x:Static local:AppStrings.Register_Email}}" />
             <Border Style="{StaticResource InputBorderStyle}">
                 <Border.Triggers>
                     <DataTrigger
@@ -26,14 +27,14 @@
                 </Border.Triggers>
                 <Entry
                     Keyboard="Email"
-                    Placeholder="np. example@example.com"
+                    Placeholder="{Binding Source={x:Static local:AppStrings.Register_EmailPlaceholder}}"
                     Text="{Binding Email}" />
             </Border>
             <Label
                 Margin="5,-10,0,0"
                 FontSize="12"
                 IsVisible="{Binding ShowEmailError}"
-                Text="Niepoprawny format email"
+                Text="{Binding Source={x:Static local:AppStrings.Register_InvalidEmail}}"
                 TextColor="{AppThemeBinding Light={StaticResource DangerLight},
                                             Dark={StaticResource DangerDark}}" />
 
@@ -41,7 +42,7 @@
                 Margin="0,10,0,5"
                 Spacing="8"
                 VerticalOptions="End">
-                <Label Style="{StaticResource FormLabelStyle}" Text="Hasło" />
+                <Label Style="{StaticResource FormLabelStyle}" Text="{Binding Source={x:Static local:AppStrings.Register_Password}}" />
                 <Border Style="{StaticResource CircleIconBorderStyle}">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding ShowInfoCommand}" CommandParameter="Password" />
@@ -63,7 +64,7 @@
                     <Entry
                         Grid.Column="0"
                         IsPassword="{Binding IsPasswordHidden}"
-                        Placeholder="np. MojeB@rdzoSiln3HaSlO"
+                        Placeholder="{Binding Source={x:Static local:AppStrings.Register_PasswordPlaceholder}}"
                         Text="{Binding Password}" />
                     <Label
                         Grid.Column="1"
@@ -76,13 +77,13 @@
                                 Binding="{Binding IsPasswordHidden}"
                                 TargetType="Label"
                                 Value="True">
-                                <Setter Property="Text" Value="Pokaż" />
+                                <Setter Property="Text" Value="{Binding Source={x:Static local:AppStrings.Register_Show}}" />
                             </DataTrigger>
                             <DataTrigger
                                 Binding="{Binding IsPasswordHidden}"
                                 TargetType="Label"
                                 Value="False">
-                                <Setter Property="Text" Value="Ukryj" />
+                                <Setter Property="Text" Value="{Binding Source={x:Static local:AppStrings.Register_Hide}}" />
                             </DataTrigger>
                         </Label.Triggers>
                         <Label.GestureRecognizers>
@@ -95,7 +96,7 @@
                 Margin="5,-10,0,0"
                 FontSize="12"
                 IsVisible="{Binding ShowPasswordError}"
-                Text="Hasło nie jest dostatecznie silne"
+                Text="{Binding Source={x:Static local:AppStrings.Register_WeakPassword}}"
                 TextColor="{AppThemeBinding Light={StaticResource DangerLight},
                                             Dark={StaticResource DangerDark}}" />
 

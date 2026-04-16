@@ -4,7 +4,8 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:i_am.ViewModels"
-    Title="Logowanie"
+    xmlns:local="clr-namespace:i_am.Resources.Strings"
+    Title="{Binding Source={x:Static local:AppStrings.Login_Title}}"
     x:DataType="vm:LoginViewModel">
     <ScrollView>
         <VerticalStackLayout
@@ -16,7 +17,7 @@
                 <Entry
                     ClearButtonVisibility="WhileEditing"
                     Keyboard="Email"
-                    Placeholder="Email"
+                    Placeholder="{Binding Source={x:Static local:AppStrings.Login_Email}}"
                     Text="{Binding Email}" />
             </Border>
 
@@ -24,18 +25,18 @@
                 <Entry
                     ClearButtonVisibility="WhileEditing"
                     IsPassword="True"
-                    Placeholder="Hasło"
+                    Placeholder="{Binding Source={x:Static local:AppStrings.Login_Password}}"
                     Text="{Binding Password}" />
             </Border>
 
             <Button
                 Margin="0,20,0,0"
                 Command="{Binding LoginCommand}"
-                Text="Login" />
+                Text="{Binding Source={x:Static local:AppStrings.Login_Button}}" />
 
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
-                <Label Style="{StaticResource SubtitleLabelStyle}" Text="Nie masz konta?" />
-                <Label Style="{StaticResource LinkLabelStyle}" Text="Zarejestruj.">
+                <Label Style="{StaticResource SubtitleLabelStyle}" Text="{Binding Source={x:Static local:AppStrings.Login_NoAccount}}" />
+                <Label Style="{StaticResource LinkLabelStyle}" Text="{Binding Source={x:Static local:AppStrings.Login_SignUp}}">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding GoToRegisterCommand}" />
                     </Label.GestureRecognizers>

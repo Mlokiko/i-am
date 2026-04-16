@@ -3,6 +3,8 @@ using CommunityToolkit.Mvvm.Input;
 using i_am.Pages.Authentication;
 using i_am.Pages.Main;
 using i_am.Pages.CareGiver;
+using i_am.Resources.Constants;
+using i_am.Resources.Strings;
 using i_am.Services;
 
 namespace i_am.ViewModels
@@ -18,29 +20,29 @@ namespace i_am.ViewModels
 
         // --- KOMENDY NAWIGACYJNE ---
         [RelayCommand]
-        private async Task GoToNotificationsAsync() => await Shell.Current.GoToAsync(nameof(NotificationsPage));
+        private async Task GoToNotificationsAsync() => await Shell.Current.GoToAsync(NavigationRoutes.NotificationsPage);
 
         [RelayCommand]
-        private async Task GoToCalendarAsync() => await Shell.Current.GoToAsync(nameof(CalendarPage));
+        private async Task GoToCalendarAsync() => await Shell.Current.GoToAsync(NavigationRoutes.CalendarPage);
 
         [RelayCommand]
-        private async Task GoToStatisticsAsync() => await Shell.Current.GoToAsync(nameof(StatisticsPage));
+        private async Task GoToStatisticsAsync() => await Shell.Current.GoToAsync(NavigationRoutes.StatisticsPage);
 
 
         [RelayCommand]
-        private async Task GoToEditCareTakerQuestionsAsync() => await Shell.Current.GoToAsync(nameof(EditCareTakerQuestionsPage));
+        private async Task GoToEditCareTakerQuestionsAsync() => await Shell.Current.GoToAsync(NavigationRoutes.EditCareTakerQuestionsPage);
 
         [RelayCommand]
-        private async Task GoToManageCareTakersAsync() => await Shell.Current.GoToAsync(nameof(ManageConnectionsPage));
+        private async Task GoToManageCareTakersAsync() => await Shell.Current.GoToAsync(NavigationRoutes.ManageConnectionsPage);
 
         [RelayCommand]
-        private async Task GoToSettingsAsync() => await Shell.Current.GoToAsync(nameof(SettingsPage));
+        private async Task GoToSettingsAsync() => await Shell.Current.GoToAsync(NavigationRoutes.SettingsPage);
 
         [RelayCommand]
-        private async Task GoToManageAccountAsync() => await Shell.Current.GoToAsync(nameof(ManageAccountPage));
+        private async Task GoToManageAccountAsync() => await Shell.Current.GoToAsync(NavigationRoutes.ManageAccountPage);
 
         [RelayCommand]
-        private async Task GoToInformationAsync() => await Shell.Current.GoToAsync(nameof(InformationPage));
+        private async Task GoToInformationAsync() => await Shell.Current.GoToAsync(NavigationRoutes.InformationPage);
 
         // --- KOMENDA WYLOGOWANIA ---
         [RelayCommand]
@@ -48,26 +50,30 @@ namespace i_am.ViewModels
         {
             try
             {
-                bool confirm = await Shell.Current.DisplayAlert("Wyloguj", "Jesteś pewien że chcesz się wylogować?", "Tak", "Nie");
+                bool confirm = await Shell.Current.DisplayAlert(
+                    LocalizationManager.Auth_LogoutTitle, 
+                    LocalizationManager.Auth_LogoutConfirm, 
+                    LocalizationManager.Auth_Yes, 
+                    LocalizationManager.Auth_No);
 
                 if (confirm)
                 {
                     await _firestoreService.RemoveFcmTokenAsync();
 
                     // Usuwa lokalny cache
-                    Preferences.Default.Remove("IsCaregiver");
-                    Preferences.Default.Remove("UserId");
+                    Preferences.Default.Remove(PreferencesKeys.IsCaregiver);
+                    Preferences.Default.Remove(PreferencesKeys.UserId);
 
                     // Firebase czyści sesje
                     await _firestoreService.SignOutAsync();
 
                     // Podwójny ukośnik, aby zresetować stos nawigacji
-                    await Shell.Current.GoToAsync($"//{nameof(LandingPage)}");
+                    await Shell.Current.GoToAsync($"//{NavigationRoutes.LandingPage}");
                 }
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Błąd", $"Problem z wylogowaniem: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlert(LocalizationManager.Error, $"{LocalizationManager.Auth_LogoutError} {ex.Message}", LocalizationManager.OK);
             }
         }
     }

@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using i_am.Resources.Constants;
+using i_am.Resources.Strings;
 using i_am.Services;
 using i_am.Pages.Authentication;
 using i_am.Pages.CareGiver;
@@ -29,14 +31,14 @@ namespace i_am.ViewModels
             // 1. Walidacja pustości pól
             if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
             {
-                await Shell.Current.DisplayAlert("Błąd", "Wypełnij wszystkie pola", "OK");
+                await Shell.Current.DisplayAlert(AppStrings.Error, AppStrings.Auth_FillAllFields, AppStrings.OK);
                 return;
             }
 
             // 2. Sprawdzenie połączenia z internetem przed akcją
             if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
             {
-                await Shell.Current.DisplayAlert("Brak połączenia", "Sprawdź swoje połączenie z internetem i spróbuj ponownie.", "OK");
+                await Shell.Current.DisplayAlert(AppStrings.Auth_NoConnection, AppStrings.Auth_NoConnectionMessage, AppStrings.OK);
                 return;
             }
 
@@ -51,28 +53,28 @@ namespace i_am.ViewModels
 
                 if (profile != null)
                 {
-                    Preferences.Default.Set("UserId", profile.Id);
-                    Preferences.Default.Set("IsCaregiver", profile.IsCaregiver);
+                    Preferences.Default.Set(PreferencesKeys.UserId, profile.Id);
+                    Preferences.Default.Set(PreferencesKeys.IsCaregiver, profile.IsCaregiver);
                     await _firestoreService.UpdateFcmTokenAsync();
 
                     if (profile.IsCaregiver)
-                        await Shell.Current.GoToAsync($"//{nameof(CareGiverMainPage)}");
+                        await Shell.Current.GoToAsync($"//{NavigationRoutes.CareGiverMainPage}");
                     else
-                        await Shell.Current.GoToAsync($"//{nameof(CareTakerMainPage)}");
+                        await Shell.Current.GoToAsync($"//{NavigationRoutes.CareTakerMainPage}");
                 }
             }
             catch (Exception ex)
             {
                 // 3. Tłumaczenie błędu na polski
                 string errorMessage = TranslateFirebaseError(ex.Message);
-                await Shell.Current.DisplayAlert("Logowanie nie powiodło się", errorMessage, "OK");
+                await Shell.Current.DisplayAlert(AppStrings.Auth_LoginFailed, errorMessage, AppStrings.OK);
             }
         }
 
         [RelayCommand]
         private async Task GoToRegisterAsync()
         {
-            await Shell.Current.GoToAsync(nameof(RegisterPage));
+            await Shell.Current.GoToAsync(NavigationRoutes.RegisterPage);
         }
 
         /// <summary>

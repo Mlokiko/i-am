@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:i_am.ViewModels"
+    xmlns:local="clr-namespace:i_am.Resources.Strings"
     x:DataType="vm:PermissionsViewModel"
     Shell.NavBarIsVisible="False">
 
@@ -20,7 +21,7 @@
             <Label
                 HorizontalTextAlignment="Center"
                 Style="{StaticResource SubtitleLabelStyle}"
-                Text="Aby w pełni korzystać z możliwości aplikacji, potrzebujemy Twojej zgody na kilka rzeczy." />
+                Text="{Binding Source={x:Static local:AppStrings.Permissions_Description}}" />
 
             <Border
                 Stroke="{Binding NotificationStatusColor}"
@@ -34,15 +35,15 @@
                         <Label
                             FontSize="18"
                             Style="{StaticResource TitleLabelStyle}"
-                            Text="Powiadomienia Push" />
-                        <Label Style="{StaticResource SubtitleLabelStyle}" Text="Służą do przypominania o codziennych ankietach, aktywności podopiecznych oraz informowaniu o statusie zaproszeń." />
+                            Text="{Binding Source={x:Static local:AppStrings.Permissions_Notifications}}" />
+                        <Label Style="{StaticResource SubtitleLabelStyle}" Text="{Binding Source={x:Static local:AppStrings.Permissions_NotificationsDesc}}" />
                     </VerticalStackLayout>
 
                     <Button
                         Grid.Row="0"
                         Grid.Column="1"
                         Command="{Binding RequestNotificationsCommand}"
-                        Text="Zezwól"
+                        Text="{Binding Source={x:Static local:AppStrings.Permissions_Allow}}"
                         VerticalOptions="Center">
                         <Button.Triggers>
                             <DataTrigger
@@ -59,7 +60,7 @@
                         Grid.Column="1"
                         FontAttributes="Bold"
                         IsVisible="{Binding IsNotificationGranted}"
-                        Text="Przyznano"
+                        Text="{Binding Source={x:Static local:AppStrings.Permissions_Granted}}"
                         TextColor="Green"
                         VerticalOptions="Center" />
                 </Grid>
@@ -85,7 +86,7 @@
                         Grid.Row="0"
                         Grid.Column="1"
                         Command="{Binding RequestCameraCommand}"
-                        Text="Zezwól"
+                        Text="{Binding Source={x:Static local:AppStrings.Permissions_Allow}}"
                         VerticalOptions="Center">
                         <Button.Triggers>
                             <DataTrigger
@@ -102,7 +103,7 @@
                         Grid.Column="1"
                         FontAttributes="Bold"
                         IsVisible="{Binding IsCameraGranted}"
-                        Text="Przyznano"
+                        Text="{Binding Source={x:Static local:AppStrings.Permissions_Granted}}"
                         TextColor="Green"
                         VerticalOptions="Center" />
                 </Grid>
@@ -128,7 +129,7 @@
                         Grid.Row="0"
                         Grid.Column="1"
                         Command="{Binding RequestStorageCommand}"
-                        Text="Zezwól"
+                        Text="{Binding Source={x:Static local:AppStrings.Permissions_Allow}}"
                         VerticalOptions="Center">
                         <Button.Triggers>
                             <DataTrigger
@@ -145,7 +146,7 @@
                         Grid.Column="1"
                         FontAttributes="Bold"
                         IsVisible="{Binding IsStorageGranted}"
-                        Text="Przyznano"
+                        Text="{Binding Source={x:Static local:AppStrings.Permissions_Granted}}"
                         TextColor="Green"
                         VerticalOptions="Center" />
                 </Grid>
@@ -161,7 +162,7 @@
                 Command="{Binding FinishOnboardingCommand}"
                 FontAttributes="Bold"
                 HeightRequest="50"
-                Text="Rozpocznij" />
+                Text="{Binding Source={x:Static local:AppStrings.Permissions_Continue}}" />
 
         </VerticalStackLayout>
     </Grid>

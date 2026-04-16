@@ -4,6 +4,8 @@ using i_am.Models;
 using i_am.Pages.Authentication;
 using i_am.Pages.CareGiver;
 using i_am.Pages.CareTaker;
+using i_am.Resources.Constants;
+using i_am.Resources.Strings;
 using i_am.Services;
 using System.Text.RegularExpressions;
 
@@ -115,20 +117,20 @@ namespace i_am.ViewModels
         {
             if (SelectedSex == null)
             {
-                await Shell.Current.DisplayAlert("Błąd", "Wybierz płeć.", "OK");
+                await Shell.Current.DisplayAlert(AppStrings.Error, AppStrings.Auth_SelectGender, AppStrings.OK);
                 return;
             }
 
             if (!IsStrongPassword(Password))
             {
-                await Shell.Current.DisplayAlert("Słabe hasło", "Hasło musi mieć co najmniej 8 znaków, zawierać co najmniej jedną wielką literę, jedną małą literę i jedną cyfrę.", "OK");
+                await Shell.Current.DisplayAlert(AppStrings.Auth_WeakPassword, AppStrings.Auth_PasswordRequirements, AppStrings.OK);
                 return;
             }
 
             int age = CalculateAge(Birthdate);
             if (age <= 5 || age >= 100)
             {
-                await Shell.Current.DisplayAlert("Błąd daty urodzenia", "Wprowadzony wiek jest nieprawidłowy.", "OK");
+                await Shell.Current.DisplayAlert(AppStrings.Auth_InvalidBirthdate, AppStrings.Auth_InvalidAge, AppStrings.OK);
                 return;
             }
 
@@ -149,8 +151,8 @@ namespace i_am.ViewModels
                     IsCaregiver = IsCaregiver
                 };
 
-                Preferences.Default.Set("IsCaregiver", userProfile.IsCaregiver);
-                Preferences.Default.Set("UserId", uid);
+                Preferences.Default.Set(PreferencesKeys.IsCaregiver, userProfile.IsCaregiver);
+                Preferences.Default.Set(PreferencesKeys.UserId, uid);
 
                 await _firestoreService.CreateUserProfileAsync(uid, userProfile);
                 await _firestoreService.UpdateFcmTokenAsync();
@@ -160,16 +162,16 @@ namespace i_am.ViewModels
                     await _firestoreService.InitializeDefaultQuestionsAsync(uid);
                 }
 
-                await Shell.Current.DisplayAlert("Sukces", "Konto zostało pomyślnie stworzone!", "OK");
+                await Shell.Current.DisplayAlert(AppStrings.Success, AppStrings.Auth_SuccessAccount, AppStrings.OK);
 
                 if (userProfile.IsCaregiver)
-                    await Shell.Current.GoToAsync($"//{nameof(CareGiverMainPage)}");
+                    await Shell.Current.GoToAsync($"//{NavigationRoutes.CareGiverMainPage}");
                 else
-                    await Shell.Current.GoToAsync($"//{nameof(CareTakerMainPage)}");
+                    await Shell.Current.GoToAsync($"//{NavigationRoutes.CareTakerMainPage}");
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Rejestracja nie powiodła się", ex.Message, "OK");
+                await Shell.Current.DisplayAlert(AppStrings.Auth_RegistrationFailed, ex.Message, AppStrings.OK);
             }
             finally
             {
@@ -182,32 +184,32 @@ namespace i_am.ViewModels
         private void TogglePassword() => IsPasswordHidden = !IsPasswordHidden;
 
         [RelayCommand]
-        private async Task GoToLoginAsync() => await Shell.Current.GoToAsync(nameof(LoginPage));
+        private async Task GoToLoginAsync() => await Shell.Current.GoToAsync(NavigationRoutes.LoginPage);
 
         [RelayCommand]
         private async Task ShowInfo(string type)
         {
             string title = type switch
             {
-                "Password" => "Wymagania hasła",
-                "Name" => "Dlaczego potrzebujemy Twojej nazwy?",
-                "Phone" => "Dlaczego potrzebujemy twój numer telefonu?",
-                "birthdate" => "Dlaczego potrzebujemy twojej daty urodzenia?",
-                "sex" => "Dlaczego potrzebujemy twojej płci?",
+                "Password" => LocalizationManager.Info_Password,
+                "Name" => LocalizationManager.Info_Name,
+                "Phone" => LocalizationManager.Info_Phone,
+                "birthdate" => LocalizationManager.Info_Birthdate,
+                "sex" => LocalizationManager.Info_Gender,
                 _ => "Informacja"
             };
 
             string message = type switch
             {
-                "Password" => "Hasło musi mieć co najmniej 8 znaków, zawierać co najmniej jedną wielką literę, jedną małą literę i jedną cyfrę.",
-                "Name" => "Twoja nazwa użytkownika będzie widoczna w aplikacji dla Twoich opiekunów lub podopiecznych.",
-                "Phone" => "Numer telefonu jest używany do szybkiego kontaktu w nagłych wypadkach.",
-                "birthdate" => "Twoja data urodzenia pomaga nam dostosować funkcje aplikacji do Twojego wieku.",
-                "sex" => "Twoja płeć pomaga nam lepiej zrozumieć Twoje potrzeby zdrowotne i dostosować funkcje aplikacji.",
+                "Password" => LocalizationManager.Info_PasswordMessage,
+                "Name" => LocalizationManager.Info_NameMessage,
+                "Phone" => LocalizationManager.Info_PhoneMessage,
+                "birthdate" => LocalizationManager.Info_BirthdateMessage,
+                "sex" => LocalizationManager.Info_GenderMessage,
                 _ => ""
             };
 
-            await Shell.Current.DisplayAlert(title, message, "Rozumiem");
+            await Shell.Current.DisplayAlert(title, message, LocalizationManager.Understand);
         }
 
         // --- METODY PRYWATNE (z poprzedniego kodu) ---

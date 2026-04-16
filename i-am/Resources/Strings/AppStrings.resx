@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata" type="xsd:string" minOccurs="0" />
+          <xsd:element name="assembly" type="xsd:string" minOccurs="0" />
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="3" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="5" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <!-- Common -->
+  <data name="AppName" xml:space="preserve">
+    <value>I AM</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Loading...</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="Understand" xml:space="preserve">
+    <value>I understand</value>
+  </data>
+  <!-- Authentication -->
+  <data name="Auth_FillAllFields" xml:space="preserve">
+    <value>Please fill in all fields</value>
+  </data>
+  <data name="Auth_NoConnection" xml:space="preserve">
+    <value>No connection</value>
+  </data>
+  <data name="Auth_NoConnectionMessage" xml:space="preserve">
+    <value>Check your internet connection and try again.</value>
+  </data>
+  <data name="Auth_LoginFailed" xml:space="preserve">
+    <value>Login failed</value>
+  </data>
+  <data name="Auth_LogoutConfirm" xml:space="preserve">
+    <value>Are you sure you want to log out?</value>
+  </data>
+  <data name="Auth_LogoutTitle" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="Auth_Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="Auth_No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Auth_LogoutError" xml:space="preserve">
+    <value>Error logging out:</value>
+  </data>
+  <data name="Auth_SelectGender" xml:space="preserve">
+    <value>Please select a gender.</value>
+  </data>
+  <data name="Auth_WeakPassword" xml:space="preserve">
+    <value>Weak password</value>
+  </data>
+  <data name="Auth_PasswordRequirements" xml:space="preserve">
+    <value>Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one digit.</value>
+  </data>
+  <data name="Auth_InvalidBirthdate" xml:space="preserve">
+    <value>Invalid birthdate</value>
+  </data>
+  <data name="Auth_InvalidAge" xml:space="preserve">
+    <value>The entered age is invalid.</value>
+  </data>
+  <data name="Auth_SuccessAccount" xml:space="preserve">
+    <value>Account created successfully!</value>
+  </data>
+  <data name="Auth_RegistrationFailed" xml:space="preserve">
+    <value>Registration failed</value>
+  </data>
+  <!-- Info Dialogs -->
+  <data name="Info_Password" xml:space="preserve">
+    <value>Password requirements</value>
+  </data>
+  <data name="Info_PasswordMessage" xml:space="preserve">
+    <value>Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one digit.</value>
+  </data>
+  <data name="Info_Name" xml:space="preserve">
+    <value>Why do we need your name?</value>
+  </data>
+  <data name="Info_NameMessage" xml:space="preserve">
+    <value>Your username will be visible in the app to your caregivers or dependents.</value>
+  </data>
+  <data name="Info_Phone" xml:space="preserve">
+    <value>Why do we need your phone number?</value>
+  </data>
+  <data name="Info_PhoneMessage" xml:space="preserve">
+    <value>Your phone number is used for quick contact in emergencies.</value>
+  </data>
+  <data name="Info_Birthdate" xml:space="preserve">
+    <value>Why do we need your birthdate?</value>
+  </data>
+  <data name="Info_BirthdateMessage" xml:space="preserve">
+    <value>Your birthdate helps us tailor app features to your age.</value>
+  </data>
+  <data name="Info_Gender" xml:space="preserve">
+    <value>Why do we need your gender?</value>
+  </data>
+  <data name="Info_GenderMessage" xml:space="preserve">
+    <value>Your gender helps us better understand your health needs and customize app features.</value>
+  </data>
+  <!-- Settings -->
+  <data name="Settings_Title" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Settings_AppearanceAndLanguage" xml:space="preserve">
+    <value>Appearance and Language</value>
+  </data>
+  <data name="Settings_Theme" xml:space="preserve">
+    <value>App theme</value>
+  </data>
+  <data name="Settings_ThemeDesc" xml:space="preserve">
+    <value>Choose your preferred appearance</value>
+  </data>
+  <data name="Settings_Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Settings_LanguageDesc" xml:space="preserve">
+    <value>Choose the app language</value>
+  </data>
+  <data name="Settings_TimeAndReports" xml:space="preserve">
+    <value>Time and Reports</value>
+  </data>
+  <data name="Settings_DayStart" xml:space="preserve">
+    <value>Day start</value>
+  </data>
+  <data name="Settings_DayStartDesc" xml:space="preserve">
+    <value>Time from which a new day is counted</value>
+  </data>
+  <data name="Settings_RestrictActivityTime" xml:space="preserve">
+    <value>Restrict response time</value>
+  </data>
+  <data name="Settings_RestrictActivityTimeDesc" xml:space="preserve">
+    <value>Enable to send reports only during selected hours</value>
+  </data>
+  <data name="Settings_TimeWindow" xml:space="preserve">
+    <value>Time window</value>
+  </data>
+  <data name="Settings_From" xml:space="preserve">
+    <value>From</value>
+  </data>
+  <data name="Settings_To" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="Settings_Notifications" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="Settings_PushNotifications" xml:space="preserve">
+    <value>Push notifications</value>
+  </data>
+  <data name="Settings_PushNotificationsDesc" xml:space="preserve">
+    <value>Receive alerts and reminders</value>
+  </data>
+  <data name="Settings_SystemPermissions" xml:space="preserve">
+    <value>System permissions</value>
+  </data>
+  <data name="Settings_ManagePermissions" xml:space="preserve">
+    <value>Manage permissions</value>
+  </data>
+  <data name="Settings_ManagePermissionsDesc" xml:space="preserve">
+    <value>Open system settings to change notification access</value>
+  </data>
+  <data name="Settings_Open" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="Settings_Save" xml:space="preserve">
+    <value>Save settings</value>
+  </data>
+  <data name="Settings_SavedSuccessfully" xml:space="preserve">
+    <value>Settings saved.</value>
+  </data>
+  <data name="Settings_SaveFailedCloud" xml:space="preserve">
+    <value>Failed to save settings in the cloud.</value>
+  </data>
+  <data name="Settings_NotificationsError" xml:space="preserve">
+    <value>Failed to update notification settings:</value>
+  </data>
+  <!-- Landing Page -->
+  <data name="Landing_Login" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="Landing_Register" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <!-- Loading Page -->
+  <data name="Loading_Title" xml:space="preserve">
+    <value>Loading</value>
+  </data>
+  <!-- Login Page -->
+  <data name="Login_Title" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="Login_Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Login_Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Login_Button" xml:space="preserve">
+    <value>Sign in</value>
+  </data>
+  <data name="Login_NoAccount" xml:space="preserve">
+    <value>Don't have an account?</value>
+  </data>
+  <data name="Login_SignUp" xml:space="preserve">
+    <value>Sign up.</value>
+  </data>
+  <!-- Register Page -->
+  <data name="Register_Title" xml:space="preserve">
+    <value>Registration</value>
+  </data>
+  <data name="Register_Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Register_EmailPlaceholder" xml:space="preserve">
+    <value>e.g. example@example.com</value>
+  </data>
+  <data name="Register_InvalidEmail" xml:space="preserve">
+    <value>Invalid email format</value>
+  </data>
+  <data name="Register_Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Register_PasswordPlaceholder" xml:space="preserve">
+    <value>e.g. MyVeryStr0ngPassword</value>
+  </data>
+  <data name="Register_WeakPassword" xml:space="preserve">
+    <value>Password is not strong enough</value>
+  </data>
+  <data name="Register_Show" xml:space="preserve">
+    <value>Show</value>
+  </data>
+  <data name="Register_Hide" xml:space="preserve">
+    <value>Hide</value>
+  </data>
+  <data name="Register_ConfirmPassword" xml:space="preserve">
+    <value>Confirm password</value>
+  </data>
+  <data name="Register_Name" xml:space="preserve">
+    <value>First name/Username</value>
+  </data>
+  <data name="Register_Phone" xml:space="preserve">
+    <value>Phone number</value>
+  </data>
+  <data name="Register_PhonePlaceholder" xml:space="preserve">
+    <value>e.g. 123456789</value>
+  </data>
+  <data name="Register_Birthdate" xml:space="preserve">
+    <value>Birthdate</value>
+  </data>
+  <data name="Register_Gender" xml:space="preserve">
+    <value>Gender</value>
+  </data>
+  <data name="Register_IsCareGiver" xml:space="preserve">
+    <value>I am a caregiver</value>
+  </data>
+  <data name="Register_Button" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="Register_AlreadyHaveAccount" xml:space="preserve">
+    <value>Already have an account?</value>
+  </data>
+  <data name="Register_BackToLogin" xml:space="preserve">
+    <value>Back to login.</value>
+  </data>
+  <!-- Permissions Page -->
+  <data name="Permissions_Title" xml:space="preserve">
+    <value>Permissions</value>
+  </data>
+  <data name="Permissions_Description" xml:space="preserve">
+    <value>To use the full capabilities of the app, we need your consent on a few things.</value>
+  </data>
+  <data name="Permissions_Notifications" xml:space="preserve">
+    <value>Push notifications</value>
+  </data>
+  <data name="Permissions_NotificationsDesc" xml:space="preserve">
+    <value>Used to remind you about daily surveys, dependent activities, and invitation status updates.</value>
+  </data>
+  <data name="Permissions_Allow" xml:space="preserve">
+    <value>Allow</value>
+  </data>
+  <data name="Permissions_Granted" xml:space="preserve">
+    <value>Granted</value>
+  </data>
+  <data name="Permissions_Denied" xml:space="preserve">
+    <value>Denied</value>
+  </data>
+  <data name="Permissions_Continue" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <!-- CareGiver Main Page -->
+  <data name="CareGiver_Notifications" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="CareGiver_Calendar" xml:space="preserve">
+    <value>Calendar</value>
+  </data>
+  <data name="CareGiver_Statistics" xml:space="preserve">
+    <value>Dependent Statistics</value>
+  </data>
+  <data name="CareGiver_EditQuestions" xml:space="preserve">
+    <value>Edit Dependent Questions</value>
+  </data>
+  <data name="CareGiver_ManageDependents" xml:space="preserve">
+    <value>Manage Dependents</value>
+  </data>
+  <data name="CareGiver_Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="CareGiver_ManageAccount" xml:space="preserve">
+    <value>Manage Account</value>
+  </data>
+  <data name="CareGiver_Logout" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="CareGiver_EmergencyInfo" xml:space="preserve">
+    <value>Emergency Information</value>
+  </data>
+  <!-- CareTaker Main Page -->
+  <data name="CareTaker_Notifications" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="CareTaker_DailyActivity" xml:space="preserve">
+    <value>Daily Activity</value>
+  </data>
+  <data name="CareTaker_Calendar" xml:space="preserve">
+    <value>Calendar</value>
+  </data>
+  <data name="CareTaker_ManageCareGivers" xml:space="preserve">
+    <value>Manage Caregivers</value>
+  </data>
+  <data name="CareTaker_Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="CareTaker_ManageAccount" xml:space="preserve">
+    <value>Manage Account</value>
+  </data>
+  <data name="CareTaker_Logout" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="CareTaker_EmergencyInfo" xml:space="preserve">
+    <value>Emergency Information</value>
+  </data>
+</root>

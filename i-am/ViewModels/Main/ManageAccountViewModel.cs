@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using i_am.Pages.Authentication;
+using i_am.Resources.Constants;
+using i_am.Resources.Strings;
 using i_am.Services;
 using System.Collections.ObjectModel;
 
@@ -105,10 +107,10 @@ namespace i_am.ViewModels
         private async Task DeleteAccountAsync()
         {
             bool confirm = await Shell.Current.DisplayAlert(
-                "Usuwanie konta",
+                AppStrings.Error,
                 "Jesteś tego pewien? Tej akcji nie da się cofnąć. Usunięte zostaną wszystkie dane związane z twoim kontem.",
-                "Usuń",
-                "Anuluj");
+                AppStrings.Delete,
+                AppStrings.Cancel);
 
             if (confirm)
             {
@@ -116,13 +118,13 @@ namespace i_am.ViewModels
                 {
                     await _firestoreService.RemoveFcmTokenAsync();
                     await _firestoreService.DeleteUserAsync();
-                    Preferences.Default.Remove("IsCaregiver");
-                    Preferences.Default.Remove("UserId");
-                    await Shell.Current.GoToAsync($"//{nameof(LandingPage)}");
+                    Preferences.Default.Remove(PreferencesKeys.IsCaregiver);
+                    Preferences.Default.Remove(PreferencesKeys.UserId);
+                    await Shell.Current.GoToAsync($"//{NavigationRoutes.LandingPage}");
                 }
                 catch (Exception ex)
                 {
-                    await Shell.Current.DisplayAlert("Błąd", $"Problem z usuwaniem konta: {ex.Message}", "OK");
+                    await Shell.Current.DisplayAlert(AppStrings.Error, $"Problem z usuwaniem konta: {ex.Message}", AppStrings.OK);
                 }
             }
         }

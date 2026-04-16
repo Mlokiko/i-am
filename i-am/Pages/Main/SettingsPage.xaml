@@ -4,20 +4,21 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:i_am.ViewModels"
-    Title="Ustawienia"
+    xmlns:local="clr-namespace:i_am.Resources.Strings"
+    Title="{Binding Source={x:Static local:AppStrings.Settings_Title}}"
     x:DataType="vm:SettingsViewModel">
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="25">
 
             <VerticalStackLayout Spacing="10">
-                <Label Style="{StaticResource HeaderLabelStyle}" Text="Wygląd" />
+                <Label Style="{StaticResource HeaderLabelStyle}" Text="{Binding Source={x:Static local:AppStrings.Settings_AppearanceAndLanguage}}" />
 
                 <Border Style="{StaticResource CardBorderStyle}">
                     <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
                         <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
-                            <Label Style="{StaticResource TitleLabelStyle}" Text="Motyw aplikacji" />
-                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="Wybierz preferowany wygląd" />
+                            <Label Style="{StaticResource TitleLabelStyle}" Text="{Binding Source={x:Static local:AppStrings.Settings_Theme}}" />
+                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="{Binding Source={x:Static local:AppStrings.Settings_ThemeDesc}}" />
                         </VerticalStackLayout>
 
                         <Picker
@@ -28,16 +29,32 @@
                             WidthRequest="150" />
                     </Grid>
                 </Border>
-            </VerticalStackLayout>
-
-            <VerticalStackLayout IsVisible="{Binding IsCareTaker}" Spacing="10">
-                <Label Style="{StaticResource HeaderLabelStyle}" Text="Czas i Raporty" />
 
                 <Border Style="{StaticResource CardBorderStyle}">
                     <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
                         <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
-                            <Label Style="{StaticResource TitleLabelStyle}" Text="Początek doby" />
-                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="Godzina, od której liczony jest nowy dzień" />
+                            <Label Style="{StaticResource TitleLabelStyle}" Text="{Binding Source={x:Static local:AppStrings.Settings_Language}}" />
+                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="{Binding Source={x:Static local:AppStrings.Settings_LanguageDesc}}" />
+                        </VerticalStackLayout>
+
+                        <Picker
+                            Grid.Column="1"
+                            HorizontalOptions="End"
+                            ItemsSource="{Binding LanguageOptions}"
+                            SelectedItem="{Binding SelectedLanguage}"
+                            WidthRequest="150" />
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout IsVisible="{Binding IsCareTaker}" Spacing="10">
+                <Label Style="{StaticResource HeaderLabelStyle}" Text="{Binding Source={x:Static local:AppStrings.Settings_TimeAndReports}}" />
+
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                        <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                            <Label Style="{StaticResource TitleLabelStyle}" Text="{Binding Source={x:Static local:AppStrings.Settings_DayStart}}" />
+                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="{Binding Source={x:Static local:AppStrings.Settings_DayStartDesc}}" />
                         </VerticalStackLayout>
                         <Picker
                             Grid.Column="1"
@@ -50,8 +67,8 @@
                 <Border Style="{StaticResource CardBorderStyle}">
                     <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
                         <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
-                            <Label Style="{StaticResource TitleLabelStyle}" Text="Ogranicz czas odpowiedzi" />
-                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="Włącz, aby móc wysyłać raport tylko w wybranych godzinach" />
+                            <Label Style="{StaticResource TitleLabelStyle}" Text="{Binding Source={x:Static local:AppStrings.Settings_RestrictActivityTime}}" />
+                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="{Binding Source={x:Static local:AppStrings.Settings_RestrictActivityTimeDesc}}" />
                         </VerticalStackLayout>
                         <Switch Grid.Column="1" IsToggled="{Binding IsActivityTimeRestricted}" />
                     </Grid>
@@ -59,19 +76,19 @@
 
                 <Border IsVisible="{Binding IsActivityTimeRestricted}" Style="{StaticResource CardBorderStyle}">
                     <VerticalStackLayout Spacing="10">
-                        <Label Style="{StaticResource TitleLabelStyle}" Text="Okno czasowe" />
+                        <Label Style="{StaticResource TitleLabelStyle}" Text="{Binding Source={x:Static local:AppStrings.Settings_TimeWindow}}" />
                         <Grid ColumnDefinitions="*, Auto, *" ColumnSpacing="10">
                             <Picker
-                                Title="Od"
+                                Title="{Binding Source={x:Static local:AppStrings.Settings_From}}"
                                 Grid.Column="0"
                                 ItemsSource="{Binding HoursList}"
                                 SelectedItem="{Binding SelectedRestrictionStartHour}" />
                             <Label
                                 Grid.Column="1"
-                                Text="do"
+                                Text="{Binding Source={x:Static local:AppStrings.Settings_To}}"
                                 VerticalOptions="Center" />
                             <Picker
-                                Title="Do"
+                                Title="{Binding Source={x:Static local:AppStrings.Settings_To}}"
                                 Grid.Column="2"
                                 ItemsSource="{Binding HoursList}"
                                 SelectedItem="{Binding SelectedRestrictionEndHour}" />
@@ -81,13 +98,13 @@
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="10">
-                <Label Style="{StaticResource HeaderLabelStyle}" Text="Powiadomienia" />
+                <Label Style="{StaticResource HeaderLabelStyle}" Text="{Binding Source={x:Static local:AppStrings.Settings_Notifications}}" />
 
                 <Border Style="{StaticResource CardBorderStyle}">
                     <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
                         <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
-                            <Label Style="{StaticResource TitleLabelStyle}" Text="Powiadomienia Push" />
-                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="Otrzymuj alerty i przypomnienia" />
+                            <Label Style="{StaticResource TitleLabelStyle}" Text="{Binding Source={x:Static local:AppStrings.Settings_PushNotifications}}" />
+                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="{Binding Source={x:Static local:AppStrings.Settings_PushNotificationsDesc}}" />
                         </VerticalStackLayout>
 
                         <Switch
@@ -99,19 +116,19 @@
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="10">
-                <Label Style="{StaticResource HeaderLabelStyle}" Text="Uprawnienia systemowe" />
+                <Label Style="{StaticResource HeaderLabelStyle}" Text="{Binding Source={x:Static local:AppStrings.Settings_SystemPermissions}}" />
 
                 <Border Style="{StaticResource CardBorderStyle}">
                     <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
                         <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
-                            <Label Style="{StaticResource TitleLabelStyle}" Text="Zarządzaj uprawnieniami" />
-                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="Otwórz ustawienia systemu, aby zmienić dostęp do powiadomień" />
+                            <Label Style="{StaticResource TitleLabelStyle}" Text="{Binding Source={x:Static local:AppStrings.Settings_ManagePermissions}}" />
+                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="{Binding Source={x:Static local:AppStrings.Settings_ManagePermissionsDesc}}" />
                         </VerticalStackLayout>
 
                         <Button
                             Grid.Column="1"
                             Command="{Binding OpenSystemSettingsCommand}"
-                            Text="Otwórz"
+                            Text="{Binding Source={x:Static local:AppStrings.Settings_Open}}"
                             VerticalOptions="Center" />
                     </Grid>
                 </Border>
@@ -119,10 +136,9 @@
                 <Button
                     Margin="0,10,0,20"
                     Command="{Binding SaveSettingsCommand}"
-                    Text="Zapisz ustawienia" />
+                    Text="{Binding Source={x:Static local:AppStrings.Settings_Save}}" />
 
             </VerticalStackLayout>
-
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

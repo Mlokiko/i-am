@@ -2,6 +2,8 @@
 using i_am.Pages.CareGiver;
 using i_am.Pages.CareTaker;
 using i_am.Pages.Main;
+using i_am.Resources.Constants;
+using i_am.Resources.Strings;
 using i_am.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
@@ -29,8 +31,13 @@ namespace i_am
                 });
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
+
+            // Initialize Localization
+            var savedLanguage = Preferences.Default.Get(PreferencesKeys.CurrentLanguage, "pl");
+            LocalizationManager.Initialize(savedLanguage);
+
             builder.Services.AddSingleton<FirestoreService>(); // Creates one instance for the whole app
 
             builder.Services.AddTransient<LoadingPage>();

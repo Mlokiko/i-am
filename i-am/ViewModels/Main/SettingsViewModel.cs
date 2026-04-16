@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using i_am.Resources.Constants;
+using i_am.Resources.Strings;
 using i_am.Services;
 using System.Collections.ObjectModel;
 
@@ -16,8 +18,17 @@ namespace i_am.ViewModels
             "Ciemny"
         };
 
+        public ObservableCollection<string> LanguageOptions { get; } = new()
+        {
+            "Polski (PL)",
+            "English (EN)"
+        };
+
         [ObservableProperty]
         private string selectedTheme;
+
+        [ObservableProperty]
+        private string selectedLanguage;
 
         [ObservableProperty]
         private bool areNotificationsEnabled;
@@ -50,7 +61,11 @@ namespace i_am.ViewModels
             string savedTheme = Preferences.Default.Get("AppTheme", "Systemowy");
             selectedTheme = savedTheme;
 
-            IsCareTaker = !Preferences.Default.Get("IsCaregiver", false);
+            // Pobierz zapisany język
+            string savedLanguage = Preferences.Default.Get(PreferencesKeys.CurrentLanguage, "pl");
+            SelectedLanguage = savedLanguage == "en" ? "English (EN)" : "Polski (PL)";
+
+            IsCareTaker = !Preferences.Default.Get(PreferencesKeys.IsCaregiver, false);
 
             HoursList = new ObservableCollection<string>(
                 Enumerable.Range(0, 24).Select(h => $"{h:D2}:00")
@@ -60,7 +75,7 @@ namespace i_am.ViewModels
         {
             if (IsCareTaker)
             {
-                string userId = Preferences.Default.Get("UserId", string.Empty);
+                string userId = Preferences.Default.Get(PreferencesKeys.UserId, string.Empty);
                 if (string.IsNullOrEmpty(userId)) return;
 
                 var user = await _firestoreService.GetUserProfileAsync(userId);
@@ -81,10 +96,15 @@ namespace i_am.ViewModels
             Preferences.Default.Set("AppTheme", SelectedTheme);
             ApplyTheme(SelectedTheme);
 
+            // Zapis języka
+            string languageCode = SelectedLanguage.Contains("English") ? "en" : "pl";
+            LocalizationManager.SetLanguage(languageCode);
+            Preferences.Default.Set(PreferencesKeys.CurrentLanguage, languageCode);
+
             // Zapis w chmurze (tylko dla podopiecznego)
             if (IsCareTaker)
             {
-                string userId = Preferences.Default.Get("UserId", string.Empty);
+                string userId = Preferences.Default.Get(PreferencesKeys.UserId, string.Empty);
                 if (!string.IsNullOrEmpty(userId))
                 {
                     int dayStart = int.Parse(SelectedDayStartHour.Split(':')[0]);
@@ -95,10 +115,18 @@ namespace i_am.ViewModels
                         userId, dayStart, IsActivityTimeRestricted, restrictStart, restrictEnd);
 
                     if (success)
-                        await Shell.Current.DisplayAlert("Sukces", "Ustawienia zostały zapisane.", "OK");
+                        await Shell.Current.DisplayAlert(LocalizationManager.Success, LocalizationManager.Settings_SavedSuccessfully, LocalizationManager.OK);
                     else
-                        await Shell.Current.DisplayAlert("Błąd", "Nie udało się zapisać ustawień w chmurze.", "OK");
+                        await Shell.Current.DisplayAlert(LocalizationManager.Error, LocalizationManager.Settings_SaveFailedCloud, LocalizationManager.OK);
                 }
+                else
+                {
+                    await Shell.Current.DisplayAlert(LocalizationManager.Success, LocalizationManager.Settings_SavedSuccessfully, LocalizationManager.OK);
+                }
+            }
+            else
+            {
+                await Shell.Current.DisplayAlert(LocalizationManager.Success, LocalizationManager.Settings_SavedSuccessfully, LocalizationManager.OK);
             }
         }
 
@@ -120,7 +148,7 @@ namespace i_am.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Błąd", $"Nie udało się zaktualizować ustawień powiadomień: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlert(LocalizationManager.Error, $"{LocalizationManager.Settings_NotificationsError} {ex.Message}", LocalizationManager.OK);
 
                 // Jeśli zapis do bazy się nie powiódł, warto cofnąć switch w UI
                 areNotificationsEnabled = !value;

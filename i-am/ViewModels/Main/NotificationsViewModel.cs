@@ -64,6 +64,17 @@ namespace i_am.ViewModels
                     await Shell.Current.GoToAsync(route);
                     await _firestoreService.DeleteNotificationAsync(notification.Id);
                 }
+                else if (notification.Type == "InvitationRejected")
+                {
+                    // Jeśli powiadomienie ma zapisane ID zaproszenia, usuń to zaproszenie z bazy
+                    if (!string.IsNullOrEmpty(notification.SenderId))
+                    {
+                        await _firestoreService.DeleteInvitationAsync(notification.SenderId);
+                    }
+
+                    // Następnie standardowo usuń samo powiadomienie
+                    await _firestoreService.DeleteNotificationAsync(notification.Id);
+                }
                 else
                 {
                     // Jeśli to zwykłe powiadomienie -> Tylko usuwamy

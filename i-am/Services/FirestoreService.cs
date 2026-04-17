@@ -357,7 +357,8 @@ namespace i_am.Services
                 ReceiverId = invitation.SenderId,
                 Title = "Zaproszenie odrzucone",
                 Message = $"{myName} odrzucił(a) Twoje zaproszenie.",
-                Type = "InvitationRejected"
+                Type = "InvitationRejected",
+                SenderId = invitation.Id
             };
 
             await SendNotificationAsync(notification);

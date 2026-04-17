@@ -56,6 +56,14 @@ namespace i_am.ViewModels
                     // Automatyczne usunięcie powiadomienia po przejściu
                     await _firestoreService.DeleteNotificationAsync(notification.Id);
                 }
+                else if (notification.Type == "DailyReportAlert")
+                {
+                    // Budujemy ścieżkę z parametrami (QueryProperties)
+                    string route = $"{nameof(CalendarPage)}?CareTakerId={notification.SenderId}&Date={notification.Date}";
+
+                    await Shell.Current.GoToAsync(route);
+                    await _firestoreService.DeleteNotificationAsync(notification.Id);
+                }
                 else
                 {
                     // Jeśli to zwykłe powiadomienie -> Tylko usuwamy

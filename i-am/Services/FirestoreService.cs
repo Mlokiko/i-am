@@ -583,7 +583,9 @@ namespace i_am.Services
                         ReceiverId = giverId,
                         Title = $"Nowy raport dzienny: {careTakerProfile.Name}",
                         Message = $"Wynik: {response.TotalScore} pkt. Status: {response.EvaluationStatus}.",
-                        Type = "DailyReportAlert"
+                        Type = "DailyReportAlert",
+                        SenderId = careTakerId,   // Przekazujemy ID Podopiecznego
+                        Date = response.Id     // Format "yyyy-MM-dd"
                     };
                     await SendNotificationAsync(notification);
                 }

@@ -24,5 +24,11 @@ namespace i_am.Models
 
         [FirestoreProperty("createdAt")]
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+
+        [FirestoreProperty("senderId")]
+        public string SenderId { get; set; } = string.Empty;
+
+        [FirestoreProperty("date")]
+        public string Date { get; set; } = string.Empty;
     }
 }

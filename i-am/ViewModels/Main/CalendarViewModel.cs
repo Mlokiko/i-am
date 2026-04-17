@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using i_am.Models;
 using i_am.Services;
 using System.Collections.ObjectModel;
+using System.Globalization;
 
 namespace i_am.ViewModels
 {
@@ -18,14 +19,13 @@ namespace i_am.ViewModels
     public partial class CalendarDayItem : ObservableObject
     {
         public DateTime Date { get; set; }
-        public bool IsEmpty { get; set; } // Oznacza pustą kratkę przed 1. dniem miesiąca
+        public bool IsEmpty { get; set; }
         public string DayText => IsEmpty ? "" : Date.Day.ToString();
+
         public bool HasFrontPhoto => Response != null && !string.IsNullOrEmpty(Response.FrontPhotoUrl);
         public string FrontPhotoUrl => Response?.FrontPhotoUrl ?? string.Empty;
-
         public bool HasRearPhoto => Response != null && !string.IsNullOrEmpty(Response.RearPhotoUrl);
         public string RearPhotoUrl => Response?.RearPhotoUrl ?? string.Empty;
-
         public bool HasAnyPhoto => HasFrontPhoto || HasRearPhoto;
 
         public DailyResponse? Response { get; set; }
@@ -38,14 +38,15 @@ namespace i_am.ViewModels
 
         private bool IsDark => Application.Current?.RequestedTheme == AppTheme.Dark;
 
+        // UŻYWAMY POLA isSelected ZAMIAST WŁAŚCIWOŚCI IsSelected, ABY NIE BLOKOWAĆ GENERATORA
         public Color BgColor
         {
             get
             {
                 if (IsEmpty || !HasData) return Colors.Transparent;
-                if (Response!.TotalScore <= -3) return IsDark ? Color.FromArgb("#CF6679") : Color.FromArgb("#E57373"); // Czerwony
-                if (Response!.TotalScore <= -2) return IsDark ? Color.FromArgb("#FFB74D") : Color.FromArgb("#FF9800"); // Pomarańczowy
-                return IsDark ? Color.FromArgb("#81C784") : Color.FromArgb("#4CAF50"); // Zielony
+                if (Response!.TotalScore <= -3) return IsDark ? Color.FromArgb("#CF6679") : Color.FromArgb("#E57373");
+                if (Response!.TotalScore <= -2) return IsDark ? Color.FromArgb("#FFB74D") : Color.FromArgb("#FF9800");
+                return IsDark ? Color.FromArgb("#81C784") : Color.FromArgb("#4CAF50");
             }
         }
 
@@ -54,8 +55,8 @@ namespace i_am.ViewModels
             get
             {
                 if (IsEmpty) return Colors.Transparent;
-                if (HasData) return Colors.White; // Biały tekst na kolorowym tle
-                return IsDark ? Colors.White : Colors.Black; // Standardowy tekst dla braku danych
+                if (HasData) return Colors.White;
+                return IsDark ? Colors.White : Colors.Black;
             }
         }
 
@@ -64,15 +65,16 @@ namespace i_am.ViewModels
             get
             {
                 if (IsEmpty || HasData) return Colors.Transparent;
-                return IsDark ? Color.FromArgb("#404040") : Color.FromArgb("#E0E0E0"); // Szara ramka dla pustych dni
+                return IsDark ? Color.FromArgb("#404040") : Color.FromArgb("#E0E0E0");
             }
         }
 
-        // Grubsza ramka przy zaznaczeniu
-        public double BorderThick => IsSelected ? 2 : 1;
-        public Color HighlightBorderColor => IsSelected ? (IsDark ? Colors.White : Colors.Black) : BorderColor;
+        public double BorderThick => isSelected ? 2 : 1;
+        public Color HighlightBorderColor => isSelected ? (IsDark ? Colors.White : Colors.Black) : BorderColor;
     }
 
+    [QueryProperty(nameof(PassedCareTakerId), "CareTakerId")]
+    [QueryProperty(nameof(PassedDate), "Date")]
     public partial class CalendarViewModel : ObservableObject
     {
         private readonly FirestoreService _firestoreService;
@@ -99,22 +101,8 @@ namespace i_am.ViewModels
         [ObservableProperty] private bool isPhotoEnlarged;
         [ObservableProperty] private string enlargedPhotoUrl = string.Empty;
 
-        [RelayCommand]
-        private void EnlargePhoto(string url)
-        {
-            if (!string.IsNullOrEmpty(url))
-            {
-                EnlargedPhotoUrl = url;
-                IsPhotoEnlarged = true;
-            }
-        }
-
-        [RelayCommand]
-        private void CloseEnlargedPhoto()
-        {
-            IsPhotoEnlarged = false;
-            EnlargedPhotoUrl = string.Empty;
-        }
+        [ObservableProperty] private string passedCareTakerId = string.Empty;
+        [ObservableProperty] private string passedDate = string.Empty;
 
         public CalendarViewModel(FirestoreService firestoreService)
         {
@@ -124,56 +112,67 @@ namespace i_am.ViewModels
 
         public async Task InitializeAsync()
         {
-            if (CareTakers.Any()) return;
-
-            IsLoading = true;
             _myUid = Preferences.Default.Get("UserId", string.Empty);
             IsCareGiver = Preferences.Default.Get("IsCaregiver", false);
 
             if (IsCareGiver)
             {
-                var profile = await _firestoreService.GetUserProfileAsync(_myUid);
-                if (profile != null)
+                if (CareTakers == null || !CareTakers.Any())
                 {
-                    var careTakersList = await _firestoreService.GetUsersByIdsAsync(profile.CaretakersID);
-
-                    // --- NOWA LOGIKA: Automatyczny wybór ---
-                    if (careTakersList.Count == 1)
+                    IsLoading = true;
+                    var profile = await _firestoreService.GetUserProfileAsync(_myUid);
+                    if (profile != null)
                     {
-                        var singleCareTaker = careTakersList.First();
+                        var list = await _firestoreService.GetUsersByIdsAsync(profile.CaretakersID);
+                        CareTakers = new ObservableCollection<User>(list);
+                    }
+                }
 
-                        MainThread.BeginInvokeOnMainThread(() =>
-                        {
-                            CareTakers = new ObservableCollection<User>(careTakersList);
-                            SelectedCareTaker = singleCareTaker;
-                            SelectedCareTakerName = singleCareTaker.Name;
-                            IsCareTakerSelectionVisible = false; // Ukrywa picker
-                        });
-
+                if (!string.IsNullOrEmpty(PassedCareTakerId))
+                {
+                    var target = CareTakers.FirstOrDefault(c => c.Id == PassedCareTakerId);
+                    if (target != null)
+                    {
+                        SelectedCareTaker = target;
+                        SelectedCareTakerName = target.Name;
                         HasCareTakerSelected = true;
+                        IsCareTakerSelectionVisible = CareTakers.Count > 1;
 
-                        // Ładujemy dane kalendarza dla tego jedynego podopiecznego
-                        await LoadResponsesAsync(singleCareTaker.Id);
+                        if (DateTime.TryParseExact(PassedDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime targetDate))
+                        {
+                            _currentMonthDate = new DateTime(targetDate.Year, targetDate.Month, 1);
+                        }
+
+                        await LoadResponsesAsync(target.Id);
+
+                        var dayToSelect = Days.FirstOrDefault(d => !d.IsEmpty && d.Date.Date == targetDate.Date);
+                        if (dayToSelect != null)
+                        {
+                            SelectDay(dayToSelect);
+                        }
+                    }
+                    PassedCareTakerId = string.Empty;
+                    PassedDate = string.Empty;
+                }
+                else if (!HasCareTakerSelected)
+                {
+                    if (CareTakers.Count == 1)
+                    {
+                        var single = CareTakers.First();
+                        SelectedCareTaker = single;
+                        SelectedCareTakerName = single.Name;
+                        HasCareTakerSelected = true;
+                        IsCareTakerSelectionVisible = false;
+                        await LoadResponsesAsync(single.Id);
                     }
                     else
                     {
-                        // Sytuacja gdy jest więcej niż 1 podopieczny (lub brak)
-                        MainThread.BeginInvokeOnMainThread(() =>
-                        {
-                            SelectedCareTaker = null;
-                            SelectedCareTakerName = "Kliknij, aby wybrać...";
-                            CareTakers = new ObservableCollection<User>(careTakersList);
-                            IsCareTakerSelectionVisible = careTakersList.Count > 1; // Pokaż picker jeśli > 1
-                        });
-
-                        HasCareTakerSelected = false;
+                        IsCareTakerSelectionVisible = CareTakers.Count > 1;
                     }
                 }
             }
             else
             {
-                // Tryb Podopiecznego
-                IsCareTakerSelectionVisible = false; // Podopieczny nigdy nie widzi wyboru
                 HasCareTakerSelected = true;
                 await LoadResponsesAsync(_myUid);
             }
@@ -181,14 +180,43 @@ namespace i_am.ViewModels
             IsLoading = false;
         }
 
+        private async Task LoadResponsesAsync(string targetUid)
+        {
+            _allResponses = await _firestoreService.GetAllDailyResponsesAsync(targetUid);
+            GenerateCalendarGrid();
+        }
+
+        private void GenerateCalendarGrid()
+        {
+            var backgroundDays = new List<CalendarDayItem>();
+            string newMonthName = _currentMonthDate.ToString("MMMM yyyy", new CultureInfo("pl-PL")).ToUpper();
+
+            int daysInMonth = DateTime.DaysInMonth(_currentMonthDate.Year, _currentMonthDate.Month);
+            DateTime firstDay = new DateTime(_currentMonthDate.Year, _currentMonthDate.Month, 1);
+
+            int offset = (int)firstDay.DayOfWeek - (int)DayOfWeek.Monday;
+            if (offset < 0) offset += 7;
+
+            for (int i = 0; i < offset; i++)
+                backgroundDays.Add(new CalendarDayItem { IsEmpty = true });
+
+            for (int i = 1; i <= daysInMonth; i++)
+            {
+                var date = new DateTime(_currentMonthDate.Year, _currentMonthDate.Month, i);
+                var response = _allResponses.FirstOrDefault(r => r.Id == date.ToString("yyyy-MM-dd"));
+                backgroundDays.Add(new CalendarDayItem { Date = date, IsEmpty = false, Response = response });
+            }
+
+            CurrentMonthName = newMonthName;
+            Days = new ObservableCollection<CalendarDayItem>(backgroundDays);
+        }
+
         [RelayCommand]
         private async Task SelectCareTakerAsync()
         {
             if (!CareTakers.Any()) return;
-
             var names = CareTakers.Select(c => c.Name).ToArray();
             var action = await Shell.Current.DisplayActionSheet("Wybierz podopiecznego", "Anuluj", null, names);
-
             if (action != "Anuluj" && !string.IsNullOrEmpty(action))
             {
                 var selected = CareTakers.FirstOrDefault(c => c.Name == action);
@@ -204,53 +232,11 @@ namespace i_am.ViewModels
             }
         }
 
-        private async Task LoadResponsesAsync(string targetUid)
-        {
-            IsLoading = true;
-            _allResponses = await _firestoreService.GetAllDailyResponsesAsync(targetUid);
-            GenerateCalendarGrid();
-            IsLoading = false;
-        }
-
-        private void GenerateCalendarGrid()
-        {
-            var backgroundDays = new List<CalendarDayItem>();
-            string newMonthName = _currentMonthDate.ToString("MMMM yyyy").ToUpper();
-
-            int daysInMonth = DateTime.DaysInMonth(_currentMonthDate.Year, _currentMonthDate.Month);
-            DateTime firstDay = new DateTime(_currentMonthDate.Year, _currentMonthDate.Month, 1);
-
-            // Obliczamy przesunięcie dla 1-go dnia miesiąca (Zakładamy, że Poniedziałek to początek tygodnia)
-            int offset = (int)firstDay.DayOfWeek - (int)DayOfWeek.Monday;
-            if (offset < 0) offset += 7; // Niedziela ma wartość 0, więc naprawiamy
-
-            // Puste kratki przed pierwszym dniem
-            for (int i = 0; i < offset; i++)
-            {
-                backgroundDays.Add(new CalendarDayItem { IsEmpty = true });
-            }
-
-            // Faktyczne dni
-            for (int i = 1; i <= daysInMonth; i++)
-            {
-                var date = new DateTime(_currentMonthDate.Year, _currentMonthDate.Month, i);
-                var response = _allResponses.FirstOrDefault(r => r.Id == date.ToString("yyyy-MM-dd"));
-                backgroundDays.Add(new CalendarDayItem { Date = date, IsEmpty = false, Response = response });
-            }
-
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                CurrentMonthName = newMonthName;
-                Days = new ObservableCollection<CalendarDayItem>(backgroundDays);
-            });
-        }
-
         [RelayCommand]
         private void ChangeMonth(string direction)
         {
             if (direction == "Prev") _currentMonthDate = _currentMonthDate.AddMonths(-1);
             else if (direction == "Next") _currentMonthDate = _currentMonthDate.AddMonths(1);
-
             IsDayDetailsVisible = false;
             SelectedDay = null;
             GenerateCalendarGrid();
@@ -259,15 +245,11 @@ namespace i_am.ViewModels
         [RelayCommand]
         private void SelectDay(CalendarDayItem? day)
         {
-            // Otwieraj tylko, gdy kliknięty dzień ma dane (nie jest pustą kratką i ma raport)
             if (day == null || day.IsEmpty || !day.HasData) return;
-
             if (SelectedDay != null) SelectedDay.IsSelected = false;
-
             day.IsSelected = true;
             SelectedDay = day;
             IsDayDetailsVisible = true;
-
             SelectedDayAnswers = new ObservableCollection<GivenAnswerDisplay>(
                 (day.Response?.Answers ?? new List<GivenAnswer>())
                 .Select(a => new GivenAnswerDisplay
@@ -287,6 +269,23 @@ namespace i_am.ViewModels
             IsDayDetailsVisible = false;
             if (SelectedDay != null) SelectedDay.IsSelected = false;
             SelectedDay = null;
+        }
+
+        [RelayCommand]
+        private void EnlargePhoto(string url)
+        {
+            if (!string.IsNullOrEmpty(url))
+            {
+                EnlargedPhotoUrl = url;
+                IsPhotoEnlarged = true;
+            }
+        }
+
+        [RelayCommand]
+        private void CloseEnlargedPhoto()
+        {
+            IsPhotoEnlarged = false;
+            EnlargedPhotoUrl = string.Empty;
         }
     }
 }

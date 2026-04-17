@@ -70,13 +70,68 @@ namespace i_am.Services
             string? uid = CrossFirebaseAuth.Current.CurrentUser?.Uid;
             if (string.IsNullOrEmpty(uid)) return;
 
-            // 1. Delete the Firestore Document
-            await CrossFirebaseFirestore.Current
-                .GetCollection("users")
-                .GetDocument(uid)
-                .DeleteDocumentAsync();
+            var firestore = CrossFirebaseFirestore.Current;
 
-            // Plugin od firebase nie posiada metody natywnej do usuwania konta, więc musimy użyć natywnych SDK Firebase dla Androida i iOS
+            // 1. Pobierz profil użytkownika, aby uzyskać jego imię i powiązane konta przed usunięciem
+            var userProfile = await GetUserProfileAsync(uid);
+
+            if (userProfile != null)
+            {
+                var batch = firestore.CreateBatch();
+
+                // Zbieramy wszystkich powiązanych użytkowników (opiekunów i podopiecznych) bez duplikatów
+                var connectedUsers = new HashSet<string>();
+                if (userProfile.CaregiversID != null)
+                {
+                    foreach (var id in userProfile.CaregiversID) connectedUsers.Add(id);
+                }
+                if (userProfile.CaretakersID != null)
+                {
+                    foreach (var id in userProfile.CaretakersID) connectedUsers.Add(id);
+                }
+
+                // 2. Usuwamy ID użytkownika z list kontaktów innych osób i wysyłamy powiadomienia
+                foreach (var connectedUserId in connectedUsers)
+                {
+                    var connectedUserRef = firestore.GetCollection("users").GetDocument(connectedUserId);
+
+                    // Wykorzystujemy ArrayRemove na obu listach (jeśli ID tam nie ma, nic się nie zepsuje)
+                    batch.UpdateData(connectedUserRef, ("careTakersID", FieldValue.ArrayRemove(uid)));
+                    batch.UpdateData(connectedUserRef, ("careGiversID", FieldValue.ArrayRemove(uid)));
+
+                    // Tworzymy powiadomienie
+                    var notification = new AppNotification
+                    {
+                        ReceiverId = connectedUserId,
+                        Title = "Konto usunięte",
+                        Message = $"Użytkownik {userProfile.Name} usunął konto.",
+                        Type = "AccountDeleted", // Możesz dodać ten typ w XAML, aby ustawić mu np. szarą ikonę
+                        SenderId = uid
+                    };
+
+                    // Ponieważ Twoja metoda SendNotificationAsync wykonuje niezależny zapis do innej kolekcji, 
+                    // możemy ją po prostu wywołać w pętli.
+                    await SendNotificationAsync(notification);
+                }
+
+                // Wykonujemy masową operację usunięcia powiązań
+                await batch.CommitAsync();
+            }
+
+            // 3. Ręczne usunięcie podkolekcji użytkownika
+            await DeleteUserQuestionTemplatesAsync(uid);
+            await DeleteUserDailyResponsesAsync(uid);
+
+            // Usuwanie wszystkich zdjęć z Firebase Storage
+            await DeleteUserPhotosAsync(uid);
+
+            // Opcjonalnie: usunięcie wiszących zaproszeń powiązanych z tym użytkownikiem
+            await DeleteUserInvitationsForDeletedAccountAsync(uid);
+
+            // 4. Usuń główny dokument użytkownika w Firestore
+            await firestore.GetCollection("users").GetDocument(uid).DeleteDocumentAsync();
+
+            // 5. Natywne usunięcie konta w Firebase Authentication
 #if ANDROID
             var androidUser = Firebase.Auth.FirebaseAuth.Instance.CurrentUser;
             if (androidUser != null)
@@ -84,13 +139,120 @@ namespace i_am.Services
                 await androidUser.DeleteAsync();
             }
 #elif IOS
-        var iosUser = Firebase.Auth.Auth.DefaultInstance.CurrentUser;
-        if (iosUser != null)
-        {
-            await iosUser.DeleteAsync();
-        }
+    var iosUser = Firebase.Auth.Auth.DefaultInstance.CurrentUser;
+    if (iosUser != null)
+    {
+        await iosUser.DeleteAsync();
+    }
 #endif
         }
+
+        private async Task DeleteUserQuestionTemplatesAsync(string uid)
+        {
+            var firestore = CrossFirebaseFirestore.Current;
+            var subcollectionRef = firestore.GetCollection("users").GetDocument(uid).GetCollection("question_templates");
+
+            // Podajemy konkretny model
+            var snapshot = await subcollectionRef.GetDocumentsAsync<QuestionTemplate>();
+
+            if (snapshot?.Documents != null)
+            {
+                foreach (var doc in snapshot.Documents)
+                {
+                    // Bezpiecznie pobieramy ID z modelu (doc.Data)
+                    if (doc.Data != null && !string.IsNullOrEmpty(doc.Data.Id))
+                    {
+                        await subcollectionRef.GetDocument(doc.Data.Id).DeleteDocumentAsync();
+                    }
+                }
+            }
+        }
+
+        private async Task DeleteUserDailyResponsesAsync(string uid)
+        {
+            var firestore = CrossFirebaseFirestore.Current;
+            var subcollectionRef = firestore.GetCollection("users").GetDocument(uid).GetCollection("daily_responses");
+
+            // Podajemy konkretny model
+            var snapshot = await subcollectionRef.GetDocumentsAsync<DailyResponse>();
+
+            if (snapshot?.Documents != null)
+            {
+                foreach (var doc in snapshot.Documents)
+                {
+                    // Bezpiecznie pobieramy ID z modelu (doc.Data)
+                    if (doc.Data != null && !string.IsNullOrEmpty(doc.Data.Id))
+                    {
+                        await subcollectionRef.GetDocument(doc.Data.Id).DeleteDocumentAsync();
+                    }
+                }
+            }
+        }
+        private async Task DeleteUserPhotosAsync(string uid)
+        {
+            try
+            {
+                var storage = CrossFirebaseStorage.Current;
+                var folderRef = storage.GetRootReference().GetChild($"daily_photos/{uid}");
+
+                // Pobieramy listę wszystkich plików znajdujących się w "folderze" użytkownika
+                var result = await folderRef.ListAllAsync();
+
+                if (result?.Items != null && result.Items.Any())
+                {
+                    foreach (var itemRef in result.Items)
+                    {
+                        // Usuwamy każdy plik po kolei
+                        await itemRef.DeleteAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Ignorujemy błędy, np. jeśli folder nie istnieje (użytkownik nie miał jeszcze żadnych zdjęć)
+                System.Diagnostics.Debug.WriteLine($"[Storage] Brak zdjęć do usunięcia lub błąd: {ex.Message}");
+            }
+        }
+
+        private async Task DeleteUserInvitationsForDeletedAccountAsync(string uid)
+        {
+            var firestore = CrossFirebaseFirestore.Current;
+
+            // Usuwanie zaproszeń, które użytkownik WYSŁAŁ
+            var sentInvitations = await firestore.GetCollection("invitations")
+                                                 .WhereEqualsTo("senderId", uid)
+                                                 .GetDocumentsAsync<Invitation>();
+
+            if (sentInvitations?.Documents != null)
+            {
+                foreach (var doc in sentInvitations.Documents)
+                {
+                    if (doc.Data != null && !string.IsNullOrEmpty(doc.Data.Id))
+                    {
+                        await firestore.GetCollection("invitations").GetDocument(doc.Data.Id).DeleteDocumentAsync();
+                    }
+                }
+            }
+
+            // Usuwanie zaproszeń, które użytkownik OTRZYMAŁ
+            var receivedInvitations = await firestore.GetCollection("invitations")
+                                                     .WhereEqualsTo("receiverId", uid)
+                                                     .GetDocumentsAsync<Invitation>();
+
+            if (receivedInvitations?.Documents != null)
+            {
+                foreach (var doc in receivedInvitations.Documents)
+                {
+                    if (doc.Data != null && !string.IsNullOrEmpty(doc.Data.Id))
+                    {
+                        await firestore.GetCollection("invitations").GetDocument(doc.Data.Id).DeleteDocumentAsync();
+                    }
+                }
+            }
+        }
+
+        // Plugin od firebase nie posiada metody natywnej do usuwania konta, więc musimy użyć natywnych SDK Firebase dla Androida i iOS
+
 
         // Token odpowiedzialny za powiadomienia push
         // Każde logowanie powinno aktualizować token FCM, żeby mieć pewność, że powiadomienia push będą docierać do właściwego urządzenia (np. jeśli ktoś się zaloguje na nowym telefonie, stary token przestaje być ważny)

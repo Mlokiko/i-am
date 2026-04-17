@@ -67,71 +67,77 @@ namespace i_am.Services
         // Usuwanie konta użytkownika - najpierw Firestore, potem Authentication 
         public async Task DeleteUserAsync()
         {
-            string? uid = CrossFirebaseAuth.Current.CurrentUser?.Uid;
+            var currentUser = CrossFirebaseAuth.Current.CurrentUser;
+            string? uid = currentUser?.Uid;
+
             if (string.IsNullOrEmpty(uid)) return;
 
-            var firestore = CrossFirebaseFirestore.Current;
-
-            // 1. Pobierz profil użytkownika, aby uzyskać jego imię i powiązane konta przed usunięciem
+            // 1. Pobierz profil użytkownika
             var userProfile = await GetUserProfileAsync(uid);
+            if (userProfile == null) return;
 
-            if (userProfile != null)
+            // --- 2. SPRAWDZENIE CZASU OD OSTATNIEGO LOGOWANIA ---
+            var recentLogin = Preferences.Get("RecentLogIn", DateTime.MinValue);
+            TimeSpan timeSinceLastLogin = DateTime.UtcNow - recentLogin;
+
+            if (timeSinceLastLogin.TotalMinutes >= 4)
             {
-                var batch = firestore.CreateBatch();
+                // Jeśli logowanie było dawniej niż 4 minuty temu, przerywamy proces PRZED usunięciem czegokolwiek
+                await Shell.Current.DisplayAlert(
+                    "Wymagane ponowne logowanie",
+                    "Ze względów bezpieczeństwa (ochrona przed nieautoryzowanym usunięciem) ta operacja wymaga bardzo świeżej sesji.\n\nWyloguj się, zaloguj ponownie i od razu spróbuj usunąć konto.",
+                    "Rozumiem");
+                return;
+            }
+            // --- KONIEC SPRAWDZANIA ---
 
-                // Zbieramy wszystkich powiązanych użytkowników (opiekunów i podopiecznych) bez duplikatów
-                var connectedUsers = new HashSet<string>();
-                if (userProfile.CaregiversID != null)
-                {
-                    foreach (var id in userProfile.CaregiversID) connectedUsers.Add(id);
-                }
-                if (userProfile.CaretakersID != null)
-                {
-                    foreach (var id in userProfile.CaretakersID) connectedUsers.Add(id);
-                }
+            var firestore = CrossFirebaseFirestore.Current;
+            var batch = firestore.CreateBatch();
 
-                // 2. Usuwamy ID użytkownika z list kontaktów innych osób i wysyłamy powiadomienia
-                foreach (var connectedUserId in connectedUsers)
-                {
-                    var connectedUserRef = firestore.GetCollection("users").GetDocument(connectedUserId);
-
-                    // Wykorzystujemy ArrayRemove na obu listach (jeśli ID tam nie ma, nic się nie zepsuje)
-                    batch.UpdateData(connectedUserRef, ("careTakersID", FieldValue.ArrayRemove(uid)));
-                    batch.UpdateData(connectedUserRef, ("careGiversID", FieldValue.ArrayRemove(uid)));
-
-                    // Tworzymy powiadomienie
-                    var notification = new AppNotification
-                    {
-                        ReceiverId = connectedUserId,
-                        Title = "Konto usunięte",
-                        Message = $"Użytkownik {userProfile.Name} usunął konto.",
-                        Type = "AccountDeleted", // Możesz dodać ten typ w XAML, aby ustawić mu np. szarą ikonę
-                        SenderId = uid
-                    };
-
-                    // Ponieważ Twoja metoda SendNotificationAsync wykonuje niezależny zapis do innej kolekcji, 
-                    // możemy ją po prostu wywołać w pętli.
-                    await SendNotificationAsync(notification);
-                }
-
-                // Wykonujemy masową operację usunięcia powiązań
-                await batch.CommitAsync();
+            // Zbieramy wszystkich powiązanych użytkowników (opiekunów i podopiecznych) bez duplikatów
+            var connectedUsers = new HashSet<string>();
+            if (userProfile.CaregiversID != null)
+            {
+                foreach (var id in userProfile.CaregiversID) connectedUsers.Add(id);
+            }
+            if (userProfile.CaretakersID != null)
+            {
+                foreach (var id in userProfile.CaretakersID) connectedUsers.Add(id);
             }
 
-            // 3. Ręczne usunięcie podkolekcji użytkownika
+            // 3. Usuwamy ID użytkownika z list kontaktów innych osób i wysyłamy powiadomienia
+            foreach (var connectedUserId in connectedUsers)
+            {
+                var connectedUserRef = firestore.GetCollection("users").GetDocument(connectedUserId);
+
+                batch.UpdateData(connectedUserRef, ("careTakersID", FieldValue.ArrayRemove(uid)));
+                batch.UpdateData(connectedUserRef, ("careGiversID", FieldValue.ArrayRemove(uid)));
+
+                var notification = new AppNotification
+                {
+                    ReceiverId = connectedUserId,
+                    Title = "Konto usunięte",
+                    Message = $"Użytkownik {userProfile.Name} usunął konto.",
+                    Type = "AccountDeleted",
+                    SenderId = uid
+                };
+
+                await SendNotificationAsync(notification);
+            }
+
+            // Wykonujemy masową operację usunięcia powiązań
+            await batch.CommitAsync();
+
+            // 4. Ręczne usunięcie podkolekcji i plików użytkownika
             await DeleteUserQuestionTemplatesAsync(uid);
             await DeleteUserDailyResponsesAsync(uid);
-
-            // Usuwanie wszystkich zdjęć z Firebase Storage
             await DeleteUserPhotosAsync(uid);
-
-            // Opcjonalnie: usunięcie wiszących zaproszeń powiązanych z tym użytkownikiem
             await DeleteUserInvitationsForDeletedAccountAsync(uid);
 
-            // 4. Usuń główny dokument użytkownika w Firestore
+            // 5. Usuń główny dokument użytkownika w Firestore
             await firestore.GetCollection("users").GetDocument(uid).DeleteDocumentAsync();
 
-            // 5. Natywne usunięcie konta w Firebase Authentication
+            // 6. Natywne usunięcie konta w Firebase Authentication
 #if ANDROID
             var androidUser = Firebase.Auth.FirebaseAuth.Instance.CurrentUser;
             if (androidUser != null)
@@ -306,6 +312,18 @@ namespace i_am.Services
             {
                 System.Diagnostics.Debug.WriteLine($"Błąd podczas usuwania tokenu FCM: {ex.Message}");
             }
+        }
+
+        // Uniwersalna metoda do aktualizacji pojedynczego pola w dokumencie
+        public async Task UpdateFieldAsync(string collectionName, string documentId, string fieldName, object value)
+        {
+            var firestore = CrossFirebaseFirestore.Current;
+            await firestore.GetCollection(collectionName)
+                           .GetDocument(documentId)
+                           .UpdateDataAsync(new Dictionary<object, object>
+                           {
+                       { fieldName, value }
+                           });
         }
 
         public async Task UpdateUserProfileAsync(string uid, string phoneNumber, string sex)

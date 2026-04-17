@@ -34,7 +34,7 @@
                 FontSize="16"
                 HorizontalTextAlignment="Center"
                 Style="{StaticResource SubtitleLabelStyle}"
-                Text="Twój dzisiejszy raport został już wysłany do opiekuna. Wróć tu jutro!" />
+                Text="Twój dzisiejszy raport został już wysłany. Wróć tu jutro!" />
         </VerticalStackLayout>
         <VerticalStackLayout
             Padding="30"

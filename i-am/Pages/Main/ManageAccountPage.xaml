@@ -7,146 +7,167 @@
     Title="Zarządzanie kontem"
     x:DataType="vm:ManageAccountViewModel">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="30" Spacing="20">
+    <Grid>
 
-            <Label
-                FontAttributes="Bold"
-                FontSize="24"
-                HorizontalOptions="Center"
-                Text="{Binding Name}" />
-
-            <BoxView Style="{StaticResource DividerStyle}" />
-
-            <Grid
-                ColumnDefinitions="Auto, *"
-                ColumnSpacing="20"
-                RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto"
-                RowSpacing="25">
+        <ScrollView>
+            <VerticalStackLayout Padding="30" Spacing="20">
 
                 <Label
-                    Grid.Row="0"
-                    Grid.Column="0"
-                    Style="{StaticResource FormLabelStyle}"
-                    Text="Email:" />
-                <Label
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    Style="{StaticResource FormValueLabelStyle}"
-                    Text="{Binding Email}" />
+                    FontAttributes="Bold"
+                    FontSize="24"
+                    HorizontalOptions="Center"
+                    Text="{Binding Name}" />
 
-                <Label
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Style="{StaticResource FormLabelStyle}"
-                    Text="Nr telefonu:" />
-                <Label
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    IsVisible="{Binding IsNotEditing}"
-                    Style="{StaticResource FormValueLabelStyle}"
-                    Text="{Binding PhoneNumber}" />
-                <Border
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    IsVisible="{Binding IsEditing}"
-                    Style="{StaticResource CompactInputBorderStyle}">
-                    <Entry
-                        Keyboard="Telephone"
-                        Placeholder="Twój numer telefonu"
-                        Text="{Binding EditPhoneNumber}"
-                        VerticalOptions="Center" />
-                </Border>
-
-                <Label
-                    Grid.Row="2"
-                    Grid.Column="0"
-                    Style="{StaticResource FormLabelStyle}"
-                    Text="Urodziny:" />
-                <Label
-                    Grid.Row="2"
-                    Grid.Column="1"
-                    Style="{StaticResource FormValueLabelStyle}"
-                    Text="{Binding BirthDate}" />
-
-                <Label
-                    Grid.Row="3"
-                    Grid.Column="0"
-                    Style="{StaticResource FormLabelStyle}"
-                    Text="Płeć:" />
-                <Label
-                    Grid.Row="3"
-                    Grid.Column="1"
-                    IsVisible="{Binding IsNotEditing}"
-                    Style="{StaticResource FormValueLabelStyle}"
-                    Text="{Binding Sex}" />
-                <Border
-                    Grid.Row="3"
-                    Grid.Column="1"
-                    IsVisible="{Binding IsEditing}"
-                    Style="{StaticResource CompactInputBorderStyle}">
-                    <Picker
-                        ItemsSource="{Binding SexOptions}"
-                        SelectedItem="{Binding EditSex}"
-                        VerticalOptions="Center" />
-                </Border>
-
-                <Label
-                    Grid.Row="4"
-                    Grid.Column="0"
-                    Style="{StaticResource FormLabelStyle}"
-                    Text="Rola:" />
-                <Label
-                    Grid.Row="4"
-                    Grid.Column="1"
-                    Style="{StaticResource FormValueLabelStyle}"
-                    Text="{Binding Role}" />
-
-                <Label
-                    Grid.Row="5"
-                    Grid.Column="0"
-                    Style="{StaticResource FormLabelStyle}"
-                    Text="Dołączono:" />
-                <Label
-                    Grid.Row="5"
-                    Grid.Column="1"
-                    Style="{StaticResource FormValueLabelStyle}"
-                    Text="{Binding CreatedAt}" />
-            </Grid>
-
-            <VerticalStackLayout Margin="0,20,0,30" Spacing="15">
-
-                <Button
-                    Command="{Binding EnableEditModeCommand}"
-                    IsVisible="{Binding IsNotEditing}"
-                    Text="Edytuj dane" />
+                <BoxView Style="{StaticResource DividerStyle}" />
 
                 <Grid
-                    ColumnDefinitions="*, *"
-                    ColumnSpacing="15"
-                    IsVisible="{Binding IsEditing}">
-                    <Button
+                    ColumnDefinitions="Auto, *"
+                    ColumnSpacing="20"
+                    RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto"
+                    RowSpacing="25">
+
+                    <Label
+                        Grid.Row="0"
                         Grid.Column="0"
-                        BackgroundColor="{AppThemeBinding Light={StaticResource Gray500},
-                                                          Dark={StaticResource Gray600}}"
-                        Command="{Binding CancelEditCommand}"
-                        Text="Anuluj" />
-                    <Button
+                        Style="{StaticResource FormLabelStyle}"
+                        Text="Email:" />
+                    <Label
+                        Grid.Row="0"
                         Grid.Column="1"
-                        BackgroundColor="{DynamicResource Success}"
-                        Command="{Binding SaveChangesCommand}"
-                        Text="Zapisz" />
+                        Style="{StaticResource FormValueLabelStyle}"
+                        Text="{Binding Email}" />
+
+                    <Label
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Style="{StaticResource FormLabelStyle}"
+                        Text="Nr telefonu:" />
+                    <Label
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        IsVisible="{Binding IsNotEditing}"
+                        Style="{StaticResource FormValueLabelStyle}"
+                        Text="{Binding PhoneNumber}" />
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        IsVisible="{Binding IsEditing}"
+                        Style="{StaticResource CompactInputBorderStyle}">
+                        <Entry
+                            Keyboard="Telephone"
+                            Placeholder="Twój numer telefonu"
+                            Text="{Binding EditPhoneNumber}"
+                            VerticalOptions="Center" />
+                    </Border>
+
+                    <Label
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Style="{StaticResource FormLabelStyle}"
+                        Text="Urodziny:" />
+                    <Label
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Style="{StaticResource FormValueLabelStyle}"
+                        Text="{Binding BirthDate}" />
+
+                    <Label
+                        Grid.Row="3"
+                        Grid.Column="0"
+                        Style="{StaticResource FormLabelStyle}"
+                        Text="Płeć:" />
+                    <Label
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        IsVisible="{Binding IsNotEditing}"
+                        Style="{StaticResource FormValueLabelStyle}"
+                        Text="{Binding Sex}" />
+                    <Border
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        IsVisible="{Binding IsEditing}"
+                        Style="{StaticResource CompactInputBorderStyle}">
+                        <Picker
+                            ItemsSource="{Binding SexOptions}"
+                            SelectedItem="{Binding EditSex}"
+                            VerticalOptions="Center" />
+                    </Border>
+
+                    <Label
+                        Grid.Row="4"
+                        Grid.Column="0"
+                        Style="{StaticResource FormLabelStyle}"
+                        Text="Rola:" />
+                    <Label
+                        Grid.Row="4"
+                        Grid.Column="1"
+                        Style="{StaticResource FormValueLabelStyle}"
+                        Text="{Binding Role}" />
+
+                    <Label
+                        Grid.Row="5"
+                        Grid.Column="0"
+                        Style="{StaticResource FormLabelStyle}"
+                        Text="Dołączono:" />
+                    <Label
+                        Grid.Row="5"
+                        Grid.Column="1"
+                        Style="{StaticResource FormValueLabelStyle}"
+                        Text="{Binding CreatedAt}" />
                 </Grid>
 
-                <BoxView Margin="0,15" Style="{StaticResource DividerStyle}" />
+                <VerticalStackLayout Margin="0,20,0,30" Spacing="15">
 
-                <Button
-                    Command="{Binding DeleteAccountCommand}"
-                    Style="{StaticResource DangerButtonStyle}"
-                    Text="Usuń konto" />
+                    <Button
+                        Command="{Binding EnableEditModeCommand}"
+                        IsVisible="{Binding IsNotEditing}"
+                        Text="Edytuj dane" />
+
+                    <Grid
+                        ColumnDefinitions="*, *"
+                        ColumnSpacing="15"
+                        IsVisible="{Binding IsEditing}">
+                        <Button
+                            Grid.Column="0"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Gray500},
+                                                              Dark={StaticResource Gray600}}"
+                            Command="{Binding CancelEditCommand}"
+                            Text="Anuluj" />
+                        <Button
+                            Grid.Column="1"
+                            BackgroundColor="{DynamicResource Success}"
+                            Command="{Binding SaveChangesCommand}"
+                            Text="Zapisz" />
+                    </Grid>
+
+                    <BoxView Margin="0,15" Style="{StaticResource DividerStyle}" />
+
+                    <Button
+                        Command="{Binding DeleteAccountCommand}"
+                        Style="{StaticResource DangerButtonStyle}"
+                        Text="Usuń konto" />
+
+                </VerticalStackLayout>
 
             </VerticalStackLayout>
+        </ScrollView>
 
-        </VerticalStackLayout>
-    </ScrollView>
+        <Grid BackgroundColor="#80000000" IsVisible="{Binding IsLoading}">
+
+            <ActivityIndicator
+                HorizontalOptions="Center"
+                IsRunning="{Binding IsLoading}"
+                VerticalOptions="Center"
+                Color="White" />
+
+            <Label
+                Margin="0,60,0,0"
+                FontAttributes="Bold"
+                HorizontalOptions="Center"
+                Text="Trwa usuwanie..."
+                TextColor="White"
+                VerticalOptions="Center" />
+        </Grid>
+
+    </Grid>
 </ContentPage>

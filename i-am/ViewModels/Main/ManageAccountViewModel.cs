@@ -19,6 +19,10 @@ namespace i_am.ViewModels
         [ObservableProperty] private string role = "...";
         [ObservableProperty] private string createdAt = "...";
 
+        // --- ZMIENNA DLA EKRANU ŁADOWANIA ---
+        [ObservableProperty]
+        private bool isLoading;
+
         // --- ZMIENNE DLA TRYBU EDYCJI ---
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsNotEditing))]
@@ -112,6 +116,9 @@ namespace i_am.ViewModels
 
             if (confirm)
             {
+                // Włączamy ekran ładowania
+                IsLoading = true;
+
                 try
                 {
                     await _firestoreService.RemoveFcmTokenAsync();
@@ -123,6 +130,11 @@ namespace i_am.ViewModels
                 catch (Exception ex)
                 {
                     await Shell.Current.DisplayAlert("Błąd", $"Problem z usuwaniem konta: {ex.Message}", "OK");
+                }
+                finally
+                {
+                    // Zawsze wyłączamy ekran ładowania (nawet jeśli wystąpił błąd lub powrót z alertu o reautentykacji)
+                    IsLoading = false;
                 }
             }
         }

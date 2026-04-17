@@ -8,9 +8,9 @@
     Title="Powiadomienia"
     x:DataType="vm:NotificationsViewModel">
 
-    <Grid Padding="20">
-        <CollectionView ItemsSource="{Binding NotificationsList}">
+    <Grid Padding="20" RowDefinitions="*, Auto">
 
+        <CollectionView Grid.Row="0" ItemsSource="{Binding NotificationsList}">
             <CollectionView.EmptyView>
                 <VerticalStackLayout
                     HorizontalOptions="Center"
@@ -32,7 +32,6 @@
                 <DataTemplate x:DataType="models:AppNotification">
                     <Border Margin="0,0,0,15" Style="{StaticResource CardBorderStyle}">
                         <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
-
                             <VerticalStackLayout
                                 Grid.Row="0"
                                 Grid.Column="0"
@@ -78,7 +77,6 @@
                                 Text="Ok"
                                 TextColor="White">
                                 <Button.Triggers>
-
                                     <DataTrigger
                                         Binding="{Binding Type}"
                                         TargetType="Button"
@@ -86,7 +84,6 @@
                                         <Setter Property="Text" Value="Przejdź do zaproszeń" />
                                         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
                                     </DataTrigger>
-
                                     <DataTrigger
                                         Binding="{Binding Type}"
                                         TargetType="Button"
@@ -94,15 +91,32 @@
                                         <Setter Property="Text" Value="Przejdź do raportu" />
                                         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
                                     </DataTrigger>
-
                                 </Button.Triggers>
                             </Button>
-
                         </Grid>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
-
         </CollectionView>
+
+        <Button
+            Grid.Row="1"
+            Margin="0,10,0,0"
+            BackgroundColor="{AppThemeBinding Light={StaticResource Primary},
+                                              Dark={StaticResource PrimaryDark}}"
+            Command="{Binding ClearAllNotificationsCommand}"
+            CornerRadius="8"
+            Text="Wyczyść wszystkie powiadomienia"
+            TextColor="White">
+
+            <Button.Triggers>
+                <DataTrigger
+                    Binding="{Binding NotificationsList.Count}"
+                    TargetType="Button"
+                    Value="0">
+                    <Setter Property="IsVisible" Value="False" />
+                </DataTrigger>
+            </Button.Triggers>
+        </Button>
     </Grid>
 </ContentPage>

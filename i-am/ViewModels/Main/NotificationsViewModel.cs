@@ -101,5 +101,27 @@ namespace i_am.ViewModels
                 await Shell.Current.DisplayAlert("Błąd", $"Nie udało się usunąć: {ex.Message}", "OK");
             }
         }
+
+        [RelayCommand]
+        private async Task ClearAllNotificationsAsync()
+        {
+            // Zabezpieczenie przed kliknięciem, gdy lista jest pusta
+            if (NotificationsList.Count == 0) return;
+
+            // Opcjonalne okienko z potwierdzeniem (dobra praktyka UX)
+            bool isConfirmed = await Shell.Current.DisplayAlert("Wyczyść powiadomienia", "Czy na pewno chcesz usunąć wszystkie powiadomienia?", "Tak", "Nie");
+            if (!isConfirmed) return;
+
+            try
+            {
+                // Wykonanie usunięcia wszystkich powiadomień równolegle dla lepszej wydajności
+                var deleteTasks = NotificationsList.Select(n => _firestoreService.DeleteNotificationAsync(n.Id)).ToList();
+                await Task.WhenAll(deleteTasks);
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Błąd", $"Nie udało się wyczyścić powiadomień: {ex.Message}", "OK");
+            }
+        }
     }
 }

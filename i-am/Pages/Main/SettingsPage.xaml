@@ -30,155 +30,188 @@
 
             <VerticalStackLayout IsVisible="{Binding IsCareTaker}" Spacing="10">
                 <Label Style="{StaticResource HeaderLabelStyle}" Text="Codzienna Aktywność" />
-
                 <Border Style="{StaticResource CardBorderStyle}">
-                    <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
-                        <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
-                            <Label Style="{StaticResource TitleLabelStyle}" Text="Początek doby" />
-                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="Godzina, od której liczony jest nowy dzień" />
-                        </VerticalStackLayout>
-                        <Picker
-                            Grid.Column="1"
-                            ItemsSource="{Binding HoursList}"
-                            SelectedItem="{Binding SelectedDayStartHour}"
-                            WidthRequest="100" />
-                    </Grid>
-                </Border>
+                    <VerticalStackLayout Spacing="0">
 
-                <Border Style="{StaticResource CardBorderStyle}">
-                    <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
-                        <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
-                            <Label Style="{StaticResource TitleLabelStyle}" Text="Ogranicz czas odpowiedzi" />
-                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="Włącz, aby móc wysyłać raport tylko w wybranych godzinach" />
-                        </VerticalStackLayout>
-                        <Switch Grid.Column="1" IsToggled="{Binding IsActivityTimeRestricted}" />
-                    </Grid>
-                </Border>
-
-                <Border IsVisible="{Binding IsActivityTimeRestricted}" Style="{StaticResource CardBorderStyle}">
-                    <VerticalStackLayout Spacing="10">
-                        <Label Style="{StaticResource TitleLabelStyle}" Text="Okno czasowe" />
-                        <Grid ColumnDefinitions="*, Auto, *" ColumnSpacing="10">
+                        <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                            <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                                <Label Style="{StaticResource TitleLabelStyle}" Text="Początek doby" />
+                                <Label Style="{StaticResource SubtitleLabelStyle}" Text="Godzina, od której liczony jest nowy dzień" />
+                            </VerticalStackLayout>
                             <Picker
-                                Title="Od"
-                                Grid.Column="0"
-                                ItemsSource="{Binding HoursList}"
-                                SelectedItem="{Binding SelectedRestrictionStartHour}" />
-                            <Label
                                 Grid.Column="1"
-                                Text="do"
-                                VerticalOptions="Center" />
-                            <Picker
-                                Title="Do"
-                                Grid.Column="2"
                                 ItemsSource="{Binding HoursList}"
-                                SelectedItem="{Binding SelectedRestrictionEndHour}" />
+                                SelectedItem="{Binding SelectedDayStartHour}"
+                                WidthRequest="100" />
                         </Grid>
+
+                        <BoxView Style="{StaticResource DividerStyle}" />
+
+                        <VerticalStackLayout>
+                            <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                                <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                                    <Label Style="{StaticResource TitleLabelStyle}" Text="Ogranicz czas odpowiedzi" />
+                                    <Label Style="{StaticResource SubtitleLabelStyle}" Text="Włącz, aby móc wysyłać raport tylko w wybranych godzinach" />
+                                </VerticalStackLayout>
+                                <Switch Grid.Column="1" IsToggled="{Binding IsActivityTimeRestricted}" />
+                            </Grid>
+
+                            <VerticalStackLayout
+                                Margin="20,15,0,0"
+                                IsVisible="{Binding IsActivityTimeRestricted}"
+                                Spacing="5">
+                                <Grid ColumnDefinitions="*, Auto, *" ColumnSpacing="10">
+                                    <Picker
+                                        Title="Od"
+                                        Grid.Column="0"
+                                        ItemsSource="{Binding HoursList}"
+                                        SelectedItem="{Binding SelectedRestrictionStartHour}" />
+                                    <Label
+                                        Grid.Column="1"
+                                        Text="do"
+                                        VerticalOptions="Center" />
+                                    <Picker
+                                        Title="Do"
+                                        Grid.Column="2"
+                                        ItemsSource="{Binding HoursList}"
+                                        SelectedItem="{Binding SelectedRestrictionEndHour}" />
+                                </Grid>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+
                     </VerticalStackLayout>
                 </Border>
-                <Label
-                    Margin="0,10,0,0"
-                    Style="{StaticResource HeaderLabelStyle}"
-                    Text="Przypomnienia" />
-
-                <Border Style="{StaticResource CardBorderStyle}">
-                    <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
-                        <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
-                            <Label Style="{StaticResource TitleLabelStyle}" Text="Codzienne przypomnienie" />
-                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="Przypominaj mi o wypełnieniu raportu" />
-                        </VerticalStackLayout>
-                        <Switch Grid.Column="1" IsToggled="{Binding IsDailyReminderEnabled}" />
-                    </Grid>
-                </Border>
-
-                <Border IsVisible="{Binding IsDailyReminderEnabled}" Style="{StaticResource CardBorderStyle}">
-                    <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
-                        <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
-                            <Label Style="{StaticResource TitleLabelStyle}" Text="Godzina przypomnienia" />
-                        </VerticalStackLayout>
-
-                        <HorizontalStackLayout Grid.Column="1" Spacing="5">
-                            <Picker
-                                ItemsSource="{Binding HoursList}"
-                                SelectedItem="{Binding SelectedReminderHour}"
-                                WidthRequest="90" />
-                            <Label
-                                FontAttributes="Bold"
-                                Text=":"
-                                VerticalOptions="Center" />
-                            <Picker
-                                ItemsSource="{Binding MinutesList}"
-                                SelectedItem="{Binding SelectedReminderMinute}"
-                                WidthRequest="70" />
-                        </HorizontalStackLayout>
-                    </Grid>
-                </Border>
-
-
-
-
-
-
             </VerticalStackLayout>
 
-
-            <VerticalStackLayout IsVisible="{Binding IsCareGiver}" Spacing="10">
-                <Label Style="{StaticResource HeaderLabelStyle}" Text="Opcje Powiadomień (Opiekun)" />
-
+            <VerticalStackLayout Spacing="10">
+                <Label Style="{StaticResource HeaderLabelStyle}" Text="Powiadomienia" />
                 <Border Style="{StaticResource CardBorderStyle}">
-                    <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
-                        <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
-                            <Label Style="{StaticResource TitleLabelStyle}" Text="Wyniki codzienne" />
-                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="Jakie wyniki ankiet chcesz otrzymywać?" />
+                    <VerticalStackLayout Spacing="0">
+
+                        <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                            <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                                <Label Style="{StaticResource TitleLabelStyle}" Text="Powiadomienia systemowe" />
+                                <Label Style="{StaticResource SubtitleLabelStyle}" Text="Powiadomienia PUSH w systemie Android" />
+                            </VerticalStackLayout>
+                            <Switch
+                                Grid.Column="1"
+                                IsToggled="{Binding AreNotificationsEnabled}"
+                                VerticalOptions="Center" />
+                        </Grid>
+
+                        <BoxView IsVisible="{Binding IsCareTaker}" Style="{StaticResource DividerStyle}" />
+
+                        <VerticalStackLayout IsVisible="{Binding IsCareTaker}">
+                            <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                                <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                                    <Label Style="{StaticResource TitleLabelStyle}" Text="Codzienne przypomnienie" />
+                                    <Label Style="{StaticResource SubtitleLabelStyle}" Text="Przypominaj mi o wypełnieniu raportu" />
+                                </VerticalStackLayout>
+                                <Switch Grid.Column="1" IsToggled="{Binding IsDailyReminderEnabled}" />
+                            </Grid>
+
+                            <Grid
+                                Margin="20,10,0,0"
+                                ColumnDefinitions="*, Auto"
+                                IsVisible="{Binding IsDailyReminderEnabled}"
+                                VerticalOptions="Center">
+                                <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                                    <Label Style="{StaticResource TitleLabelStyle}" Text="Godzina przypomnienia" />
+                                </VerticalStackLayout>
+
+                                <HorizontalStackLayout Grid.Column="1" Spacing="5">
+                                    <Picker
+                                        ItemsSource="{Binding HoursList}"
+                                        SelectedItem="{Binding SelectedReminderHour}"
+                                        WidthRequest="90" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        Text=":"
+                                        VerticalOptions="Center" />
+                                    <Picker
+                                        ItemsSource="{Binding MinutesList}"
+                                        SelectedItem="{Binding SelectedReminderMinute}"
+                                        WidthRequest="70" />
+                                </HorizontalStackLayout>
+                            </Grid>
                         </VerticalStackLayout>
-                        <Picker
-                            Grid.Column="1"
-                            HorizontalOptions="End"
-                            ItemsSource="{Binding SurveyFilterOptions}"
-                            SelectedItem="{Binding SelectedSurveyFilter}"
-                            WidthRequest="180" />
-                    </Grid>
-                </Border>
 
+                        <BoxView Style="{StaticResource DividerStyle}" />
 
+                        <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                            <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                                <Label Style="{StaticResource TitleLabelStyle}" Text="Powiadomienia o zaproszeniach" />
+                                <Label Style="{StaticResource SubtitleLabelStyle}" Text="O nowych/odrzuconych zaproszeniach itp." />
+                            </VerticalStackLayout>
+                            <Picker
+                                Grid.Column="1"
+                                HorizontalOptions="End"
+                                ItemsSource="{Binding SystemFilterOptions}"
+                                SelectedItem="{Binding SelectedSystemFilter}"
+                                WidthRequest="180" />
+                        </Grid>
 
-                <Border Style="{StaticResource CardBorderStyle}">
-                    <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
-                        <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
-                            <Label Style="{StaticResource TitleLabelStyle}" Text="Brak aktywności podopiecznego" />
-                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="Ostrzegaj, gdy podopieczny nie używa aplikacji" />
-                        </VerticalStackLayout>
-                        <Switch Grid.Column="1" IsToggled="{Binding InactivityAlertsEnabled}" />
-                    </Grid>
-                </Border>
+                        <BoxView IsVisible="{Binding IsCareGiver}" Style="{StaticResource DividerStyle}" />
 
-                <Border IsVisible="{Binding InactivityAlertsEnabled}" Style="{StaticResource CardBorderStyle}">
-                    <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
-                        <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
-                            <Label Style="{StaticResource TitleLabelStyle}" Text="Limit braku aktywności" />
-                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="Po ilu godzinach chcesz otrzymać alert?" />
-                        </VerticalStackLayout>
-
-                        <HorizontalStackLayout
-                            Grid.Column="1"
-                            HorizontalOptions="End"
-                            Spacing="10"
+                        <Grid
+                            ColumnDefinitions="*, Auto"
+                            IsVisible="{Binding IsCareGiver}"
                             VerticalOptions="Center">
-                            <Stepper
-                                Increment="1"
-                                Maximum="168"
-                                Minimum="1"
-                                Value="{Binding InactivityThresholdHours}" />
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="16"
-                                Text="{Binding InactivityThresholdHours, StringFormat='{0} h'}"
-                                VerticalOptions="Center" />
-                        </HorizontalStackLayout>
-                    </Grid>
+                            <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                                <Label Style="{StaticResource TitleLabelStyle}" Text="Wyniki codzienne" />
+                                <Label Style="{StaticResource SubtitleLabelStyle}" Text="Jakie wyniki ankiet chcesz otrzymywać?" />
+                            </VerticalStackLayout>
+                            <Picker
+                                Grid.Column="1"
+                                HorizontalOptions="End"
+                                ItemsSource="{Binding SurveyFilterOptions}"
+                                SelectedItem="{Binding SelectedSurveyFilter}"
+                                WidthRequest="180" />
+                        </Grid>
+
+                        <BoxView IsVisible="{Binding IsCareGiver}" Style="{StaticResource DividerStyle}" />
+
+                        <VerticalStackLayout IsVisible="{Binding IsCareGiver}">
+                            <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                                <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                                    <Label Style="{StaticResource TitleLabelStyle}" Text="Brak aktywności podopiecznego" />
+                                    <Label Style="{StaticResource SubtitleLabelStyle}" Text="Ostrzegaj, gdy podopieczny nie używa aplikacji" />
+                                </VerticalStackLayout>
+                                <Switch Grid.Column="1" IsToggled="{Binding InactivityAlertsEnabled}" />
+                            </Grid>
+
+                            <Grid
+                                Margin="20,15,0,0"
+                                ColumnDefinitions="*, Auto"
+                                IsVisible="{Binding InactivityAlertsEnabled}"
+                                VerticalOptions="Center">
+                                <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                                    <Label Style="{StaticResource TitleLabelStyle}" Text="Limit braku aktywności" />
+                                    <Label Style="{StaticResource SubtitleLabelStyle}" Text="Po ilu godzinach chcesz alert?" />
+                                </VerticalStackLayout>
+
+                                <HorizontalStackLayout
+                                    Grid.Column="1"
+                                    HorizontalOptions="End"
+                                    Spacing="10"
+                                    VerticalOptions="Center">
+                                    <Stepper
+                                        Increment="1"
+                                        Maximum="168"
+                                        Minimum="1"
+                                        Value="{Binding InactivityThresholdHours}" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="16"
+                                        Text="{Binding InactivityThresholdHours, StringFormat='{0} h'}"
+                                        VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                            </Grid>
+                        </VerticalStackLayout>
+
+                    </VerticalStackLayout>
                 </Border>
             </VerticalStackLayout>
-
 
             <VerticalStackLayout Spacing="10">
                 <Label Style="{StaticResource HeaderLabelStyle}" Text="Uprawnienia systemowe" />
@@ -186,36 +219,8 @@
                 <Border Style="{StaticResource CardBorderStyle}">
                     <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
                         <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
-                            <Label Style="{StaticResource TitleLabelStyle}" Text="Powiadomienia systemowe" />
-                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="Powiadomienia PUSH w systemie Android" />
-                        </VerticalStackLayout>
-                        <Switch
-                            Grid.Column="1"
-                            IsToggled="{Binding AreNotificationsEnabled}"
-                            VerticalOptions="Center" />
-                    </Grid>
-                </Border>
-
-                <Border Style="{StaticResource CardBorderStyle}">
-                    <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
-                        <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
-                            <Label Style="{StaticResource TitleLabelStyle}" Text="Powiadomienia o zaproszeniach" />
-                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="Powiadomienia o nowych/odrzuconych zaproszeniach, usunięciach z listy itd." />
-                        </VerticalStackLayout>
-                        <Picker
-                            Grid.Column="1"
-                            HorizontalOptions="End"
-                            ItemsSource="{Binding SystemFilterOptions}"
-                            SelectedItem="{Binding SelectedSystemFilter}"
-                            WidthRequest="180" />
-                    </Grid>
-                </Border>
-
-                <Border Style="{StaticResource CardBorderStyle}">
-                    <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
-                        <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
                             <Label Style="{StaticResource TitleLabelStyle}" Text="Zarządzaj uprawnieniami" />
-                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="Otwórz ustawienia systemowe, aby zmienić np. Uprawnienie do powiadomień lub aparatu" />
+                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="Otwórz ustawienia systemowe, aby zmienić uprawnienia" />
                         </VerticalStackLayout>
 
                         <Button
@@ -230,7 +235,6 @@
                     Margin="0,10,0,20"
                     Command="{Binding SaveSettingsCommand}"
                     Text="Zapisz ustawienia" />
-
             </VerticalStackLayout>
 
         </VerticalStackLayout>

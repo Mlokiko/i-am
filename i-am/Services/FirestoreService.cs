@@ -3,6 +3,7 @@ using Plugin.Firebase.Auth;
 using Plugin.Firebase.CloudMessaging;
 using Plugin.Firebase.Firestore;
 using Plugin.Firebase.Storage;
+using Plugin.LocalNotification;
 
 namespace i_am.Services
 {
@@ -405,6 +406,27 @@ namespace i_am.Services
                            .GetDocument(notificationId)
                            .DeleteDocumentAsync();
         }
+
+        public async Task UpdateLastActiveAsync()
+        {
+            string? uid = Preferences.Get("UserId", string.Empty);
+            if (string.IsNullOrEmpty(uid)) return;
+
+            try
+            {
+                var firestore = CrossFirebaseFirestore.Current;
+                await firestore.GetCollection("users")
+                               .GetDocument(uid)
+                               .UpdateDataAsync(new Dictionary<object, object>
+                               {
+                           { "lastActiveAt", FieldValue.ServerTimestamp } // ServerTimestamp zapobiega błędom stref czasowych u klienta
+                               });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Nie udało się zaktualizować aktywności: {ex.Message}");
+            }
+        }
         #endregion
         #region Zaproszenia (Invitations)
         public async Task<bool> SendInvitationAsync(string senderId, string senderName, bool isSenderCaregiver, string receiverEmail)
@@ -469,15 +491,21 @@ namespace i_am.Services
 
             await firestore.GetCollection("invitations").AddDocumentAsync(request);
 
-            var notification = new AppNotification
-            {
-                ReceiverId = receiver.Id,
-                Title = "Nowe zaproszenie",
-                Message = $"Masz nowe zaproszenie od {senderName}.",
-                Type = "NewInvitation"
-            };
+            string filter = receiver.SystemNotificationFilter ?? "All";
 
-            await SendNotificationAsync(notification);
+            // Zaproszenie nie jest "krytyczne", więc wysyłamy tylko jeśli filtr to "All"
+            if (filter == "All")
+            {
+                var notification = new AppNotification
+                {
+                    ReceiverId = receiver.Id,
+                    Title = "Nowe zaproszenie",
+                    Message = $"Masz nowe zaproszenie od {senderName}.",
+                    Type = "NewInvitation"
+                };
+
+                await SendNotificationAsync(notification);
+            }
 
             return true;
         }
@@ -507,15 +535,18 @@ namespace i_am.Services
             var myProfile = await GetUserProfileAsync(myUid);
             string myName = myProfile?.Name ?? "Użytkownik";
 
-            var notification = new AppNotification
+            var giverProfile = await GetUserProfileAsync(request.SenderId); // Pobieramy profil nadawcy, żeby sprawdzić co chce dostawać
+            if (giverProfile?.SystemNotificationFilter == "All")
             {
-                ReceiverId = request.SenderId,
-                Title = "Zaproszenie zaakceptowane",
-                Message = $"{myName} zaakceptował(a) Twoje zaproszenie.",
-                Type = "InvitationAccepted"
-            };
-
-            await SendNotificationAsync(notification);
+                var notification = new AppNotification
+                {
+                    ReceiverId = request.SenderId,
+                    Title = "Zaproszenie zaakceptowane",
+                    Message = $"{myName} zaakceptował(a) Twoje zaproszenie.",
+                    Type = "InvitationAccepted"
+                };
+                await SendNotificationAsync(notification);
+            }
         }
 
         // Odrzucenie zaproszenia (zmienia status, nadawca będzie potem w stanie usunąć zaproszenie i wysłać je ponownie)
@@ -532,16 +563,18 @@ namespace i_am.Services
             var myProfile = await GetUserProfileAsync(myUid);
             string myName = myProfile?.Name ?? "Użytkownik";
 
-            var notification = new AppNotification
+            var giverProfile = await GetUserProfileAsync(invitation.SenderId); // Pobieramy profil nadawcy, żeby sprawdzić co chce dostawać
+            if (giverProfile?.SystemNotificationFilter == "All")
             {
-                ReceiverId = invitation.SenderId,
-                Title = "Zaproszenie odrzucone",
-                Message = $"{myName} odrzucił(a) Twoje zaproszenie.",
-                Type = "InvitationRejected",
-                SenderId = invitation.Id
-            };
-
-            await SendNotificationAsync(notification);
+                var notification = new AppNotification
+                {
+                    ReceiverId = invitation.SenderId,
+                    Title = "Zaproszenie odrzucone",
+                    Message = $"{myName} odrzucił(a) Twoje zaproszenie.",
+                    Type = "InvitationRejected"
+                };
+                await SendNotificationAsync(notification);
+            }
         }
 
         // Usunięcie zaproszenia z FireStore
@@ -752,23 +785,69 @@ namespace i_am.Services
                            .GetDocument(response.Id) // Id to będzie data np. "2024-05-14"
                            .SetDataAsync(response);
 
-            // 2. Pobranie danych podopiecznego, żeby wiedzieć komu wysłać powiadomienie
+
+            string? userId = Preferences.Default.Get("UserId", string.Empty);
+            var userProfile = await GetUserProfileAsync(userId);
+
+            if (userProfile != null && userProfile.IsDailyReminderEnabled)
+            {
+                // Anulujemy powiadomienie na dzisiaj (żeby nie przyszło, skoro już wypełnił)
+                LocalNotificationCenter.Current.Cancel(1001);
+
+                // Obliczamy czas na JUTRO i planujemy powiadomienie z powrotem
+                var tomorrowNotifyTime = DateTime.Today.AddDays(1)
+                    .AddHours(userProfile.DailyReminderHour)
+                    .AddMinutes(userProfile.DailyReminderMinute);
+
+                var request = new NotificationRequest
+                {
+                    NotificationId = 1001,
+                    Title = "Czas na Twój raport!",
+                    Description = "Hej! Poświęć chwilę na uzupełnienie dzisiejszej ankiety.",
+                    Schedule = new NotificationRequestSchedule
+                    {
+                        NotifyTime = tomorrowNotifyTime,
+                        RepeatType = NotificationRepeat.Daily
+                    }
+                };
+
+                await LocalNotificationCenter.Current.Show(request);
+            }
+
+            // Pobranie danych podopiecznego
             var careTakerProfile = await GetUserProfileAsync(careTakerId);
             if (careTakerProfile != null && careTakerProfile.CaregiversID.Any())
             {
-                // 3. Wysłanie powiadomień do wszystkich przypisanych opiekunów
                 foreach (var giverId in careTakerProfile.CaregiversID)
                 {
-                    var notification = new AppNotification
+                    // 1. POBIERAMY PROFIL OPIEKUNA, ABY ZNAĆ JEGO USTAWIENIA
+                    var giverProfile = await GetUserProfileAsync(giverId);
+                    if (giverProfile == null) continue;
+
+                    string filter = giverProfile.SurveyNotificationFilter;
+                    bool shouldNotify = false;
+
+                    // 2. LOGIKA FILTROWANIA
+                    if (filter == "All") shouldNotify = true;
+                    else if (filter == "CriticalOnly" && response.TotalScore <= -3) shouldNotify = true;
+                    else if (filter == "WarningAndWorse" && response.TotalScore <= -2) shouldNotify = true;
+                    else if (filter == "NegativeAndWorse" && response.TotalScore <= -1) shouldNotify = true;
+                    else if (filter == "NormalOnly" && response.TotalScore == 0) shouldNotify = true;
+
+                    // Jeśli opiekun chce to widzieć, wysyłamy
+                    if (shouldNotify)
                     {
-                        ReceiverId = giverId,
-                        Title = $"Nowy raport dzienny: {careTakerProfile.Name}",
-                        Message = $"Wynik: {response.TotalScore} pkt. Status: {response.EvaluationStatus}.",
-                        Type = "DailyReportAlert",
-                        SenderId = careTakerId,   // Przekazujemy ID Podopiecznego
-                        Date = response.Id     // Format "yyyy-MM-dd"
-                    };
-                    await SendNotificationAsync(notification);
+                        var notification = new AppNotification
+                        {
+                            ReceiverId = giverId,
+                            Title = $"Nowy raport dzienny: {careTakerProfile.Name}",
+                            Message = $"Wynik: {response.TotalScore} pkt. Status: {response.EvaluationStatus}.",
+                            Type = "DailyReportAlert",
+                            SenderId = careTakerId,
+                            Date = response.Id
+                        };
+                        await SendNotificationAsync(notification);
+                    }
                 }
             }
         }

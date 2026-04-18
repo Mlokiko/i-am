@@ -51,7 +51,7 @@ namespace i_am.ViewModels
 
                 if (profile != null)
                 {
-                    await _firestoreService.UpdateFieldAsync("users", profile.Id, "RecentActivity", DateTime.UtcNow);
+                    //await _firestoreService.UpdateFieldAsync("users", profile.Id, "RecentActivity", DateTime.UtcNow);
                     Preferences.Default.Set("RecentLogIn", DateTime.UtcNow);
                     Preferences.Default.Set("UserId", profile.Id);
                     Preferences.Default.Set("IsCaregiver", profile.IsCaregiver);

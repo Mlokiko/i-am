@@ -89,6 +89,7 @@
 		<PackageReference Include="Plugin.Firebase.Core" Version="4.2.0" />
 		<PackageReference Include="Plugin.Firebase.Firestore" Version="4.0.0" />
 		<PackageReference Include="Plugin.Firebase.Storage" Version="4.0.0" />
+		<PackageReference Include="Plugin.LocalNotification" Version="12.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>

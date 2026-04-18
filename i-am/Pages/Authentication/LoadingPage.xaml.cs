@@ -15,6 +15,7 @@ public partial class LoadingPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        await _firestoreService.UpdateLastActiveAsync();
         // 1. Sprawdzamy czy to pierwsze uruchomienie
         bool isFirstLaunch = Preferences.Default.Get("IsFirstLaunch", true);
 

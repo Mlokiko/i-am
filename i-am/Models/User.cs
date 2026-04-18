@@ -49,5 +49,33 @@ namespace i_am.Models
 
         [FirestoreProperty("activityRestrictionEndHour")]
         public int ActivityRestrictionEndHour { get; set; } = 4; // Do 4:00 następnego dnia
+
+        [FirestoreProperty("inactivityAlertsEnabled")]
+        public bool InactivityAlertsEnabled { get; set; } = true; // Czy chce dostawać powiadomienia o braku aktywności
+
+        [FirestoreProperty("inactivityThresholdHours")]
+        public int InactivityThresholdHours { get; set; } = 24; // Po ilu godzinach ma przyjść powiadomienie
+
+        [FirestoreProperty("surveyNotificationFilter")]
+        public string SurveyNotificationFilter { get; set; } = "All"; // Dostępne: "CriticalOnly", "WarningAndWorse", "NegativeAndWorse", "NormalOnly", "All"
+
+        [FirestoreProperty("systemNotificationFilter")]
+        public string SystemNotificationFilter { get; set; } = "All"; // Dostępne: "CriticalOnly" (tylko usunięcia), "All"
+
+        // --- STATUS AKTYWNOŚCI (Głównie dla Podopiecznego) ---
+
+        [FirestoreProperty("lastActiveAt")]
+        public DateTimeOffset LastActiveAt { get; set; } = DateTimeOffset.UtcNow;
+
+        [FirestoreProperty("isDailyReminderEnabled")]
+        public bool IsDailyReminderEnabled { get; set; } = true;
+
+        [FirestoreProperty("dailyReminderHour")]
+        public int DailyReminderHour { get; set; } = 20; // Domyślnie 20:00
+
+        [FirestoreProperty("dailyReminderMinute")]
+        public int DailyReminderMinute { get; set; } = 0;
+
+
     }
 }

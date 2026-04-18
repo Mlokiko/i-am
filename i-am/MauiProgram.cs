@@ -9,6 +9,7 @@ using Microsoft.Maui.LifecycleEvents;
 using Plugin.Firebase.Core.Platforms.iOS;
 #elif ANDROID
 using Plugin.Firebase.Core.Platforms.Android;
+using Plugin.LocalNotification;
 #endif
 
 namespace i_am
@@ -20,6 +21,7 @@ namespace i_am
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseLocalNotification()
                 .RegisterFirebaseServices()
 
                 .ConfigureFonts(fonts =>

@@ -4,10 +4,8 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:auth="clr-namespace:i_am.Pages.Authentication"
-    xmlns:giver="clr-namespace:i_am.Pages.CareGiver"
     xmlns:local="clr-namespace:i_am"
     xmlns:main="clr-namespace:i_am.Pages.Main"
-    xmlns:taker="clr-namespace:i_am.Pages.CareTaker"
     Title="i_am"
     Shell.FlyoutBehavior="Disabled">
 
@@ -21,12 +19,8 @@
         Route="LandingPage" />
     <ShellContent
         Title="Home"
-        ContentTemplate="{DataTemplate taker:CareTakerMainPage}"
-        Route="CareTakerMainPage" />
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate giver:CareGiverMainPage}"
-        Route="CareGiverMainPage" />
+        ContentTemplate="{DataTemplate main:MainPage}"
+        Route="MainPage" />
     <ShellContent
         Title="Uprawnienia"
         ContentTemplate="{DataTemplate main:PermissionsPage}"

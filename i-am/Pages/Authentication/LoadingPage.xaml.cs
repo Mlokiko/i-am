@@ -1,5 +1,6 @@
 using i_am.Pages.CareGiver;
 using i_am.Pages.CareTaker;
+using i_am.Pages.Main;
 using i_am.Services;
 
 namespace i_am.Pages.Authentication;
@@ -32,12 +33,7 @@ public partial class LoadingPage : ContentPage
         {
             await _firestoreService.UpdateLastActiveAsync();
             await _firestoreService.UpdateFcmTokenAsync();
-            bool isCaregiver = Preferences.Default.Get("IsCaregiver", false);
-
-            if (isCaregiver)
-                await Shell.Current.GoToAsync($"//{nameof(CareGiverMainPage)}");
-            else
-                await Shell.Current.GoToAsync($"//{nameof(CareTakerMainPage)}");
+            await Shell.Current.GoToAsync($"//{nameof(MainPage)}");
         }
         else
         {

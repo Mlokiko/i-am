@@ -1,9 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using i_am.Services;
 using i_am.Pages.Authentication;
 using i_am.Pages.CareGiver;
 using i_am.Pages.CareTaker;
+using i_am.Pages.Main;
+using i_am.Services;
 
 namespace i_am.ViewModels
 {
@@ -56,11 +57,7 @@ namespace i_am.ViewModels
                     Preferences.Default.Set("UserId", profile.Id);
                     Preferences.Default.Set("IsCaregiver", profile.IsCaregiver);
                     await _firestoreService.UpdateFcmTokenAsync();
-
-                    if (profile.IsCaregiver)
-                        await Shell.Current.GoToAsync($"//{nameof(CareGiverMainPage)}");
-                    else
-                        await Shell.Current.GoToAsync($"//{nameof(CareTakerMainPage)}");
+                    await Shell.Current.GoToAsync($"//{nameof(MainPage)}");
                 }
             }
             catch (Exception ex)

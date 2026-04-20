@@ -4,6 +4,7 @@ using i_am.Models;
 using i_am.Pages.Authentication;
 using i_am.Pages.CareGiver;
 using i_am.Pages.CareTaker;
+using i_am.Pages.Main;
 using i_am.Services;
 using System.Text.RegularExpressions;
 
@@ -161,11 +162,7 @@ namespace i_am.ViewModels
                 }
 
                 await Shell.Current.DisplayAlert("Sukces", "Konto zostało pomyślnie stworzone!", "OK");
-
-                if (userProfile.IsCaregiver)
-                    await Shell.Current.GoToAsync($"//{nameof(CareGiverMainPage)}");
-                else
-                    await Shell.Current.GoToAsync($"//{nameof(CareTakerMainPage)}");
+                await Shell.Current.GoToAsync($"//{nameof(MainPage)}");
             }
             catch (Exception ex)
             {

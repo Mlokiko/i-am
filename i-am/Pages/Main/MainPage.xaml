@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="i_am.Pages.CareGiver.CareGiverMainPage"
+    x:Class="i_am.Pages.Main.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:i_am.ViewModels"
-    x:DataType="vm:CareGiverMainViewModel">
+    x:DataType="vm:MainPageViewModel">
 
     <Shell.TitleView>
         <Label
@@ -25,10 +25,32 @@
             <ScrollView>
                 <VerticalStackLayout Spacing="10">
                     <Button Command="{Binding GoToNotificationsCommand}" Text="Powiadomienia" />
+
+                    <Button
+                        Command="{Binding GoToDailyActivityCommand}"
+                        IsVisible="{Binding IsCareTaker}"
+                        Text="Codzienna Aktywność" />
+
                     <Button Command="{Binding GoToCalendarCommand}" Text="Kalendarz" />
-                    <Button Command="{Binding GoToStatisticsCommand}" Text="Statystyki Podopiecznego" />
-                    <Button Command="{Binding GoToEditCareTakerQuestionsCommand}" Text="Edytuj pytania Podopiecznego" />
-                    <Button Command="{Binding GoToManageCareTakersCommand}" Text="Zarządzaj Podopiecznymi" />
+
+                    <Button
+                        Command="{Binding GoToStatisticsCommand}"
+                        IsVisible="{Binding IsCaregiver}"
+                        Text="Statystyki Podopiecznego" />
+                    <Button
+                        Command="{Binding GoToEditCareTakerQuestionsCommand}"
+                        IsVisible="{Binding IsCaregiver}"
+                        Text="Edytuj pytania Podopiecznego" />
+                    <Button
+                        Command="{Binding GoToManageCareTakersCommand}"
+                        IsVisible="{Binding IsCaregiver}"
+                        Text="Zarządzaj Podopiecznymi" />
+
+                    <Button
+                        Command="{Binding GoToManageCareGiversCommand}"
+                        IsVisible="{Binding IsCareTaker}"
+                        Text="Zarządzaj Opiekunami" />
+
                     <Button Command="{Binding GoToSettingsCommand}" Text="Ustawienia" />
                     <Button Command="{Binding GoToManageAccountCommand}" Text="Zarządzaj swoim kontem" />
                 </VerticalStackLayout>

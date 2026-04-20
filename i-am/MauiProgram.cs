@@ -37,36 +37,36 @@ namespace i_am
 
             builder.Services.AddTransient<LoadingPage>();
             builder.Services.AddTransient<LandingPage>();
-            builder.Services.AddTransient<i_am.ViewModels.LoginViewModel>();
+            builder.Services.AddTransient<ViewModels.LoginViewModel>();
             builder.Services.AddTransient<LoginPage>();
-            builder.Services.AddTransient<i_am.ViewModels.RegisterViewModel>();
+            builder.Services.AddTransient<ViewModels.RegisterViewModel>();
             builder.Services.AddTransient<RegisterPage>();
-            builder.Services.AddTransient<i_am.ViewModels.ManageAccountViewModel>();
+            builder.Services.AddTransient<ViewModels.MainPageViewModel>();
+            builder.Services.AddTransient<MainPage>();
+            builder.Services.AddTransient<ViewModels.ManageAccountViewModel>();
             builder.Services.AddTransient<ManageAccountPage>();
-            builder.Services.AddTransient<i_am.ViewModels.InformationViewModel>();
+            builder.Services.AddTransient<ViewModels.InformationViewModel>();
             builder.Services.AddTransient<InformationPage>();
-            builder.Services.AddTransient<i_am.ViewModels.NotificationsViewModel>();
+            builder.Services.AddTransient<ViewModels.NotificationsViewModel>();
             builder.Services.AddTransient<NotificationsPage>();
-            builder.Services.AddTransient<i_am.ViewModels.CalendarViewModel>();
-            builder.Services.AddTransient<i_am.Pages.Main.CalendarPage>();
-            builder.Services.AddTransient<i_am.ViewModels.ManageConnectionsViewModel>();
-            builder.Services.AddTransient<i_am.Pages.Main.ManageConnectionsPage>();
-            builder.Services.AddTransient<i_am.ViewModels.SettingsViewModel>();
-            builder.Services.AddTransient<i_am.Pages.Main.SettingsPage>();
-            builder.Services.AddTransient<i_am.ViewModels.PermissionsViewModel>();
-            builder.Services.AddTransient<i_am.Pages.Main.PermissionsPage>();
+            builder.Services.AddTransient<ViewModels.CalendarViewModel>();
+            builder.Services.AddTransient<CalendarPage>();
+            builder.Services.AddTransient<ViewModels.ManageConnectionsViewModel>();
+            builder.Services.AddTransient<ManageConnectionsPage>();
+            builder.Services.AddTransient<ViewModels.SettingsViewModel>();
+            builder.Services.AddTransient<SettingsPage>();
+            builder.Services.AddTransient<ViewModels.PermissionsViewModel>();
+            builder.Services.AddTransient<PermissionsPage>();
 
-            builder.Services.AddTransient<i_am.ViewModels.CareGiverMainViewModel>();
-            builder.Services.AddTransient<CareGiverMainPage>();
-            builder.Services.AddTransient<i_am.ViewModels.EditCareTakerQuestionsViewModel>();
-            builder.Services.AddTransient<i_am.Pages.CareGiver.EditCareTakerQuestionsPage>();
-            builder.Services.AddTransient<i_am.ViewModels.StatisticsViewModel>();
-            builder.Services.AddTransient<i_am.Pages.CareGiver.StatisticsPage>();
 
-            builder.Services.AddTransient<i_am.ViewModels.CareTakerMainViewModel>();
-            builder.Services.AddTransient<CareTakerMainPage>();
-            builder.Services.AddTransient<i_am.ViewModels.DailyActivityViewModel>();
-            builder.Services.AddTransient<i_am.Pages.CareTaker.DailyActivityPage>();
+            builder.Services.AddTransient<ViewModels.EditCareTakerQuestionsViewModel>();
+            builder.Services.AddTransient<EditCareTakerQuestionsPage>();
+            builder.Services.AddTransient<ViewModels.StatisticsViewModel>();
+            builder.Services.AddTransient<StatisticsPage>();
+
+
+            builder.Services.AddTransient<ViewModels.DailyActivityViewModel>();
+            builder.Services.AddTransient<DailyActivityPage>();
 
 
             return builder.Build();
@@ -87,12 +87,10 @@ namespace i_am
 #elif ANDROID
                 events.AddAndroid(android => android.OnCreate((activity, state) =>
                 {
-                    // 3. In the newest versions, Android requires a locator function for the Activity
                     CrossFirebase.Initialize(activity, () => Platform.CurrentActivity!);
                 }));
 #endif
             });
-
             return builder;
         }
     }

@@ -15,7 +15,7 @@ public partial class LoadingPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await _firestoreService.UpdateLastActiveAsync();
+        
         // 1. Sprawdzamy czy to pierwsze uruchomienie
         bool isFirstLaunch = Preferences.Default.Get("IsFirstLaunch", true);
 
@@ -30,6 +30,7 @@ public partial class LoadingPage : ContentPage
         string userId = Preferences.Default.Get("UserId", string.Empty);
         if (!string.IsNullOrEmpty(userId))
         {
+            await _firestoreService.UpdateLastActiveAsync();
             await _firestoreService.UpdateFcmTokenAsync();
             bool isCaregiver = Preferences.Default.Get("IsCaregiver", false);
 

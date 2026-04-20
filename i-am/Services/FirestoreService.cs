@@ -22,28 +22,20 @@ namespace i_am.Services
         public async Task CreateUserProfileAsync(string uid, User profile)
         {
             var firestore = CrossFirebaseFirestore.Current;
-
             await firestore.GetCollection("users").GetDocument(uid).SetDataAsync(profile);
         }
 
-        // wbudowana metoda w plugin nie działa prawidłowo... logowanie nie powinno tworzyć user (sic!), dlatego używam tutaj "własnego" kodu - gada z SDK Firebase bezpośrednio
-        //public async Task<string> LoginAsync(string email, string password)
-        //{
-        //    var user = await CrossFirebaseAuth.Current.SignInWithEmailAndPasswordAsync(email, password);
-        //    return user.Uid;
-        //}
         public async Task<string> LoginAsync(string email, string password)
         {
 #if ANDROID
             var result = await Firebase.Auth.FirebaseAuth.Instance.SignInWithEmailAndPasswordAsync(email, password);
             return result.User?.Uid ?? throw new Exception("Nie udało się pobrać danych autoryzacji z Firebase.");
 #elif IOS
-    var result = await Firebase.Auth.Auth.DefaultInstance.SignInWithEmailAndPasswordAsync(email, password);
-    return result.User.Uid;
+            var result = await Firebase.Auth.Auth.DefaultInstance.SignInWithEmailAndPasswordAsync(email, password);
+            return result.User.Uid;
 #else
-    // Fallback just in case (e.g. Windows)
-    var user = await CrossFirebaseAuth.Current.SignInWithEmailAndPasswordAsync(email, password);
-    return user.Uid;
+            var user = await CrossFirebaseAuth.Current.SignInWithEmailAndPasswordAsync(email, password);
+            return user.Uid;
 #endif
         }
 
@@ -61,7 +53,6 @@ namespace i_am.Services
                                           .GetDocument(uid)
                                           .GetDocumentSnapshotAsync<User>();
 
-            // Plugin zwraca null jeśli dokument nie istnieje
             return snapshot.Data;
         }
 
@@ -83,7 +74,6 @@ namespace i_am.Services
 
             if (timeSinceLastLogin.TotalMinutes >= 4)
             {
-                // Jeśli logowanie było dawniej niż 4 minuty temu, przerywamy proces PRZED usunięciem czegokolwiek
                 await Shell.Current.DisplayAlert(
                     "Wymagane ponowne logowanie",
                     "Ze względów bezpieczeństwa (ochrona przed nieautoryzowanym usunięciem) ta operacja wymaga bardzo świeżej sesji.\n\nWyloguj się, zaloguj ponownie i od razu spróbuj usunąć konto.",
@@ -95,19 +85,12 @@ namespace i_am.Services
             var firestore = CrossFirebaseFirestore.Current;
             var batch = firestore.CreateBatch();
 
-            // Zbieramy wszystkich powiązanych użytkowników (opiekunów i podopiecznych) bez duplikatów
-            var connectedUsers = new HashSet<string>();
-            if (userProfile.CaregiversID != null)
-            {
-                foreach (var id in userProfile.CaregiversID) connectedUsers.Add(id);
-            }
-            if (userProfile.CaretakersID != null)
-            {
-                foreach (var id in userProfile.CaretakersID) connectedUsers.Add(id);
-            }
+            // Zbieramy wszystkich powiązanych użytkowników bez duplikatów przy użyciu nowoczesnego C#
+            var connectedUsers = new HashSet<string>(userProfile.CaregiversID ?? []);
+            connectedUsers.UnionWith(userProfile.CaretakersID ?? []);
 
-            // 3. Usuwamy ID użytkownika z list kontaktów innych osób i wysyłamy powiadomienia
-            foreach (var connectedUserId in connectedUsers)
+            // 3. Usuwamy ID użytkownika z list kontaktów innych osób i wysyłamy powiadomienia (RÓWNOLEGLE)
+            var notificationTasks = connectedUsers.Select(connectedUserId =>
             {
                 var connectedUserRef = firestore.GetCollection("users").GetDocument(connectedUserId);
 
@@ -123,13 +106,13 @@ namespace i_am.Services
                     SenderId = uid
                 };
 
-                await SendNotificationAsync(notification);
-            }
+                return SendNotificationAsync(notification);
+            });
 
-            // Wykonujemy masową operację usunięcia powiązań
+            await Task.WhenAll(notificationTasks);
             await batch.CommitAsync();
 
-            // 4. Ręczne usunięcie podkolekcji i plików użytkownika
+            // 4. Usuwanie podkolekcji i plików użytkownika
             await DeleteUserQuestionTemplatesAsync(uid);
             await DeleteUserDailyResponsesAsync(uid);
             await DeleteUserPhotosAsync(uid);
@@ -141,82 +124,54 @@ namespace i_am.Services
             // 6. Natywne usunięcie konta w Firebase Authentication
 #if ANDROID
             var androidUser = Firebase.Auth.FirebaseAuth.Instance.CurrentUser;
-            if (androidUser != null)
-            {
-                await androidUser.DeleteAsync();
-            }
+            if (androidUser != null) await androidUser.DeleteAsync();
 #elif IOS
-    var iosUser = Firebase.Auth.Auth.DefaultInstance.CurrentUser;
-    if (iosUser != null)
-    {
-        await iosUser.DeleteAsync();
-    }
+            var iosUser = Firebase.Auth.Auth.DefaultInstance.CurrentUser;
+            if (iosUser != null) await iosUser.DeleteAsync();
 #endif
+        }
+
+        // --- GENERYCZNA METODA DO USUWANIA DOKUMENTÓW W KOLEKCJACH ---
+        private async Task DeleteAllDocumentsAsync<T>(ICollectionReference collectionRef, Func<T, string> idSelector)
+        {
+            var snapshot = await collectionRef.GetDocumentsAsync<T>();
+            if (snapshot?.Documents == null) return;
+
+            var deleteTasks = snapshot.Documents
+                .Where(doc => doc.Data != null && !string.IsNullOrEmpty(idSelector(doc.Data)))
+                .Select(doc => collectionRef.GetDocument(idSelector(doc.Data)).DeleteDocumentAsync());
+
+            await Task.WhenAll(deleteTasks);
         }
 
         private async Task DeleteUserQuestionTemplatesAsync(string uid)
         {
-            var firestore = CrossFirebaseFirestore.Current;
-            var subcollectionRef = firestore.GetCollection("users").GetDocument(uid).GetCollection("question_templates");
-
-            // Podajemy konkretny model
-            var snapshot = await subcollectionRef.GetDocumentsAsync<QuestionTemplate>();
-
-            if (snapshot?.Documents != null)
-            {
-                foreach (var doc in snapshot.Documents)
-                {
-                    // Bezpiecznie pobieramy ID z modelu (doc.Data)
-                    if (doc.Data != null && !string.IsNullOrEmpty(doc.Data.Id))
-                    {
-                        await subcollectionRef.GetDocument(doc.Data.Id).DeleteDocumentAsync();
-                    }
-                }
-            }
+            var refCol = CrossFirebaseFirestore.Current.GetCollection("users").GetDocument(uid).GetCollection("question_templates");
+            await DeleteAllDocumentsAsync<QuestionTemplate>(refCol, q => q.Id);
         }
 
         private async Task DeleteUserDailyResponsesAsync(string uid)
         {
-            var firestore = CrossFirebaseFirestore.Current;
-            var subcollectionRef = firestore.GetCollection("users").GetDocument(uid).GetCollection("daily_responses");
-
-            // Podajemy konkretny model
-            var snapshot = await subcollectionRef.GetDocumentsAsync<DailyResponse>();
-
-            if (snapshot?.Documents != null)
-            {
-                foreach (var doc in snapshot.Documents)
-                {
-                    // Bezpiecznie pobieramy ID z modelu (doc.Data)
-                    if (doc.Data != null && !string.IsNullOrEmpty(doc.Data.Id))
-                    {
-                        await subcollectionRef.GetDocument(doc.Data.Id).DeleteDocumentAsync();
-                    }
-                }
-            }
+            var refCol = CrossFirebaseFirestore.Current.GetCollection("users").GetDocument(uid).GetCollection("daily_responses");
+            await DeleteAllDocumentsAsync<DailyResponse>(refCol, r => r.Id);
         }
+
         private async Task DeleteUserPhotosAsync(string uid)
         {
             try
             {
                 var storage = CrossFirebaseStorage.Current;
                 var folderRef = storage.GetRootReference().GetChild($"daily_photos/{uid}");
-
-                // Pobieramy listę wszystkich plików znajdujących się w "folderze" użytkownika
                 var result = await folderRef.ListAllAsync();
 
                 if (result?.Items != null && result.Items.Any())
                 {
-                    foreach (var itemRef in result.Items)
-                    {
-                        // Usuwamy każdy plik po kolei
-                        await itemRef.DeleteAsync();
-                    }
+                    var deleteTasks = result.Items.Select(itemRef => itemRef.DeleteAsync());
+                    await Task.WhenAll(deleteTasks); // Równoległe usuwanie zdjęć
                 }
             }
             catch (Exception ex)
             {
-                // Ignorujemy błędy, np. jeśli folder nie istnieje (użytkownik nie miał jeszcze żadnych zdjęć)
                 System.Diagnostics.Debug.WriteLine($"[Storage] Brak zdjęć do usunięcia lub błąd: {ex.Message}");
             }
         }
@@ -224,45 +179,22 @@ namespace i_am.Services
         private async Task DeleteUserInvitationsForDeletedAccountAsync(string uid)
         {
             var firestore = CrossFirebaseFirestore.Current;
+            var colRef = firestore.GetCollection("invitations");
 
-            // Usuwanie zaproszeń, które użytkownik WYSŁAŁ
-            var sentInvitations = await firestore.GetCollection("invitations")
-                                                 .WhereEqualsTo("senderId", uid)
-                                                 .GetDocumentsAsync<Invitation>();
+            var sentSnapshot = await colRef.WhereEqualsTo("senderId", uid).GetDocumentsAsync<Invitation>();
+            var receivedSnapshot = await colRef.WhereEqualsTo("receiverId", uid).GetDocumentsAsync<Invitation>();
 
-            if (sentInvitations?.Documents != null)
-            {
-                foreach (var doc in sentInvitations.Documents)
-                {
-                    if (doc.Data != null && !string.IsNullOrEmpty(doc.Data.Id))
-                    {
-                        await firestore.GetCollection("invitations").GetDocument(doc.Data.Id).DeleteDocumentAsync();
-                    }
-                }
-            }
+            var deleteTasks = new List<Task>();
 
-            // Usuwanie zaproszeń, które użytkownik OTRZYMAŁ
-            var receivedInvitations = await firestore.GetCollection("invitations")
-                                                     .WhereEqualsTo("receiverId", uid)
-                                                     .GetDocumentsAsync<Invitation>();
+            if (sentSnapshot?.Documents != null)
+                deleteTasks.AddRange(sentSnapshot.Documents.Where(d => d.Data != null).Select(d => colRef.GetDocument(d.Data.Id).DeleteDocumentAsync()));
 
-            if (receivedInvitations?.Documents != null)
-            {
-                foreach (var doc in receivedInvitations.Documents)
-                {
-                    if (doc.Data != null && !string.IsNullOrEmpty(doc.Data.Id))
-                    {
-                        await firestore.GetCollection("invitations").GetDocument(doc.Data.Id).DeleteDocumentAsync();
-                    }
-                }
-            }
+            if (receivedSnapshot?.Documents != null)
+                deleteTasks.AddRange(receivedSnapshot.Documents.Where(d => d.Data != null).Select(d => colRef.GetDocument(d.Data.Id).DeleteDocumentAsync()));
+
+            await Task.WhenAll(deleteTasks);
         }
 
-        // Plugin od firebase nie posiada metody natywnej do usuwania konta, więc musimy użyć natywnych SDK Firebase dla Androida i iOS
-
-
-        // Token odpowiedzialny za powiadomienia push
-        // Każde logowanie powinno aktualizować token FCM, żeby mieć pewność, że powiadomienia push będą docierać do właściwego urządzenia (np. jeśli ktoś się zaloguje na nowym telefonie, stary token przestaje być ważny)
         public async Task UpdateFcmTokenAsync()
         {
             string? uid = Preferences.Get("UserId", string.Empty);
@@ -271,12 +203,9 @@ namespace i_am.Services
             try
             {
                 var status = await Permissions.CheckStatusAsync<Permissions.PostNotifications>();
-
-                if (status != PermissionStatus.Granted)
-                    return;
+                if (status != PermissionStatus.Granted) return;
 
                 await CrossFirebaseCloudMessaging.Current.CheckIfValidAsync();
-
                 var token = await CrossFirebaseCloudMessaging.Current.GetTokenAsync();
 
                 if (!string.IsNullOrEmpty(token))
@@ -284,7 +213,7 @@ namespace i_am.Services
                     await CrossFirebaseFirestore.Current
                         .GetCollection("users")
                         .GetDocument(uid)
-                        .UpdateDataAsync(("fcmToken", token));
+                        .UpdateDataAsync(("fcmToken", token)); // Użycie Tuple
                 }
             }
             catch (Exception ex)
@@ -300,14 +229,10 @@ namespace i_am.Services
 
             try
             {
-                var firestore = CrossFirebaseFirestore.Current;
-                var userDoc = firestore.GetCollection("users").GetDocument(uid);
-
-                // Zastępujemy token pustym stringiem, aby powiadomienia przestały trafiać na to urządzenie
-                await userDoc.UpdateDataAsync(new Dictionary<object, object>
-                {
-                    { "fcmToken", string.Empty }
-                });
+                await CrossFirebaseFirestore.Current
+                    .GetCollection("users")
+                    .GetDocument(uid)
+                    .UpdateDataAsync(("fcmToken", string.Empty)); // Użycie Tuple
             }
             catch (Exception ex)
             {
@@ -315,30 +240,24 @@ namespace i_am.Services
             }
         }
 
-        // Uniwersalna metoda do aktualizacji pojedynczego pola w dokumencie
         public async Task UpdateFieldAsync(string collectionName, string documentId, string fieldName, object value)
         {
             var firestore = CrossFirebaseFirestore.Current;
             await firestore.GetCollection(collectionName)
                            .GetDocument(documentId)
-                           .UpdateDataAsync(new Dictionary<object, object>
-                           {
-                       { fieldName, value }
-                           });
+                           .UpdateDataAsync((fieldName, value)); // Użycie Tuple
         }
 
         public async Task UpdateUserProfileAsync(string uid, string phoneNumber, string sex)
         {
             try
             {
-                var firestore = CrossFirebaseFirestore.Current;
-                var userDoc = firestore.GetCollection("users").GetDocument(uid);
-
-                await userDoc.UpdateDataAsync(new Dictionary<object, object>
-                {
-                    { "phoneNumber", phoneNumber },
-                    { "sex", sex }
-                });
+                await CrossFirebaseFirestore.Current
+                    .GetCollection("users")
+                    .GetDocument(uid)
+                    .UpdateDataAsync(
+                        ("phoneNumber", phoneNumber),
+                        ("sex", sex)); // Użycie Tuple
             }
             catch (Exception ex)
             {
@@ -348,19 +267,16 @@ namespace i_am.Services
 
         public async Task<bool> UpdateUserSettingsAsync(string userId, int dayStartHour, bool isRestricted, int startHour, int endHour)
         {
-            var firestore = CrossFirebaseFirestore.Current;
             try
             {
-                await firestore
+                await CrossFirebaseFirestore.Current
                     .GetCollection("users")
                     .GetDocument(userId)
-                    .UpdateDataAsync(new Dictionary<object, object>
-                    {
-                        { "dayStartHour", dayStartHour },
-                        { "isActivityTimeRestricted", isRestricted },
-                        { "activityRestrictionStartHour", startHour },
-                        { "activityRestrictionEndHour", endHour }
-                    });
+                    .UpdateDataAsync(
+                        ("dayStartHour", dayStartHour),
+                        ("isActivityTimeRestricted", isRestricted),
+                        ("activityRestrictionStartHour", startHour),
+                        ("activityRestrictionEndHour", endHour)); // Użycie Tuple
                 return true;
             }
             catch (Exception ex)
@@ -370,8 +286,8 @@ namespace i_am.Services
             }
         }
 
-
         #endregion
+
         #region Powiadomienia (Notifications)
 
         public async Task SendNotificationAsync(AppNotification notification)
@@ -380,7 +296,6 @@ namespace i_am.Services
             await firestore.GetCollection("notifications").AddDocumentAsync(notification);
         }
 
-        // Nasłuchiwanie powiadomień w czasie rzeczywistym
         public IDisposable ListenForNotifications(string myUid, Action<List<AppNotification>> onUpdate)
         {
             var firestore = CrossFirebaseFirestore.Current;
@@ -389,7 +304,6 @@ namespace i_am.Services
                 .WhereEqualsTo("receiverId", myUid)
                 .AddSnapshotListener<AppNotification>((snapshot) =>
                 {
-                    // Opcjonalnie: posortuj najnowsze na górze
                     var notifications = snapshot.Documents
                                                 .Select(doc => doc.Data)
                                                 .OrderByDescending(n => n.CreatedAt)
@@ -398,7 +312,6 @@ namespace i_am.Services
                 });
         }
 
-        // Usuwanie odczytanego powiadomienia
         public async Task DeleteNotificationAsync(string notificationId)
         {
             var firestore = CrossFirebaseFirestore.Current;
@@ -414,13 +327,10 @@ namespace i_am.Services
 
             try
             {
-                var firestore = CrossFirebaseFirestore.Current;
-                await firestore.GetCollection("users")
-                               .GetDocument(uid)
-                               .UpdateDataAsync(new Dictionary<object, object>
-                               {
-                           { "lastActiveAt", FieldValue.ServerTimestamp } // ServerTimestamp zapobiega błędom stref czasowych u klienta
-                               });
+                await CrossFirebaseFirestore.Current
+                    .GetCollection("users")
+                    .GetDocument(uid)
+                    .UpdateDataAsync(("lastActiveAt", DateTimeOffset.UtcNow)); // Użycie Tuple
             }
             catch (Exception ex)
             {
@@ -428,56 +338,37 @@ namespace i_am.Services
             }
         }
         #endregion
+
         #region Zaproszenia (Invitations)
+
         public async Task<bool> SendInvitationAsync(string senderId, string senderName, bool isSenderCaregiver, string receiverEmail)
         {
             var firestore = CrossFirebaseFirestore.Current;
 
-            // Szukanie poprzez email
             var usersQuery = await firestore.GetCollection("users")
                                             .WhereEqualsTo("email", receiverEmail.ToLower())
                                             .GetDocumentsAsync<User>();
 
             var receiver = usersQuery.Documents.FirstOrDefault()?.Data;
 
-            if (receiver == null)
-            {
-                throw new Exception("Użytkownik z podanym adresem email nie został znaleziony.");
-            }
-            if (receiver.Id == senderId)
-            {
-                throw new Exception("Nie możesz wysłać zaproszenia do samego siebie.");
-            }
-            if (isSenderCaregiver && receiver.IsCaregiver)
-            {
-                throw new Exception("Opiekun nie może zaprosić innego opiekuna. Zaproszenia można wysyłać tylko do podopiecznych.");
-            }
-            if (!isSenderCaregiver && !receiver.IsCaregiver)
-            {
-                throw new Exception("Podopieczny nie może zaprosić innego podopiecznego. Zaproszenia można wysyłać tylko do opiekunów.");
-            }
+            if (receiver == null) throw new Exception("Użytkownik z podanym adresem email nie został znaleziony.");
+            if (receiver.Id == senderId) throw new Exception("Nie możesz wysłać zaproszenia do samego siebie.");
+            if (isSenderCaregiver && receiver.IsCaregiver) throw new Exception("Opiekun nie może zaprosić innego opiekuna. Zaproszenia można wysyłać tylko do podopiecznych.");
+            if (!isSenderCaregiver && !receiver.IsCaregiver) throw new Exception("Podopieczny nie może zaprosić innego podopiecznego. Zaproszenia można wysyłać tylko do opiekunów.");
 
-            // Sprawdzanie dubli - czy zostało już wysłane takie zaproszenie?
             var existingSent = await firestore.GetCollection("invitations")
                                               .WhereEqualsTo("senderId", senderId)
                                               .WhereEqualsTo("receiverId", receiver.Id)
                                               .GetDocumentsAsync<Invitation>();
 
-            if (existingSent.Documents.Any())
-            {
-                throw new Exception("Zaproszenie do tego użytkownika zostało już wysłane lub odrzucone. Usuń stare zaproszenie, aby wysłać nowe.");
-            }
+            if (existingSent.Documents.Any()) throw new Exception("Zaproszenie do tego użytkownika zostało już wysłane lub odrzucone. Usuń stare zaproszenie, aby wysłać nowe.");
 
-            // Czy druga strona już mi wysłała zaproszenie?
             var existingReceived = await firestore.GetCollection("invitations")
                                                   .WhereEqualsTo("senderId", receiver.Id)
                                                   .WhereEqualsTo("receiverId", senderId)
                                                   .GetDocumentsAsync<Invitation>();
 
-            if (existingReceived.Documents.Any())
-            {
-                throw new Exception("Ten użytkownik wysłał już zaproszenie do Ciebie.");
-            }
+            if (existingReceived.Documents.Any()) throw new Exception("Ten użytkownik wysłał już zaproszenie do Ciebie.");
 
             var request = new Invitation
             {
@@ -486,25 +377,20 @@ namespace i_am.Services
                 ReceiverId = receiver.Id,
                 ReceiverEmail = receiverEmail,
                 IsSenderCaregiver = isSenderCaregiver,
-                Status = "Pending" // Możliwe statusy: "Pending", "Accepted", "Rejected"
+                Status = "Pending"
             };
 
             await firestore.GetCollection("invitations").AddDocumentAsync(request);
 
-            string filter = receiver.SystemNotificationFilter ?? "All";
-
-            // Zaproszenie nie jest "krytyczne", więc wysyłamy tylko jeśli filtr to "All"
-            if (filter == "All")
+            if (receiver.SystemNotificationFilter is null or "All")
             {
-                var notification = new AppNotification
+                await SendNotificationAsync(new AppNotification
                 {
                     ReceiverId = receiver.Id,
                     Title = "Nowe zaproszenie",
                     Message = $"Masz nowe zaproszenie od {senderName}.",
                     Type = "NewInvitation"
-                };
-
-                await SendNotificationAsync(notification);
+                });
             }
 
             return true;
@@ -514,20 +400,16 @@ namespace i_am.Services
         {
             var firestore = CrossFirebaseFirestore.Current;
             string? myUid = Preferences.Get("UserId", string.Empty);
-            var batch = firestore.CreateBatch();
             if (string.IsNullOrEmpty(myUid)) return;
 
+            var batch = firestore.CreateBatch();
             var requestRef = firestore.GetCollection("invitations").GetDocument(request.Id);
 
             string caregiverId = request.IsSenderCaregiver ? request.SenderId : request.ReceiverId;
             string caretakerId = !request.IsSenderCaregiver ? request.SenderId : request.ReceiverId;
 
-            batch.UpdateData(firestore.GetCollection("users").GetDocument(caregiverId),
-                ("careTakersID", FieldValue.ArrayUnion(caretakerId)));
-
-            batch.UpdateData(firestore.GetCollection("users").GetDocument(caretakerId),
-                ("careGiversID", FieldValue.ArrayUnion(caregiverId)));
-
+            batch.UpdateData(firestore.GetCollection("users").GetDocument(caregiverId), ("careTakersID", FieldValue.ArrayUnion(caretakerId)));
+            batch.UpdateData(firestore.GetCollection("users").GetDocument(caretakerId), ("careGiversID", FieldValue.ArrayUnion(caregiverId)));
             batch.UpdateData(requestRef, ("status", "Accepted"));
 
             await batch.CommitAsync();
@@ -535,21 +417,19 @@ namespace i_am.Services
             var myProfile = await GetUserProfileAsync(myUid);
             string myName = myProfile?.Name ?? "Użytkownik";
 
-            var giverProfile = await GetUserProfileAsync(request.SenderId); // Pobieramy profil nadawcy, żeby sprawdzić co chce dostawać
+            var giverProfile = await GetUserProfileAsync(request.SenderId);
             if (giverProfile?.SystemNotificationFilter == "All")
             {
-                var notification = new AppNotification
+                await SendNotificationAsync(new AppNotification
                 {
                     ReceiverId = request.SenderId,
                     Title = "Zaproszenie zaakceptowane",
                     Message = $"{myName} zaakceptował(a) Twoje zaproszenie.",
                     Type = "InvitationAccepted"
-                };
-                await SendNotificationAsync(notification);
+                });
             }
         }
 
-        // Odrzucenie zaproszenia (zmienia status, nadawca będzie potem w stanie usunąć zaproszenie i wysłać je ponownie)
         public async Task RejectInvitationAsync(Invitation invitation)
         {
             var firestore = CrossFirebaseFirestore.Current;
@@ -557,249 +437,186 @@ namespace i_am.Services
             if (string.IsNullOrEmpty(myUid)) return;
 
             await firestore.GetCollection("invitations")
-                           .GetDocument(invitation.Id) // Używamy .Id z przekazanego obiektu
-                           .UpdateDataAsync(("status", "Rejected"));
+                           .GetDocument(invitation.Id)
+                           .UpdateDataAsync(("status", "Rejected")); // Użycie Tuple
 
             var myProfile = await GetUserProfileAsync(myUid);
             string myName = myProfile?.Name ?? "Użytkownik";
 
-            var giverProfile = await GetUserProfileAsync(invitation.SenderId); // Pobieramy profil nadawcy, żeby sprawdzić co chce dostawać
+            var giverProfile = await GetUserProfileAsync(invitation.SenderId);
             if (giverProfile?.SystemNotificationFilter == "All")
             {
-                var notification = new AppNotification
+                await SendNotificationAsync(new AppNotification
                 {
                     ReceiverId = invitation.SenderId,
                     Title = "Zaproszenie odrzucone",
                     Message = $"{myName} odrzucił(a) Twoje zaproszenie.",
                     Type = "InvitationRejected"
-                };
-                await SendNotificationAsync(notification);
+                });
             }
         }
 
-        // Usunięcie zaproszenia z FireStore
         public async Task DeleteInvitationAsync(string invitationId)
         {
-            var firestore = CrossFirebaseFirestore.Current;
-            await firestore.GetCollection("invitations")
-                           .GetDocument(invitationId)
-                           .DeleteDocumentAsync();
+            await CrossFirebaseFirestore.Current.GetCollection("invitations")
+                                                .GetDocument(invitationId)
+                                                .DeleteDocumentAsync();
         }
 
-        // Usuwa połączenie między użytkownikami
         public async Task RemoveAcceptedInvitationAsync(string caregiverId, string caretakerId, string removerUid, string removerName)
         {
             var firestore = CrossFirebaseFirestore.Current;
             var batch = firestore.CreateBatch();
 
-            // Usuwamy ID z list obu użytkowników
-            batch.UpdateData(firestore.GetCollection("users").GetDocument(caregiverId),
-                ("careTakersID", FieldValue.ArrayRemove(caretakerId)));
-
-            batch.UpdateData(firestore.GetCollection("users").GetDocument(caretakerId),
-                ("careGiversID", FieldValue.ArrayRemove(caregiverId)));
-
+            batch.UpdateData(firestore.GetCollection("users").GetDocument(caregiverId), ("careTakersID", FieldValue.ArrayRemove(caretakerId)));
+            batch.UpdateData(firestore.GetCollection("users").GetDocument(caretakerId), ("careGiversID", FieldValue.ArrayRemove(caregiverId)));
             await batch.CommitAsync();
 
-            // Usuwamy zaproszenie
             var queryA = await firestore.GetCollection("invitations")
                 .WhereEqualsTo("senderId", caregiverId)
                 .WhereEqualsTo("receiverId", caretakerId)
                 .GetDocumentsAsync<Invitation>();
-
-            foreach (var doc in queryA.Documents)
-                if (!string.IsNullOrEmpty(doc.Data?.Id)) await DeleteInvitationAsync(doc.Data.Id);
 
             var queryB = await firestore.GetCollection("invitations")
                 .WhereEqualsTo("senderId", caretakerId)
                 .WhereEqualsTo("receiverId", caregiverId)
                 .GetDocumentsAsync<Invitation>();
 
-            foreach (var doc in queryB.Documents)
-                if (!string.IsNullOrEmpty(doc.Data?.Id)) await DeleteInvitationAsync(doc.Data.Id);
+            var deleteTasks = new List<Task>();
+            deleteTasks.AddRange(queryA.Documents.Where(d => !string.IsNullOrEmpty(d.Data?.Id)).Select(d => DeleteInvitationAsync(d.Data.Id)));
+            deleteTasks.AddRange(queryB.Documents.Where(d => !string.IsNullOrEmpty(d.Data?.Id)).Select(d => DeleteInvitationAsync(d.Data.Id)));
 
-            // Wysyłanie powiadomienia do osoby którą usuwamy
+            await Task.WhenAll(deleteTasks); // Równoległe usuwanie powiązanych zaproszeń
+
             string targetUserId = (removerUid == caregiverId) ? caretakerId : caregiverId;
-
-            var notification = new AppNotification
+            await SendNotificationAsync(new AppNotification
             {
                 ReceiverId = targetUserId,
                 Title = "Zakończono współpracę",
                 Message = $"Użytkownik {removerName} usunął Cię ze swojej listy kontaktów.",
                 Type = "ConnectionDeleted"
-            };
-
-            await SendNotificationAsync(notification);
+            });
         }
 
-        // Potrzebne do wyświetlania listy opiekunów/podopiecznych w ManageConnectionsPage
+        // Zoptymalizowane pobieranie użytkowników przy pomocy Task.WhenAll
         public async Task<List<User>> GetUsersByIdsAsync(List<string>? userIds)
         {
-            var users = new List<User>();
-            if (userIds == null || !userIds.Any()) return users;
+            if (userIds is not { Count: > 0 }) return []; // Zwracamy pustą kolekcję w nowym formacie
 
-            var firestore = CrossFirebaseFirestore.Current;
+            var firestore = CrossFirebaseFirestore.Current.GetCollection("users");
 
-            foreach (var id in userIds)
-            {
-                var snapshot = await firestore.GetCollection("users").GetDocument(id).GetDocumentSnapshotAsync<User>();
-                if (snapshot.Data != null)
-                {
-                    users.Add(snapshot.Data);
-                }
-            }
-            return users;
+            var tasks = userIds.Select(id => firestore.GetDocument(id).GetDocumentSnapshotAsync<User>());
+            var snapshots = await Task.WhenAll(tasks);
+
+            return snapshots.Where(s => s.Data != null).Select(s => s.Data!).ToList();
         }
 
-        // Nasłuchiwanie własnego profilu (ja lub inny user wpisał mi się do listy CareGiversID/CareTakersID)
         public IDisposable ListenForUserProfileUpdates(string uid, Action<User> onUpdate)
         {
-            var firestore = CrossFirebaseFirestore.Current;
-
-            return firestore.GetCollection("users")
+            return CrossFirebaseFirestore.Current.GetCollection("users")
                 .GetDocument(uid)
                 .AddSnapshotListener<User>((snapshot) =>
                 {
-                    if (snapshot.Data != null)
-                    {
-                        onUpdate?.Invoke(snapshot.Data);
-                    }
+                    if (snapshot.Data != null) onUpdate?.Invoke(snapshot.Data);
                 });
         }
 
-        // Nasłuchiwanie zaproszeń skierowanych DO MNIE
         public IDisposable ListenForReceivedInvitations(string myUid, Action<List<Invitation>> onUpdate)
         {
-            var firestore = CrossFirebaseFirestore.Current;
-
-            return firestore.GetCollection("invitations")
+            return CrossFirebaseFirestore.Current.GetCollection("invitations")
                 .WhereEqualsTo("receiverId", myUid)
                 .AddSnapshotListener<Invitation>((snapshot) =>
                 {
-                    var receivedInvitations = snapshot.Documents.Select(doc => doc.Data).ToList();
-                    onUpdate?.Invoke(receivedInvitations);
+                    onUpdate?.Invoke(snapshot.Documents.Select(doc => doc.Data).ToList());
                 });
         }
 
-        // Nasłuchiwanie zaproszeń wysłanych PRZEZE MNIE
         public IDisposable ListenForSentInvitations(string myUid, Action<List<Invitation>> onUpdate)
         {
-            var firestore = CrossFirebaseFirestore.Current;
-
-            return firestore.GetCollection("invitations")
+            return CrossFirebaseFirestore.Current.GetCollection("invitations")
                 .WhereEqualsTo("senderId", myUid)
                 .AddSnapshotListener<Invitation>((snapshot) =>
                 {
-                    var sentInvitations = snapshot.Documents.Select(doc => doc.Data).ToList();
-                    onUpdate?.Invoke(sentInvitations);
+                    onUpdate?.Invoke(snapshot.Documents.Select(doc => doc.Data).ToList());
                 });
         }
         #endregion
+
         #region Pytania i odpowiedzi (Questions & Answers)
 
-        // --- ZARZĄDZANIE PYTANIAMI ---
-
-        // Pobieranie listy pytań dla konkretnego podopiecznego
         public async Task<List<QuestionTemplate>> GetQuestionTemplatesAsync(string careTakerId)
         {
-            var firestore = CrossFirebaseFirestore.Current;
-            var snapshot = await firestore.GetCollection("users")
-                                          .GetDocument(careTakerId)
-                                          .GetCollection("question_templates")
-                                          .GetDocumentsAsync<QuestionTemplate>();
+            var snapshot = await CrossFirebaseFirestore.Current.GetCollection("users")
+                                                               .GetDocument(careTakerId)
+                                                               .GetCollection("question_templates")
+                                                               .GetDocumentsAsync<QuestionTemplate>();
 
-            // Skoro snapshot jest już zmapowany, wystarczy wyciągnąć właściwość Data
-            var templates = snapshot.Documents.Select(d => d.Data).ToList();
-
-            return templates.OrderBy(q => q.OrderIndex).ToList();
+            return snapshot.Documents.Select(d => d.Data).OrderBy(q => q.OrderIndex).ToList();
         }
 
-        // Zapisywanie lub aktualizacja konkretnego pytania
         public async Task SaveQuestionTemplateAsync(string careTakerId, QuestionTemplate template)
         {
-            var firestore = CrossFirebaseFirestore.Current;
-            var collectionRef = firestore.GetCollection("users").GetDocument(careTakerId).GetCollection("question_templates");
+            var collectionRef = CrossFirebaseFirestore.Current.GetCollection("users").GetDocument(careTakerId).GetCollection("question_templates");
 
             if (string.IsNullOrEmpty(template.Id))
             {
-                // Nowe pytanie - Firebase sam wygeneruje ID dokumentu
                 await collectionRef.AddDocumentAsync(template);
             }
             else
             {
-                // Aktualizacja - używamy SetDataAsync do nadpisania istniejącego dokumentu naszym modelem
                 await collectionRef.GetDocument(template.Id).SetDataAsync(template);
             }
         }
 
-        // Usuwanie pytania
         public async Task DeleteQuestionTemplateAsync(string careTakerId, string templateId)
         {
-            var firestore = CrossFirebaseFirestore.Current;
-            await firestore.GetCollection("users")
-                           .GetDocument(careTakerId)
-                           .GetCollection("question_templates")
-                           .GetDocument(templateId)
-                           .DeleteDocumentAsync();
+            await CrossFirebaseFirestore.Current.GetCollection("users")
+                                                .GetDocument(careTakerId)
+                                                .GetCollection("question_templates")
+                                                .GetDocument(templateId)
+                                                .DeleteDocumentAsync();
         }
 
-        // --- WYPEŁNIANIE ANKIET ---
-
-        // Sprawdza czy podopieczny wypełnił już dziś ankietę
         public async Task<bool> HasSubmittedDailyResponseAsync(string careTakerId, string dateString)
         {
             try
             {
-                var firestore = CrossFirebaseFirestore.Current;
-                var snapshot = await firestore.GetCollection("users")
-                                         .GetDocument(careTakerId)
-                                         .GetCollection("daily_responses")
-                                         .GetDocument(dateString)
-                                         .GetDocumentSnapshotAsync<DailyResponse>();
+                var snapshot = await CrossFirebaseFirestore.Current.GetCollection("users")
+                                                                   .GetDocument(careTakerId)
+                                                                   .GetCollection("daily_responses")
+                                                                   .GetDocument(dateString)
+                                                                   .GetDocumentSnapshotAsync<DailyResponse>();
 
-                // 'snapshot' to opakowanie z Firebase. 
-                // Nasz rzeczywisty obiekt (DailyResponse) znajduje się we właściwości '.Data'.
-                if (snapshot != null && snapshot.Data != null && !string.IsNullOrEmpty(snapshot.Data.EvaluationStatus))
-                {
-                    return true;
-                }
-
-                return false;
+                return snapshot?.Data != null && !string.IsNullOrEmpty(snapshot.Data.EvaluationStatus);
             }
             catch (Exception)
             {
-                // W razie jakichkolwiek problemów (np. braku podkolekcji), pozwalamy wypełnić ankietę
                 return false;
             }
         }
 
-        // Zapisuje odpowiedź podopiecznego i wysyła powiadomienia do opiekunów
         public async Task SaveDailyResponseAsync(string careTakerId, DailyResponse response)
         {
             var firestore = CrossFirebaseFirestore.Current;
 
-            // 1. Zapis do podkolekcji 'daily_responses' podopiecznego
             await firestore.GetCollection("users")
                            .GetDocument(careTakerId)
                            .GetCollection("daily_responses")
-                           .GetDocument(response.Id) // Id to będzie data np. "2024-05-14"
+                           .GetDocument(response.Id)
                            .SetDataAsync(response);
-
 
             string? userId = Preferences.Default.Get("UserId", string.Empty);
             var userProfile = await GetUserProfileAsync(userId);
 
             if (userProfile != null && userProfile.IsDailyReminderEnabled)
             {
-                // Anulujemy powiadomienie na dzisiaj (żeby nie przyszło, skoro już wypełnił)
                 LocalNotificationCenter.Current.Cancel(1001);
 
-                // Obliczamy czas na JUTRO i planujemy powiadomienie z powrotem
                 var tomorrowNotifyTime = DateTime.Today.AddDays(1)
-                    .AddHours(userProfile.DailyReminderHour)
-                    .AddMinutes(userProfile.DailyReminderMinute);
+                                                       .AddHours(userProfile.DailyReminderHour)
+                                                       .AddMinutes(userProfile.DailyReminderMinute);
 
-                var request = new NotificationRequest
+                await LocalNotificationCenter.Current.Show(new NotificationRequest
                 {
                     NotificationId = 1001,
                     Title = "Czas na Twój raport!",
@@ -809,35 +626,34 @@ namespace i_am.Services
                         NotifyTime = tomorrowNotifyTime,
                         RepeatType = NotificationRepeat.Daily
                     }
-                };
-
-                await LocalNotificationCenter.Current.Show(request);
+                });
             }
 
-            // Pobranie danych podopiecznego
             var careTakerProfile = await GetUserProfileAsync(careTakerId);
-            if (careTakerProfile != null && careTakerProfile.CaregiversID.Any())
+
+            // Zoptymalizowane wysyłanie powiadomień przez Task.WhenAll oraz użycie Switch Expression
+            if (careTakerProfile?.CaregiversID != null && careTakerProfile.CaregiversID.Any())
             {
-                foreach (var giverId in careTakerProfile.CaregiversID)
+                var notificationTasks = careTakerProfile.CaregiversID.Select(async giverId =>
                 {
-                    // 1. POBIERAMY PROFIL OPIEKUNA, ABY ZNAĆ JEGO USTAWIENIA
                     var giverProfile = await GetUserProfileAsync(giverId);
-                    if (giverProfile == null) continue;
+                    if (giverProfile == null) return;
 
                     string filter = giverProfile.SurveyNotificationFilter;
-                    bool shouldNotify = false;
 
-                    // 2. LOGIKA FILTROWANIA
-                    if (filter == "All") shouldNotify = true;
-                    else if (filter == "CriticalOnly" && response.TotalScore <= -3) shouldNotify = true;
-                    else if (filter == "WarningAndWorse" && response.TotalScore <= -2) shouldNotify = true;
-                    else if (filter == "NegativeAndWorse" && response.TotalScore <= -1) shouldNotify = true;
-                    else if (filter == "NormalOnly" && response.TotalScore == 0) shouldNotify = true;
+                    bool shouldNotify = filter switch
+                    {
+                        "All" => true,
+                        "CriticalOnly" when response.TotalScore <= -3 => true,
+                        "WarningAndWorse" when response.TotalScore <= -2 => true,
+                        "NegativeAndWorse" when response.TotalScore <= -1 => true,
+                        "NormalOnly" when response.TotalScore == 0 => true,
+                        _ => false
+                    };
 
-                    // Jeśli opiekun chce to widzieć, wysyłamy
                     if (shouldNotify)
                     {
-                        var notification = new AppNotification
+                        await SendNotificationAsync(new AppNotification
                         {
                             ReceiverId = giverId,
                             Title = $"Nowy raport dzienny: {careTakerProfile.Name}",
@@ -845,185 +661,105 @@ namespace i_am.Services
                             Type = "DailyReportAlert",
                             SenderId = careTakerId,
                             Date = response.Id
-                        };
-                        await SendNotificationAsync(notification);
+                        });
                     }
-                }
+                });
+
+                await Task.WhenAll(notificationTasks);
             }
         }
 
-        // --- METODY POMOCNICZE ---
-
-        // Generowanie domyślnego zestawu pytań
+        // Zoptymalizowane inicjalizowanie domyślnych pytań (wyrażenia kolekcji)
         public async Task<List<QuestionTemplate>> InitializeDefaultQuestionsAsync(string careTakerId)
         {
-            var questions = new List<QuestionTemplate>();
             int order = 0;
 
-            // WSPÓLNA LISTA EMOCJI DO WYKORZYSTANIA W PYTANIACH
-            var emotionOptions = new List<QuestionOption>
-            {
-                new QuestionOption { Text = "Radość", Points = 0 },
-                new QuestionOption { Text = "Spokój", Points = 0 },
-                new QuestionOption { Text = "Zmotywowanie", Points = 0 },
-                new QuestionOption { Text = "Obojętność", Points = -1 },
-                new QuestionOption { Text = "Zmęczenie", Points = -1 },
-                new QuestionOption { Text = "Smutek", Points = -2 },
-                new QuestionOption { Text = "Lęk / Niepokój", Points = -2 },
-                new QuestionOption { Text = "Stres", Points = -2 },
-                new QuestionOption { Text = "Złość", Points = -2 }
-            };
+            List<QuestionOption> emotionOptions = [
+                new() { Text = "Radość", Points = 0 },
+                new() { Text = "Spokój", Points = 0 },
+                new() { Text = "Zmotywowanie", Points = 0 },
+                new() { Text = "Obojętność", Points = -1 },
+                new() { Text = "Zmęczenie", Points = -1 },
+                new() { Text = "Smutek", Points = -2 },
+                new() { Text = "Lęk / Niepokój", Points = -2 },
+                new() { Text = "Stres", Points = -2 },
+                new() { Text = "Złość", Points = -2 }
+            ];
 
-            // --- 1. PYTANIA CODZIENNE (ZAMKNIĘTE) ---
-            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = false, Type = "Closed", MaxSelections = 2, Text = "Jakie emocje czułeś na ROZPOCZĘCIE dnia?", Options = new List<QuestionOption>(emotionOptions) });
-            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = false, Type = "Closed", MaxSelections = 5, Text = "Jakie emocje czułeś w ŚRODKU dnia?", Options = new List<QuestionOption>(emotionOptions) });
-            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = false, Type = "Closed", MaxSelections = 2, Text = "Jakie emocje czułeś na ZAKOŃCZENIE dnia?", Options = new List<QuestionOption>(emotionOptions) });
+            List<QuestionTemplate> questions = [
+                new() { OrderIndex = order++, IsRandomPool = false, Type = "Closed", MaxSelections = 2, Text = "Jakie emocje czułeś na ROZPOCZĘCIE dnia?", Options = [.. emotionOptions] },
+                new() { OrderIndex = order++, IsRandomPool = false, Type = "Closed", MaxSelections = 5, Text = "Jakie emocje czułeś w ŚRODKU dnia?", Options = [.. emotionOptions] },
+                new() { OrderIndex = order++, IsRandomPool = false, Type = "Closed", MaxSelections = 2, Text = "Jakie emocje czułeś na ZAKOŃCZENIE dnia?", Options = [.. emotionOptions] },
+                new() { OrderIndex = order++, IsRandomPool = false, Type = "Closed", MaxSelections = 1, Text = "Ile posiłków dzisiaj zjadłeś?", Options = [
+                    new() { Text = "0", Points = -2 },
+                    new() { Text = "1", Points = -1 },
+                    new() { Text = "2", Points = 0 },
+                    new() { Text = "3", Points = 0 },
+                    new() { Text = "4", Points = 0 },
+                    new() { Text = "5", Points = 0 },
+                    new() { Text = "Więcej niż 5", Points = 0 }
+                ]},
+                new() { OrderIndex = order++, IsRandomPool = false, Type = "Closed", MaxSelections = 1, Text = "Czy zjadłeś dzisiaj chociaż jeden pełnowartościowy posiłek?", Options = [
+                    new() { Text = "TAK", Points = 0 },
+                    new() { Text = "NIE", Points = -1 }
+                ]},
+                new() { OrderIndex = order++, IsRandomPool = false, Type = "Closed", MaxSelections = 1, Text = "Ile godzin spałeś?", Options = [
+                    new() { Text = "Poniżej 3 godzin", Points = -2 },
+                    new() { Text = "3-5 godzin", Points = -1 },
+                    new() { Text = "6-8 godzin", Points = 0 },
+                    new() { Text = "9-11 godzin", Points = 0 },
+                    new() { Text = "12 lub więcej", Points = -2 }
+                ]},
+                new() { OrderIndex = order++, IsRandomPool = false, Type = "Closed", MaxSelections = 1, Text = "Zaznacz na skali jak się dzisiaj czujesz:", Options = [
+                    new() { Text = "Przemęczony", Points = -2 },
+                    new() { Text = "Bardzo zmęczony", Points = -1 },
+                    new() { Text = "Zmęczony", Points = -1 },
+                    new() { Text = "W sam raz", Points = 0 },
+                    new() { Text = "Pełen energii", Points = 1 }
+                ]},
+                new() { OrderIndex = order++, IsRandomPool = false, Type = "Open", Text = "Czy zdarzyło się dziś coś, co wywarło w tobie silne emocje? Co to było, jak się czułeś i jak się zachowałeś?" },
+                new() { OrderIndex = order++, IsRandomPool = false, Type = "Open", Text = "Co dzisiaj udało ci się zrobić?" },
+                new() { OrderIndex = order++, IsRandomPool = true, Type = "Closed", MaxSelections = 1, Text = "Czy czerpałeś dziś przyjemność chociaż z jednej wykonywanej czynności bądź odczuwałeś przynajmniej niewielkie zainteresowanie nią?", Options = [new() { Text = "TAK", Points = 0 }, new() { Text = "NIE", Points = -3 }] },
+                new() { OrderIndex = order++, IsRandomPool = true, Type = "Closed", MaxSelections = 1, Text = "Czy miałeś problem ze skupieniem się podczas wykonywania podstawowych czynności (np. oglądanie TV, czytanie)?", Options = [new() { Text = "TAK", Points = -1 }, new() { Text = "NIE", Points = 0 }] },
+                new() { OrderIndex = order++, IsRandomPool = true, Type = "Closed", MaxSelections = 1, Text = "Czy zdarzyło ci się dzisiaj ruszać lub mówić tak wolno, że zauważyli to inni (lub przeciwnie, nie mogłeś usiedzieć w miejscu)?", Options = [new() { Text = "TAK", Points = -3 }, new() { Text = "NIE", Points = 0 }] },
+                new() { OrderIndex = order++, IsRandomPool = true, Type = "Open", Text = "O czym pomyślałeś jak się obudziłeś?" },
+                new() { OrderIndex = order++, IsRandomPool = true, Type = "Open", Text = "Co byś chciał dzisiaj zrobić?" },
+                new() { OrderIndex = order++, IsRandomPool = true, Type = "Open", Text = "Kiedy ostatni raz czułeś radość?" },
+                new() { OrderIndex = order++, IsRandomPool = true, Type = "Open", Text = "Co sprawiłoby Ci radość?" },
+                new() { OrderIndex = order++, IsRandomPool = true, Type = "Open", Text = "Podaj choć jedną rzecz z której byłeś dzisiaj dumny." }
+            ];
 
-            questions.Add(new QuestionTemplate
-            {
-                OrderIndex = order++,
-                IsRandomPool = false,
-                Type = "Closed",
-                MaxSelections = 1,
-                Text = "Ile posiłków dzisiaj zjadłeś?",
-                Options = new List<QuestionOption> {
-                    new QuestionOption { Text = "0", Points = -2 },
-                    new QuestionOption { Text = "1", Points = -1 },
-                    new QuestionOption { Text = "2", Points = 0 },
-                    new QuestionOption { Text = "3", Points = 0 },
-                    new QuestionOption { Text = "4", Points = 0 },
-                    new QuestionOption { Text = "5", Points = 0 },
-                    new QuestionOption { Text = "Więcej niż 5", Points = 0 }
-                }
-            });
+            var collectionRef = CrossFirebaseFirestore.Current.GetCollection("users").GetDocument(careTakerId).GetCollection("question_templates");
 
-            questions.Add(new QuestionTemplate
-            {
-                OrderIndex = order++,
-                IsRandomPool = false,
-                Type = "Closed",
-                MaxSelections = 1,
-                Text = "Czy zjadłeś dzisiaj chociaż jeden pełnowartościowy posiłek?",
-                Options = new List<QuestionOption> {
-                    new QuestionOption { Text = "TAK", Points = 0 },
-                    new QuestionOption { Text = "NIE", Points = -1 }
-                }
-            });
-
-            questions.Add(new QuestionTemplate
-            {
-                OrderIndex = order++,
-                IsRandomPool = false,
-                Type = "Closed",
-                MaxSelections = 1,
-                Text = "Ile godzin spałeś?",
-                Options = new List<QuestionOption> {
-                    new QuestionOption { Text = "Poniżej 3 godzin", Points = -2 },
-                    new QuestionOption { Text = "3-5 godzin", Points = -1 },
-                    new QuestionOption { Text = "6-8 godzin", Points = 0 },
-                    new QuestionOption { Text = "9-11 godzin", Points = 0 },
-                    new QuestionOption { Text = "12 lub więcej", Points = -2 }
-                }
-            });
-
-            questions.Add(new QuestionTemplate
-            {
-                OrderIndex = order++,
-                IsRandomPool = false,
-                Type = "Closed",
-                MaxSelections = 1,
-                Text = "Zaznacz na skali jak się dzisiaj czujesz:",
-                Options = new List<QuestionOption> {
-                    new QuestionOption { Text = "Przemęczony", Points = -2 },
-                    new QuestionOption { Text = "Bardzo zmęczony", Points = -1 },
-                    new QuestionOption { Text = "Zmęczony", Points = -1 },
-                    new QuestionOption { Text = "W sam raz", Points = 0 },
-                    new QuestionOption { Text = "Pełen energii", Points = 1 }
-                }
-            });
-
-            // --- 2. PYTANIA CODZIENNE (OTWARTE) ---
-            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = false, Type = "Open", Text = "Czy zdarzyło się dziś coś, co wywarło w tobie silne emocje? Co to było, jak się czułeś i jak się zachowałeś?" });
-            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = false, Type = "Open", Text = "Co dzisiaj udało ci się zrobić?" });
-
-            // --- 3. PULOWA LOSOWA (ZAMKNIĘTE) ---
-            questions.Add(new QuestionTemplate
-            {
-                OrderIndex = order++,
-                IsRandomPool = true,
-                Type = "Closed",
-                MaxSelections = 1,
-                Text = "Czy czerpałeś dziś przyjemność chociaż z jednej wykonywanej czynności bądź odczuwałeś przynajmniej niewielkie zainteresowanie nią?",
-                Options = new List<QuestionOption> { new QuestionOption { Text = "TAK", Points = 0 }, new QuestionOption { Text = "NIE", Points = -3 } }
-            });
-
-            questions.Add(new QuestionTemplate
-            {
-                OrderIndex = order++,
-                IsRandomPool = true,
-                Type = "Closed",
-                MaxSelections = 1,
-                Text = "Czy miałeś problem ze skupieniem się podczas wykonywania podstawowych czynności (np. oglądanie TV, czytanie)?",
-                Options = new List<QuestionOption> { new QuestionOption { Text = "TAK", Points = -1 }, new QuestionOption { Text = "NIE", Points = 0 } }
-            });
-
-            questions.Add(new QuestionTemplate
-            {
-                OrderIndex = order++,
-                IsRandomPool = true,
-                Type = "Closed",
-                MaxSelections = 1,
-                Text = "Czy zdarzyło ci się dzisiaj ruszać lub mówić tak wolno, że zauważyli to inni (lub przeciwnie, nie mogłeś usiedzieć w miejscu)?",
-                Options = new List<QuestionOption> { new QuestionOption { Text = "TAK", Points = -3 }, new QuestionOption { Text = "NIE", Points = 0 } }
-            });
-
-            // --- 4. PULOWA LOSOWA (OTWARTE) ---
-            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = true, Type = "Open", Text = "O czym pomyślałeś jak się obudziłeś?" });
-            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = true, Type = "Open", Text = "Co byś chciał dzisiaj zrobić?" });
-            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = true, Type = "Open", Text = "Kiedy ostatni raz czułeś radość?" });
-            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = true, Type = "Open", Text = "Co sprawiłoby Ci radość?" });
-            questions.Add(new QuestionTemplate { OrderIndex = order++, IsRandomPool = true, Type = "Open", Text = "Podaj choć jedną rzecz z której byłeś dzisiaj dumny." });
-
-            var firestore = CrossFirebaseFirestore.Current;
-            var collectionRef = firestore.GetCollection("users").GetDocument(careTakerId).GetCollection("question_templates");
-
-            foreach (var q in questions)
-            {
-                await collectionRef.AddDocumentAsync(q);
-            }
+            // Równoległe zapisywanie pytań
+            var saveTasks = questions.Select(q => collectionRef.AddDocumentAsync(q));
+            await Task.WhenAll(saveTasks);
 
             return questions;
         }
 
-        // Pobiera wszystkie historyczne raporty podopiecznego
         public async Task<List<DailyResponse>> GetAllDailyResponsesAsync(string careTakerId)
         {
             try
             {
-                var firestore = CrossFirebaseFirestore.Current;
-                var snapshot = await firestore.GetCollection("users")
-                                              .GetDocument(careTakerId)
-                                              .GetCollection("daily_responses")
-                                              .GetDocumentsAsync<DailyResponse>();
+                var snapshot = await CrossFirebaseFirestore.Current.GetCollection("users")
+                                                                   .GetDocument(careTakerId)
+                                                                   .GetCollection("daily_responses")
+                                                                   .GetDocumentsAsync<DailyResponse>();
 
-                return snapshot.Documents
-                               .Where(d => d.Data != null)
-                               .Select(d => d.Data)
-                               .ToList();
+                return snapshot.Documents.Where(d => d.Data != null).Select(d => d.Data).ToList();
             }
             catch (Exception)
             {
-                return new List<DailyResponse>();
+                return []; // Zwrot pustej tablicy w nowym C#
             }
         }
+
         public async Task<string> UploadDailyPhotoAsync(string uid, string dateId, string suffix, FileResult photo)
         {
             try
             {
-                var storage = CrossFirebaseStorage.Current;
-
-                var reference = storage.GetRootReference().GetChild($"daily_photos/{uid}/{dateId}_{suffix}.jpg");
-
+                var reference = CrossFirebaseStorage.Current.GetRootReference().GetChild($"daily_photos/{uid}/{dateId}_{suffix}.jpg");
                 await reference.PutFile(photo.FullPath).AwaitAsync();
                 return await reference.GetDownloadUrlAsync();
             }

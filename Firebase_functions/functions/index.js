@@ -72,7 +72,6 @@ exports.checkInactivity = onSchedule("every 1 hours", async (event) => {
 
   for (const doc of caretakersSnap.docs) {
     const caretaker = doc.data();
-    
     // Jeśli nie ma przypisanych opiekunów, przeskakujemy
     if (!caretaker.careGiversID || caretaker.careGiversID.length === 0) continue;
 

@@ -121,7 +121,6 @@ namespace i_am.ViewModels
 
                 try
                 {
-                    await _firestoreService.RemoveFcmTokenAsync();
                     await _firestoreService.DeleteUserAsync();
                     Preferences.Default.Remove("IsCaregiver");
                     Preferences.Default.Remove("UserId");

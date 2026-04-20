@@ -18,27 +18,19 @@
     <Color x:Key="WarningLight">#F59E0B</Color>
     <Color x:Key="WarningDark">#FBBF24</Color>
 
-    <Color x:Key="StatusLight1">#B91C1C</Color>
-    <Color x:Key="StatusLight2">#DC2626</Color>
-    <Color x:Key="StatusLight3">#EF4444</Color>
-    <Color x:Key="StatusLight4">#F97316</Color>
-    <Color x:Key="StatusLight5">#F59E0B</Color>
-    <Color x:Key="StatusLight6">#FACC15</Color>
-    <Color x:Key="StatusLight7">#A3E635</Color>
-    <Color x:Key="StatusLight8">#4ADE80</Color>
-    <Color x:Key="StatusLight9">#22C55E</Color>
-    <Color x:Key="StatusLight10">#16A34A</Color>
+    <Color x:Key="StatusLightHorriblyBad">#B91C1C</Color>
+    <Color x:Key="StatusLightVeryBad">#DC2626</Color>
+    <Color x:Key="StatusLightBad">#EF4444</Color>
+    <Color x:Key="StatusLightDefinetlyNotGood">#F97316</Color>
+    <Color x:Key="StatusLightNotGood">#FACC15</Color>
+    <Color x:Key="StatusLightGood">#16A34A</Color>
 
-    <Color x:Key="StatusDark1">#DC2626</Color>
-    <Color x:Key="StatusDark2">#EF4444</Color>
-    <Color x:Key="StatusDark3">#F87171</Color>
-    <Color x:Key="StatusDark4">#FB923C</Color>
-    <Color x:Key="StatusDark5">#FBBF24</Color>
-    <Color x:Key="StatusDark6">#FDE047</Color>
-    <Color x:Key="StatusDark7">#BEF264</Color>
-    <Color x:Key="StatusDark8">#86EFAC</Color>
-    <Color x:Key="StatusDark9">#4ADE80</Color>
-    <Color x:Key="StatusDark10">#22C55E</Color>
+    <Color x:Key="StatusDarkHorriblyBad">#DC2626</Color>
+    <Color x:Key="StatusDarkVeryBad">#EF4444</Color>
+    <Color x:Key="StatusDarkBad">#F87171</Color>
+    <Color x:Key="StatusDarkDefinetlyNotGood">#FB923C</Color>
+    <Color x:Key="StatusDarkNotGood">#FDE047</Color>
+    <Color x:Key="StatusDarkGood">#22C55E</Color>
 
 
     <Color x:Key="BackgroundLight">#F7F9FC</Color>

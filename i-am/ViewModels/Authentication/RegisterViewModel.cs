@@ -2,8 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using i_am.Models;
 using i_am.Pages.Authentication;
-using i_am.Pages.CareGiver;
-using i_am.Pages.CareTaker;
 using i_am.Pages.Main;
 using i_am.Services;
 using System.Text.RegularExpressions;

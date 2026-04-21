@@ -39,8 +39,6 @@
                         <Button
                             Grid.Column="0"
                             Padding="0"
-                            BackgroundColor="{AppThemeBinding Light={StaticResource Primary},
-                                                              Dark={StaticResource PrimaryDark}}"
                             Command="{Binding ChangeMonthCommand}"
                             CommandParameter="Prev"
                             Text="&lt;"
@@ -55,8 +53,6 @@
                         <Button
                             Grid.Column="2"
                             Padding="0"
-                            BackgroundColor="{AppThemeBinding Light={StaticResource Primary},
-                                                              Dark={StaticResource PrimaryDark}}"
                             Command="{Binding ChangeMonthCommand}"
                             CommandParameter="Next"
                             Text="&gt;"
@@ -67,60 +63,32 @@
                         <Grid Margin="0,0,0,5" ColumnDefinitions="*,*,*,*,*,*,*">
                             <Label
                                 Grid.Column="0"
-                                FontAttributes="Bold"
-                                FontSize="12"
-                                HorizontalTextAlignment="Center"
-                                Text="Pn"
-                                TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                            Dark={StaticResource PrimaryDark}}" />
+                                Style="{StaticResource DayOfWeekLabelStyle}"
+                                Text="Pn" />
                             <Label
                                 Grid.Column="1"
-                                FontAttributes="Bold"
-                                FontSize="12"
-                                HorizontalTextAlignment="Center"
-                                Text="Wt"
-                                TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                            Dark={StaticResource PrimaryDark}}" />
+                                Style="{StaticResource DayOfWeekLabelStyle}"
+                                Text="Wt" />
                             <Label
                                 Grid.Column="2"
-                                FontAttributes="Bold"
-                                FontSize="12"
-                                HorizontalTextAlignment="Center"
-                                Text="Śr"
-                                TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                            Dark={StaticResource PrimaryDark}}" />
+                                Style="{StaticResource DayOfWeekLabelStyle}"
+                                Text="Śr" />
                             <Label
                                 Grid.Column="3"
-                                FontAttributes="Bold"
-                                FontSize="12"
-                                HorizontalTextAlignment="Center"
-                                Text="Cz"
-                                TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                            Dark={StaticResource PrimaryDark}}" />
+                                Style="{StaticResource DayOfWeekLabelStyle}"
+                                Text="Cz" />
                             <Label
                                 Grid.Column="4"
-                                FontAttributes="Bold"
-                                FontSize="12"
-                                HorizontalTextAlignment="Center"
-                                Text="Pt"
-                                TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                            Dark={StaticResource PrimaryDark}}" />
+                                Style="{StaticResource DayOfWeekLabelStyle}"
+                                Text="Pt" />
                             <Label
                                 Grid.Column="5"
-                                FontAttributes="Bold"
-                                FontSize="12"
-                                HorizontalTextAlignment="Center"
-                                Text="Sb"
-                                TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                            Dark={StaticResource PrimaryDark}}" />
+                                Style="{StaticResource DayOfWeekLabelStyle}"
+                                Text="Sb" />
                             <Label
                                 Grid.Column="6"
-                                FontAttributes="Bold"
-                                FontSize="12"
-                                HorizontalTextAlignment="Center"
-                                Text="Nd"
-                                TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                            Dark={StaticResource PrimaryDark}}" />
+                                Style="{StaticResource DayOfWeekLabelStyle}"
+                                Text="Nd" />
                         </Grid>
 
                         <FlexLayout
@@ -131,21 +99,87 @@
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="vm:CalendarDayItem">
                                     <ContentView Padding="2" FlexLayout.Basis="14.28%">
-                                        <Border
-                                            BackgroundColor="{Binding BgColor}"
-                                            HeightRequest="45"
-                                            Stroke="{Binding HighlightBorderColor}"
-                                            StrokeShape="RoundRectangle 8"
-                                            StrokeThickness="{Binding BorderThick}">
+                                        <Border Style="{StaticResource CalendarDayBorderStyle}">
+                                            <Border.Triggers>
+                                                <DataTrigger
+                                                    Binding="{Binding ActivityStatus}"
+                                                    TargetType="Border"
+                                                    Value="NoData">
+                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray600}}" />
+                                                </DataTrigger>
+
+                                                <DataTrigger
+                                                    Binding="{Binding ActivityStatus}"
+                                                    TargetType="Border"
+                                                    Value="Good">
+                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource StatusLightGood}, Dark={StaticResource StatusDarkGood}}" />
+                                                </DataTrigger>
+                                                <DataTrigger
+                                                    Binding="{Binding ActivityStatus}"
+                                                    TargetType="Border"
+                                                    Value="NotGood">
+                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource StatusLightNotGood}, Dark={StaticResource StatusDarkNotGood}}" />
+                                                </DataTrigger>
+                                                <DataTrigger
+                                                    Binding="{Binding ActivityStatus}"
+                                                    TargetType="Border"
+                                                    Value="DefinetlyNotGood">
+                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource StatusLightDefinetlyNotGood}, Dark={StaticResource StatusDarkDefinetlyNotGood}}" />
+                                                </DataTrigger>
+                                                <DataTrigger
+                                                    Binding="{Binding ActivityStatus}"
+                                                    TargetType="Border"
+                                                    Value="Bad">
+                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource StatusLightBad}, Dark={StaticResource StatusDarkBad}}" />
+                                                </DataTrigger>
+                                                <DataTrigger
+                                                    Binding="{Binding ActivityStatus}"
+                                                    TargetType="Border"
+                                                    Value="VeryBad">
+                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource StatusLightVeryBad}, Dark={StaticResource StatusDarkVeryBad}}" />
+                                                </DataTrigger>
+                                                <DataTrigger
+                                                    Binding="{Binding ActivityStatus}"
+                                                    TargetType="Border"
+                                                    Value="HorriblyBad">
+                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource StatusLightHorriblyBad}, Dark={StaticResource StatusDarkHorriblyBad}}" />
+                                                </DataTrigger>
+
+                                                <DataTrigger
+                                                    Binding="{Binding IsSelected}"
+                                                    TargetType="Border"
+                                                    Value="True">
+                                                    <Setter Property="StrokeThickness" Value="2" />
+                                                    <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+                                                </DataTrigger>
+                                            </Border.Triggers>
+
                                             <Border.GestureRecognizers>
-                                                <TapGestureRecognizer CommandParameter="{Binding .}" Tapped="OnDayTapped" />
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CalendarViewModel}}, Path=SelectDayCommand}" CommandParameter="{Binding .}" />
                                             </Border.GestureRecognizers>
+
                                             <Label
                                                 FontAttributes="Bold"
                                                 HorizontalOptions="Center"
                                                 Text="{Binding DayText}"
-                                                TextColor="{Binding TxtColor}"
-                                                VerticalOptions="Center" />
+                                                TextColor="{AppThemeBinding Light={StaticResource Black},
+                                                                            Dark={StaticResource White}}"
+                                                VerticalOptions="Center">
+                                                <Label.Triggers>
+                                                    <DataTrigger
+                                                        Binding="{Binding IsEmpty}"
+                                                        TargetType="Label"
+                                                        Value="True">
+                                                        <Setter Property="TextColor" Value="Transparent" />
+                                                    </DataTrigger>
+                                                    <DataTrigger
+                                                        Binding="{Binding HasScore}"
+                                                        TargetType="Label"
+                                                        Value="True">
+                                                        <Setter Property="TextColor" Value="White" />
+                                                    </DataTrigger>
+                                                </Label.Triggers>
+                                            </Label>
                                         </Border>
                                     </ContentView>
                                 </DataTemplate>
@@ -197,9 +231,48 @@
                                 FontSize="18"
                                 Text="{Binding SelectedDay.Date, StringFormat='{0:dd MMMM yyyy}'}" />
                             <Label
+                                FontAttributes="Bold"
                                 FontSize="14"
-                                Text="{Binding SelectedDay.Response.EvaluationStatus, StringFormat='Status: {0}'}"
-                                TextColor="{StaticResource Primary}" />
+                                Text="{Binding SelectedDay.Response.EvaluationStatus, StringFormat='Status: {0}'}">
+                                <Label.Triggers>
+                                    <DataTrigger
+                                        Binding="{Binding SelectedDay.ActivityStatus}"
+                                        TargetType="Label"
+                                        Value="Good">
+                                        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource StatusLightGood}, Dark={StaticResource StatusDarkGood}}" />
+                                    </DataTrigger>
+                                    <DataTrigger
+                                        Binding="{Binding SelectedDay.ActivityStatus}"
+                                        TargetType="Label"
+                                        Value="NotGood">
+                                        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource StatusLightNotGood}, Dark={StaticResource StatusDarkNotGood}}" />
+                                    </DataTrigger>
+                                    <DataTrigger
+                                        Binding="{Binding SelectedDay.ActivityStatus}"
+                                        TargetType="Label"
+                                        Value="DefinetlyNotGood">
+                                        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource StatusLightDefinetlyNotGood}, Dark={StaticResource StatusDarkDefinetlyNotGood}}" />
+                                    </DataTrigger>
+                                    <DataTrigger
+                                        Binding="{Binding SelectedDay.ActivityStatus}"
+                                        TargetType="Label"
+                                        Value="Bad">
+                                        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource StatusLightBad}, Dark={StaticResource StatusDarkBad}}" />
+                                    </DataTrigger>
+                                    <DataTrigger
+                                        Binding="{Binding SelectedDay.ActivityStatus}"
+                                        TargetType="Label"
+                                        Value="VeryBad">
+                                        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource StatusLightVeryBad}, Dark={StaticResource StatusDarkVeryBad}}" />
+                                    </DataTrigger>
+                                    <DataTrigger
+                                        Binding="{Binding SelectedDay.ActivityStatus}"
+                                        TargetType="Label"
+                                        Value="HorriblyBad">
+                                        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource StatusLightHorriblyBad}, Dark={StaticResource StatusDarkHorriblyBad}}" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="14"
@@ -289,10 +362,13 @@
                                                     FontAttributes="Bold"
                                                     Text="{Binding SelectedOptionText}"
                                                     TextColor="{StaticResource Primary}" />
+
                                                 <Label
                                                     FontAttributes="Italic"
-                                                    Style="{StaticResource SubtitleLabelStyle}"
-                                                    Text="{Binding OpenTextResponse}" />
+                                                    FontSize="13"
+                                                    Text="{Binding OpenTextResponse}"
+                                                    TextColor="{StaticResource Primary}" />
+
                                                 <Label
                                                     Margin="0,5,0,0"
                                                     FontSize="12"

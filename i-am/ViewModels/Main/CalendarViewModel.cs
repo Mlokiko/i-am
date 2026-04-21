@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using i_am.Models;
 using i_am.Services;
+using Microsoft.Maui.ApplicationModel;
 using System.Collections.ObjectModel;
 using System.Globalization;
 
@@ -14,6 +15,17 @@ namespace i_am.ViewModels
         public string OpenTextResponse { get; set; } = string.Empty;
         public int PointsAwarded { get; set; }
         public bool IsVisibleToCareGiver { get; set; }
+    }
+    public enum DailyActivityStatus
+    {
+        EmptyOrOutOfRange, // Dni przed założeniem konta, w przyszłości lub puste pola
+        NoData,            // Brak wypełnionej ankiety w wymaganym terminie
+        Good,              // 0
+        NotGood,           // -1
+        DefinetlyNotGood,  // -2
+        Bad,               // -3
+        VeryBad,           // -5
+        HorriblyBad        // -7 i mniej
     }
 
     public partial class CalendarDayItem : ObservableObject
@@ -32,45 +44,14 @@ namespace i_am.ViewModels
         public bool HasData => Response != null;
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(BorderThick))]
-        [NotifyPropertyChangedFor(nameof(HighlightBorderColor))]
         private bool isSelected;
 
-        private bool IsDark => Application.Current?.RequestedTheme == AppTheme.Dark;
+        // Nowa właściwość określająca stan dnia
+        [ObservableProperty]
+        private DailyActivityStatus activityStatus = DailyActivityStatus.EmptyOrOutOfRange;
 
-        // UŻYWAMY POLA isSelected ZAMIAST WŁAŚCIWOŚCI IsSelected, ABY NIE BLOKOWAĆ GENERATORA
-        public Color BgColor
-        {
-            get
-            {
-                if (IsEmpty || !HasData) return Colors.Transparent;
-                if (Response!.TotalScore <= -3) return IsDark ? Color.FromArgb("#CF6679") : Color.FromArgb("#E57373");
-                if (Response!.TotalScore <= -2) return IsDark ? Color.FromArgb("#FFB74D") : Color.FromArgb("#FF9800");
-                return IsDark ? Color.FromArgb("#81C784") : Color.FromArgb("#4CAF50");
-            }
-        }
-
-        public Color TxtColor
-        {
-            get
-            {
-                if (IsEmpty) return Colors.Transparent;
-                if (HasData) return Colors.White;
-                return IsDark ? Colors.White : Colors.Black;
-            }
-        }
-
-        public Color BorderColor
-        {
-            get
-            {
-                if (IsEmpty || HasData) return Colors.Transparent;
-                return IsDark ? Color.FromArgb("#404040") : Color.FromArgb("#E0E0E0");
-            }
-        }
-
-        public double BorderThick => isSelected ? 2 : 1;
-        public Color HighlightBorderColor => isSelected ? (IsDark ? Colors.White : Colors.Black) : BorderColor;
+        // Właściwość pomocnicza do określania koloru tekstu w XAML
+        public bool HasScore => ActivityStatus != DailyActivityStatus.EmptyOrOutOfRange && ActivityStatus != DailyActivityStatus.NoData;
     }
 
     [QueryProperty(nameof(PassedCareTakerId), "CareTakerId")]
@@ -186,6 +167,16 @@ namespace i_am.ViewModels
             GenerateCalendarGrid();
         }
 
+        private DailyActivityStatus GetActivityStatus(int score)
+        {
+            if (score <= -7) return DailyActivityStatus.HorriblyBad;
+            if (score <= -5) return DailyActivityStatus.VeryBad;
+            if (score <= -3) return DailyActivityStatus.Bad;
+            if (score <= -2) return DailyActivityStatus.DefinetlyNotGood;
+            if (score <= -1) return DailyActivityStatus.NotGood;
+            return DailyActivityStatus.Good; // >= 0
+        }
+
         private void GenerateCalendarGrid()
         {
             var backgroundDays = new List<CalendarDayItem>();
@@ -197,6 +188,10 @@ namespace i_am.ViewModels
             int offset = (int)firstDay.DayOfWeek - (int)DayOfWeek.Monday;
             if (offset < 0) offset += 7;
 
+            // Pobierz datę założenia konta aktualnie wybranego użytkownika (lub domyślnie min value)
+            // UWAGA: Jeśli w SelectedCareTaker masz właściwość CreatedAt, użyj jej.
+            DateTime createdAtDate = SelectedCareTaker?.CreatedAt.Date ?? DateTime.MinValue.Date;
+
             for (int i = 0; i < offset; i++)
                 backgroundDays.Add(new CalendarDayItem { IsEmpty = true });
 
@@ -204,7 +199,32 @@ namespace i_am.ViewModels
             {
                 var date = new DateTime(_currentMonthDate.Year, _currentMonthDate.Month, i);
                 var response = _allResponses.FirstOrDefault(r => r.Id == date.ToString("yyyy-MM-dd"));
-                backgroundDays.Add(new CalendarDayItem { Date = date, IsEmpty = false, Response = response });
+
+                var dayItem = new CalendarDayItem
+                {
+                    Date = date,
+                    IsEmpty = false,
+                    Response = response
+                };
+
+                // Sprawdzenie: Czy dzień jest po założeniu konta ORAZ nie jest w przyszłości
+                if (date >= createdAtDate && date <= DateTime.Today)
+                {
+                    if (response != null)
+                    {
+                        dayItem.ActivityStatus = GetActivityStatus(response.TotalScore);
+                    }
+                    else
+                    {
+                        dayItem.ActivityStatus = DailyActivityStatus.NoData; // Pominięta ankieta
+                    }
+                }
+                else
+                {
+                    dayItem.ActivityStatus = DailyActivityStatus.EmptyOrOutOfRange; // Zachowuje domyślny (przezroczysty) kolor
+                }
+
+                backgroundDays.Add(dayItem);
             }
 
             CurrentMonthName = newMonthName;

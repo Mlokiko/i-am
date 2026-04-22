@@ -492,8 +492,8 @@ namespace i_am.Services
             await SendNotificationAsync(new AppNotification
             {
                 ReceiverId = targetUserId,
-                Title = "Zakończono współpracę",
-                Message = $"Użytkownik {removerName} usunął Cię ze swojej listy kontaktów.",
+                Title = "Zmiana w kontaktach",
+                Message = $"Użytkownik {removerName} usunął Cię ze swojej listy kontaktów.",//$"Użytkownik {removerName} przestał być twoim [opiekunem/podopiecznym]"
                 Type = "ConnectionDeleted"
             });
         }
@@ -619,7 +619,7 @@ namespace i_am.Services
                 await LocalNotificationCenter.Current.Show(new NotificationRequest
                 {
                     NotificationId = 1001,
-                    Title = "Czas na Twój raport!",
+                    Title = "Czas na Twój wpis!",
                     Description = "Hej! Poświęć chwilę na uzupełnienie dzisiejszej ankiety.",
                     Schedule = new NotificationRequestSchedule
                     {
@@ -656,7 +656,7 @@ namespace i_am.Services
                         await SendNotificationAsync(new AppNotification
                         {
                             ReceiverId = giverId,
-                            Title = $"Nowy raport dzienny: {careTakerProfile.Name}",
+                            Title = $"Nowy wpis od {careTakerProfile.Name}",
                             Message = $"Wynik: {response.TotalScore} pkt. Status: {response.EvaluationStatus}.",
                             Type = "DailyReportAlert",
                             SenderId = careTakerId,

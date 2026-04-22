@@ -34,7 +34,7 @@
                 FontSize="16"
                 HorizontalTextAlignment="Center"
                 Style="{StaticResource SubtitleLabelStyle}"
-                Text="Twój dzisiejszy raport został już wysłany. Wróć tu jutro!" />
+                Text="Twój dzisiejszy wpis został już wysłany. Wróć tu jutro!" />
         </VerticalStackLayout>
         <VerticalStackLayout
             Padding="30"
@@ -248,7 +248,7 @@
                     Command="{Binding SubmitAnswersCommand}"
                     FontAttributes="Bold"
                     HeightRequest="50"
-                    Text="Wyślij Raport"
+                    Text="Wyślij Wpis"
                     TextColor="White" />
             </VerticalStackLayout>
         </ScrollView>

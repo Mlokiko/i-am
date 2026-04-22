@@ -88,7 +88,7 @@
                                         Binding="{Binding Type}"
                                         TargetType="Button"
                                         Value="DailyReportAlert">
-                                        <Setter Property="Text" Value="Przejdź do raportu" />
+                                        <Setter Property="Text" Value="Przejdź do wpisu" />
                                         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
                                     </DataTrigger>
                                 </Button.Triggers>

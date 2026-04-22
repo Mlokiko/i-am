@@ -80,7 +80,7 @@
                                 FontSize="18"
                                 Style="{StaticResource TitleLabelStyle}"
                                 Text="Aparat" />
-                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="Służy do robienia zdjęć twarzy oraz otoczenia na potrzeby dziennego raportu." />
+                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="Służy do robienia zdjęć twarzy oraz otoczenia na potrzeby dziennego wpisu." />
                         </VerticalStackLayout>
 
                         <Button

@@ -31,7 +31,7 @@
             <Button
                 Margin="0,20,0,0"
                 Command="{Binding LoginCommand}"
-                Text="Login" />
+                Text="Zaloguj się" />
 
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
                 <Label Style="{StaticResource SubtitleLabelStyle}" Text="Nie masz konta?" />

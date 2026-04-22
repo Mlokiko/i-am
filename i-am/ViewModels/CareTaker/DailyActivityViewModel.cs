@@ -154,7 +154,7 @@ namespace i_am.ViewModels
                     if (!isAllowed)
                     {
                         IsOutsideAllowedTime = true;
-                        OutsideTimeMessage = $"Twój raport jest dostępny tylko w godzinach {start:D2}:00 - {end:D2}:00.";
+                        OutsideTimeMessage = $"Twój wpis jest dostępny tylko w godzinach {start:D2}:00 - {end:D2}:00.";
                         IsLoading = false;
                         return; // Przerywamy ładowanie pytań
                     }

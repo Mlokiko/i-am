@@ -8,15 +8,23 @@ namespace i_am.ViewModels
     {
         // --- POWIADOMIENIA ---
         [ObservableProperty] private bool isNotificationGranted;
-        [ObservableProperty] private Color notificationStatusColor = Colors.DodgerBlue;
+        [ObservableProperty] private Color notificationStatusColor;
 
         // --- KAMERA ---
         [ObservableProperty] private bool isCameraGranted;
-        [ObservableProperty] private Color cameraStatusColor = Colors.DodgerBlue;
+        [ObservableProperty] private Color cameraStatusColor;
 
         // --- PAMIĘĆ / MULTIMEDIA ---
         [ObservableProperty] private bool isStorageGranted;
-        [ObservableProperty] private Color storageStatusColor = Colors.DodgerBlue;
+        [ObservableProperty] private Color storageStatusColor;
+
+        public PermissionsViewModel()
+        {
+            // Ustawienie początkowych kolorów na podstawie domyślnego stanu ("DodgerBlue")
+            notificationStatusColor = GetThemeColor("Primary", "PrimaryDark");
+            cameraStatusColor = GetThemeColor("Primary", "PrimaryDark");
+            storageStatusColor = GetThemeColor("Primary", "PrimaryDark");
+        }
 
         public async Task CheckCurrentPermissionsAsync()
         {
@@ -72,15 +80,18 @@ namespace i_am.ViewModels
 
             if (isGranted)
             {
-                statusColor = Colors.Green;
+                // Zastępuje sztywne Colors.Green
+                statusColor = GetThemeColor("SuccessLight", "SuccessDark");
             }
             else if (!hasAsked)
             {
-                statusColor = Colors.DodgerBlue;
+                // Zastępuje sztywne Colors.DodgerBlue
+                statusColor = GetThemeColor("Primary", "PrimaryDark");
             }
             else
             {
-                statusColor = Colors.Red;
+                // Zastępuje sztywne Colors.Red
+                statusColor = GetThemeColor("DangerLight", "DangerDark");
             }
 
             switch (type)
@@ -98,6 +109,21 @@ namespace i_am.ViewModels
                     StorageStatusColor = statusColor;
                     break;
             }
+        }
+
+        // Metoda pomocnicza do pobierania kolorów zdefiniowanych w Colors.xaml
+        private Color GetThemeColor(string lightResourceKey, string darkResourceKey)
+        {
+            // Sprawdza aktualny motyw, jeżeli nie jest dostępny używa domyślnie jasnego
+            var currentTheme = Application.Current?.RequestedTheme ?? AppTheme.Light;
+            string targetKey = currentTheme == AppTheme.Dark ? darkResourceKey : lightResourceKey;
+
+            if (Application.Current?.Resources.TryGetValue(targetKey, out var resourceValue) == true && resourceValue is Color color)
+            {
+                return color;
+            }
+
+            return Colors.Transparent; // Bezpieczny fallback na wypadek braku klucza w słowniku
         }
 
         [RelayCommand]

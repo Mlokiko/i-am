@@ -60,7 +60,8 @@
                         FontAttributes="Bold"
                         IsVisible="{Binding IsNotificationGranted}"
                         Text="Przyznano"
-                        TextColor="Green"
+                        TextColor="{AppThemeBinding Light={StaticResource SuccessLight},
+                                                    Dark={StaticResource SuccessDark}}"
                         VerticalOptions="Center" />
                 </Grid>
             </Border>
@@ -103,7 +104,8 @@
                         FontAttributes="Bold"
                         IsVisible="{Binding IsCameraGranted}"
                         Text="Przyznano"
-                        TextColor="Green"
+                        TextColor="{AppThemeBinding Light={StaticResource SuccessLight},
+                                                    Dark={StaticResource SuccessDark}}"
                         VerticalOptions="Center" />
                 </Grid>
             </Border>
@@ -146,7 +148,8 @@
                         FontAttributes="Bold"
                         IsVisible="{Binding IsStorageGranted}"
                         Text="Przyznano"
-                        TextColor="Green"
+                        TextColor="{AppThemeBinding Light={StaticResource SuccessLight},
+                                                    Dark={StaticResource SuccessDark}}"
                         VerticalOptions="Center" />
                 </Grid>
             </Border>

@@ -475,14 +475,22 @@
 
     <Style x:Key="CircleIconBorderStyle" TargetType="Border">
         <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="HeightRequest" Value="24" />
-        <Setter Property="WidthRequest" Value="24" />
+        <Setter Property="HeightRequest" Value="18" />
+        <Setter Property="WidthRequest" Value="18" />
         <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
-        <Setter Property="StrokeShape" Value="RoundRectangle 12" />
-        <Setter Property="StrokeThickness" Value="2" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 9" />
+        <Setter Property="StrokeThickness" Value="1.5" />
         <Setter Property="VerticalOptions" Value="Center" />
     </Style>
 
+    <Style x:Key="CircleIconLabelStyle" TargetType="Label">
+        <Setter Property="Text" Value="?" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+    </Style>
 
     <Style x:Key="HeaderLabelStyle" TargetType="Label">
         <Setter Property="FontAttributes" Value="Bold" />
@@ -515,13 +523,6 @@
 
     <Style x:Key="FormValueLabelStyle" TargetType="Label">
         <Setter Property="VerticalOptions" Value="Center" />
-    </Style>
-
-    <Style x:Key="CircleIconLabelStyle" TargetType="Label">
-        <Setter Property="FontAttributes" Value="Bold" />
-        <Setter Property="HorizontalOptions" Value="Center" />
-        <Setter Property="VerticalOptions" Value="Center" />
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
     </Style>
 
     <Style x:Key="DayOfWeekLabelStyle" TargetType="Label">

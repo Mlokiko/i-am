@@ -8,164 +8,166 @@
     Shell.NavBarIsVisible="False">
 
     <Grid Padding="20">
-        <VerticalStackLayout Spacing="25" VerticalOptions="Center">
+        <ScrollView VerticalOptions="Center">
+            <VerticalStackLayout Spacing="25" VerticalOptions="Center">
 
-            <Image
-                Margin="0,0,0,20"
-                HeightRequest="150"
-                HorizontalOptions="Center"
-                Source="{AppThemeBinding Light=i_am_logo_black.svg,
-                                         Dark=i_am_logo_white.svg}" />
+                <Image
+                    Margin="0,0,0,20"
+                    HeightRequest="150"
+                    HorizontalOptions="Center"
+                    Source="{AppThemeBinding Light=i_am_logo_black.svg,
+                                             Dark=i_am_logo_white.svg}" />
 
-            <Label
-                HorizontalTextAlignment="Center"
-                Style="{StaticResource SubtitleLabelStyle}"
-                Text="Aby w pełni korzystać z możliwości aplikacji, potrzebujemy Twojej zgody na kilka rzeczy." />
+                <Label
+                    HorizontalTextAlignment="Center"
+                    Style="{StaticResource SubtitleLabelStyle}"
+                    Text="Aby w pełni korzystać z możliwości aplikacji, potrzebujemy Twojej zgody na kilka rzeczy." />
 
-            <Border
-                Stroke="{Binding NotificationStatusColor}"
-                StrokeThickness="2"
-                Style="{StaticResource CardBorderStyle}">
-                <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
-                    <VerticalStackLayout
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        Spacing="5">
+                <Border
+                    Stroke="{Binding NotificationStatusColor}"
+                    StrokeThickness="2"
+                    Style="{StaticResource CardBorderStyle}">
+                    <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
+                        <VerticalStackLayout
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Spacing="5">
+                            <Label
+                                FontSize="18"
+                                Style="{StaticResource TitleLabelStyle}"
+                                Text="Powiadomienia Push" />
+                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="Służą do przypominania o codziennych ankietach, aktywności podopiecznych oraz informowaniu o statusie zaproszeń." />
+                        </VerticalStackLayout>
+
+                        <Button
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Command="{Binding RequestNotificationsCommand}"
+                            Text="Zezwól"
+                            VerticalOptions="Center">
+                            <Button.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding IsNotificationGranted}"
+                                    TargetType="Button"
+                                    Value="True">
+                                    <Setter Property="IsVisible" Value="False" />
+                                </DataTrigger>
+                            </Button.Triggers>
+                        </Button>
+
                         <Label
-                            FontSize="18"
-                            Style="{StaticResource TitleLabelStyle}"
-                            Text="Powiadomienia Push" />
-                        <Label Style="{StaticResource SubtitleLabelStyle}" Text="Służą do przypominania o codziennych ankietach, aktywności podopiecznych oraz informowaniu o statusie zaproszeń." />
-                    </VerticalStackLayout>
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            IsVisible="{Binding IsNotificationGranted}"
+                            Text="Przyznano"
+                            TextColor="{AppThemeBinding Light={StaticResource SuccessLight},
+                                                        Dark={StaticResource SuccessDark}}"
+                            VerticalOptions="Center" />
+                    </Grid>
+                </Border>
 
-                    <Button
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        Command="{Binding RequestNotificationsCommand}"
-                        Text="Zezwól"
-                        VerticalOptions="Center">
-                        <Button.Triggers>
-                            <DataTrigger
-                                Binding="{Binding IsNotificationGranted}"
-                                TargetType="Button"
-                                Value="True">
-                                <Setter Property="IsVisible" Value="False" />
-                            </DataTrigger>
-                        </Button.Triggers>
-                    </Button>
+                <Border
+                    Stroke="{Binding CameraStatusColor}"
+                    StrokeThickness="2"
+                    Style="{StaticResource CardBorderStyle}">
+                    <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
+                        <VerticalStackLayout
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Spacing="5">
+                            <Label
+                                FontSize="18"
+                                Style="{StaticResource TitleLabelStyle}"
+                                Text="Aparat" />
+                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="Służy do robienia zdjęć twarzy oraz otoczenia na potrzeby dziennego raportu." />
+                        </VerticalStackLayout>
 
-                    <Label
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        FontAttributes="Bold"
-                        IsVisible="{Binding IsNotificationGranted}"
-                        Text="Przyznano"
-                        TextColor="{AppThemeBinding Light={StaticResource SuccessLight},
-                                                    Dark={StaticResource SuccessDark}}"
-                        VerticalOptions="Center" />
-                </Grid>
-            </Border>
+                        <Button
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Command="{Binding RequestCameraCommand}"
+                            Text="Zezwól"
+                            VerticalOptions="Center">
+                            <Button.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding IsCameraGranted}"
+                                    TargetType="Button"
+                                    Value="True">
+                                    <Setter Property="IsVisible" Value="False" />
+                                </DataTrigger>
+                            </Button.Triggers>
+                        </Button>
 
-            <Border
-                Stroke="{Binding CameraStatusColor}"
-                StrokeThickness="2"
-                Style="{StaticResource CardBorderStyle}">
-                <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
-                    <VerticalStackLayout
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        Spacing="5">
                         <Label
-                            FontSize="18"
-                            Style="{StaticResource TitleLabelStyle}"
-                            Text="Aparat" />
-                        <Label Style="{StaticResource SubtitleLabelStyle}" Text="Służy do robienia zdjęć twarzy oraz otoczenia na potrzeby dziennego raportu." />
-                    </VerticalStackLayout>
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            IsVisible="{Binding IsCameraGranted}"
+                            Text="Przyznano"
+                            TextColor="{AppThemeBinding Light={StaticResource SuccessLight},
+                                                        Dark={StaticResource SuccessDark}}"
+                            VerticalOptions="Center" />
+                    </Grid>
+                </Border>
 
-                    <Button
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        Command="{Binding RequestCameraCommand}"
-                        Text="Zezwól"
-                        VerticalOptions="Center">
-                        <Button.Triggers>
-                            <DataTrigger
-                                Binding="{Binding IsCameraGranted}"
-                                TargetType="Button"
-                                Value="True">
-                                <Setter Property="IsVisible" Value="False" />
-                            </DataTrigger>
-                        </Button.Triggers>
-                    </Button>
+                <Border
+                    Stroke="{Binding StorageStatusColor}"
+                    StrokeThickness="2"
+                    Style="{StaticResource CardBorderStyle}">
+                    <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
+                        <VerticalStackLayout
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Spacing="5">
+                            <Label
+                                FontSize="18"
+                                Style="{StaticResource TitleLabelStyle}"
+                                Text="Pliki i multimedia" />
+                            <Label Style="{StaticResource SubtitleLabelStyle}" Text="Służy do zapisywania zrobionych zdjęć oraz ich bezpiecznego wczytywania." />
+                        </VerticalStackLayout>
 
-                    <Label
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        FontAttributes="Bold"
-                        IsVisible="{Binding IsCameraGranted}"
-                        Text="Przyznano"
-                        TextColor="{AppThemeBinding Light={StaticResource SuccessLight},
-                                                    Dark={StaticResource SuccessDark}}"
-                        VerticalOptions="Center" />
-                </Grid>
-            </Border>
+                        <Button
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Command="{Binding RequestStorageCommand}"
+                            Text="Zezwól"
+                            VerticalOptions="Center">
+                            <Button.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding IsStorageGranted}"
+                                    TargetType="Button"
+                                    Value="True">
+                                    <Setter Property="IsVisible" Value="False" />
+                                </DataTrigger>
+                            </Button.Triggers>
+                        </Button>
 
-            <Border
-                Stroke="{Binding StorageStatusColor}"
-                StrokeThickness="2"
-                Style="{StaticResource CardBorderStyle}">
-                <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
-                    <VerticalStackLayout
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        Spacing="5">
                         <Label
-                            FontSize="18"
-                            Style="{StaticResource TitleLabelStyle}"
-                            Text="Pliki i multimedia" />
-                        <Label Style="{StaticResource SubtitleLabelStyle}" Text="Służy do zapisywania zrobionych zdjęć oraz ich bezpiecznego wczytywania." />
-                    </VerticalStackLayout>
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            IsVisible="{Binding IsStorageGranted}"
+                            Text="Przyznano"
+                            TextColor="{AppThemeBinding Light={StaticResource SuccessLight},
+                                                        Dark={StaticResource SuccessDark}}"
+                            VerticalOptions="Center" />
+                    </Grid>
+                </Border>
 
-                    <Button
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        Command="{Binding RequestStorageCommand}"
-                        Text="Zezwól"
-                        VerticalOptions="Center">
-                        <Button.Triggers>
-                            <DataTrigger
-                                Binding="{Binding IsStorageGranted}"
-                                TargetType="Button"
-                                Value="True">
-                                <Setter Property="IsVisible" Value="False" />
-                            </DataTrigger>
-                        </Button.Triggers>
-                    </Button>
+                <Label
+                    HorizontalTextAlignment="Center"
+                    Style="{StaticResource SubtitleLabelStyle}"
+                    Text="Uprawnienia można potem zmienić w Ustawieniach." />
 
-                    <Label
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        FontAttributes="Bold"
-                        IsVisible="{Binding IsStorageGranted}"
-                        Text="Przyznano"
-                        TextColor="{AppThemeBinding Light={StaticResource SuccessLight},
-                                                    Dark={StaticResource SuccessDark}}"
-                        VerticalOptions="Center" />
-                </Grid>
-            </Border>
+                <Button
+                    Margin="0,40,0,0"
+                    Command="{Binding FinishOnboardingCommand}"
+                    FontAttributes="Bold"
+                    HeightRequest="50"
+                    Text="Rozpocznij" />
 
-            <Label
-                HorizontalTextAlignment="Center"
-                Style="{StaticResource SubtitleLabelStyle}"
-                Text="Uprawnienia można potem zmienić w Ustawieniach." />
-
-            <Button
-                Margin="0,40,0,0"
-                Command="{Binding FinishOnboardingCommand}"
-                FontAttributes="Bold"
-                HeightRequest="50"
-                Text="Rozpocznij" />
-
-        </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
     </Grid>
 </ContentPage>

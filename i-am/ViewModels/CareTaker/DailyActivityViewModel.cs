@@ -220,62 +220,67 @@ namespace i_am.ViewModels
                 await Shell.Current.DisplayAlert("Uwaga", "Proszę wybrać odpowiedź we wszystkich zamkniętych pytaniach.", "OK");
                 return;
             }
-
-            try
+            else if (_rearPhoto == null && _frontPhoto == null)
             {
-                IsLoading = true;
-                var response = new DailyResponse
-                {
-                    Id = _reportingDateId, // Zmieniono na zaktualizowaną zmienną uwzględniającą początek doby
-                    CreatedAt = DateTimeOffset.UtcNow,
-                    TotalScore = 0
-                };
+                await Shell.Current.DisplayAlert("Uwaga", "Proszę umieścić chociaż jedno zdjęcie.", "OK");
+                return;
+            }
 
-                foreach (var item in FormItems)
+                try
                 {
-                    var answer = new GivenAnswer
+                    IsLoading = true;
+                    var response = new DailyResponse
                     {
-                        QuestionId = item.Question.Id,
-                        QuestionText = item.Question.Text,
-                        OpenTextResponse = item.OpenText ?? string.Empty
+                        Id = _reportingDateId, // Zmieniono na zaktualizowaną zmienną uwzględniającą początek doby
+                        CreatedAt = DateTimeOffset.UtcNow,
+                        TotalScore = 0
                     };
 
-                    if (item.IsClosed)
+                    foreach (var item in FormItems)
                     {
-                        var selected = item.SelectableOptions.Where(o => o.IsSelected).ToList();
-                        answer.SelectedOptionText = string.Join(", ", selected.Select(s => s.Option.Text));
-                        answer.PointsAwarded = selected.Sum(s => s.Option.Points);
+                        var answer = new GivenAnswer
+                        {
+                            QuestionId = item.Question.Id,
+                            QuestionText = item.Question.Text,
+                            OpenTextResponse = item.OpenText ?? string.Empty
+                        };
+
+                        if (item.IsClosed)
+                        {
+                            var selected = item.SelectableOptions.Where(o => o.IsSelected).ToList();
+                            answer.SelectedOptionText = string.Join(", ", selected.Select(s => s.Option.Text));
+                            answer.PointsAwarded = selected.Sum(s => s.Option.Points);
+                        }
+
+                        response.Answers.Add(answer);
+                        response.TotalScore += answer.PointsAwarded;
                     }
 
-                    response.Answers.Add(answer);
-                    response.TotalScore += answer.PointsAwarded;
-                }
+                    if (_frontPhoto != null)
+                    {
+                        response.FrontPhotoUrl = await _firestoreService.UploadDailyPhotoAsync(_myUid, response.Id, "front", _frontPhoto);
+                    }
+                    if (_rearPhoto != null)
+                    {
+                        response.RearPhotoUrl = await _firestoreService.UploadDailyPhotoAsync(_myUid, response.Id, "rear", _rearPhoto);
+                    }
 
-                if (_frontPhoto != null)
+                    if (response.TotalScore <= -3) response.EvaluationStatus = "Sugeruje zaburzenie (Krytyczne)";
+                    else if (response.TotalScore <= -2) response.EvaluationStatus = "Sugeruje stan zaniżony (Ostrzeżenie)";
+                    else if (response.TotalScore <= -1) response.EvaluationStatus = "Niewspierające doznania";
+                    else response.EvaluationStatus = "W normie";
+
+                    await _firestoreService.SaveDailyResponseAsync(_myUid, response);
+                    HasAlreadySubmitted = true;
+                }
+                catch (Exception ex)
                 {
-                    response.FrontPhotoUrl = await _firestoreService.UploadDailyPhotoAsync(_myUid, response.Id, "front", _frontPhoto);
+                    await Shell.Current.DisplayAlert("Błąd", $"Wystąpił problem: {ex.Message}", "OK");
                 }
-                if (_rearPhoto != null)
+                finally
                 {
-                    response.RearPhotoUrl = await _firestoreService.UploadDailyPhotoAsync(_myUid, response.Id, "rear", _rearPhoto);
+                    IsLoading = false;
                 }
-
-                if (response.TotalScore <= -3) response.EvaluationStatus = "Sugeruje zaburzenie (Krytyczne)";
-                else if (response.TotalScore <= -2) response.EvaluationStatus = "Sugeruje stan zaniżony (Ostrzeżenie)";
-                else if (response.TotalScore <= -1) response.EvaluationStatus = "Niewspierające doznania";
-                else response.EvaluationStatus = "W normie";
-
-                await _firestoreService.SaveDailyResponseAsync(_myUid, response);
-                HasAlreadySubmitted = true;
-            }
-            catch (Exception ex)
-            {
-                await Shell.Current.DisplayAlert("Błąd", $"Wystąpił problem: {ex.Message}", "OK");
-            }
-            finally
-            {
-                IsLoading = false;
-            }
         }
 
         [RelayCommand]

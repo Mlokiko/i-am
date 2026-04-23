@@ -41,7 +41,6 @@
                     </Label.GestureRecognizers>
                 </Label>
             </HorizontalStackLayout>
-
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

@@ -1,26 +1,20 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using i_am.Pages.Authentication;
-using i_am.Pages.CareGiver;
 using i_am.Pages.CareTaker;
 using i_am.Pages.Main;
-using i_am.Services;
 
 namespace i_am.ViewModels
 {
     public partial class MainPageViewModel : ObservableObject
     {
-        private readonly FirestoreService _firestoreService;
-
         [ObservableProperty]
         private bool isCaregiver;
 
         [ObservableProperty]
         private bool isCareTaker;
 
-        public MainPageViewModel(FirestoreService firestoreService)
+        public MainPageViewModel()
         {
-            _firestoreService = firestoreService;
             IsCaregiver = Preferences.Default.Get("IsCaregiver", false);
             IsCareTaker = !IsCaregiver;
         }
@@ -40,7 +34,6 @@ namespace i_am.ViewModels
 
 
         // --- Opiekun ---
-
         [RelayCommand]
         private async Task GoToManageCareTakersAsync() => await Shell.Current.GoToAsync(nameof(ManageConnectionsPage));
 

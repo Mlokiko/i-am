@@ -162,9 +162,14 @@ namespace i_am.ViewModels
                 await Shell.Current.DisplayAlert("Sukces", "Konto zostało pomyślnie stworzone!", "OK");
                 await Shell.Current.GoToAsync($"//{nameof(MainPage)}");
             }
+            catch (InvalidOperationException ex)
+            {
+                await Shell.Current.DisplayAlert("Błąd", ex.Message, "OK");
+            }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Rejestracja nie powiodła się", ex.Message, "OK");
+                // Ogólny błąd
+                await Shell.Current.DisplayAlert("Błąd", $"Coś poszło nie tak: {ex.Message}", "OK");
             }
             finally
             {

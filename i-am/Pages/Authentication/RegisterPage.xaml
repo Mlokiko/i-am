@@ -309,9 +309,7 @@
             <ActivityIndicator
                 HorizontalOptions="Center"
                 IsRunning="{Binding IsLoading}"
-                IsVisible="{Binding IsLoading}"
-                Color="{AppThemeBinding Light={StaticResource Primary},
-                                        Dark={StaticResource PrimaryDark}}" />
+                IsVisible="{Binding IsLoading}" />
 
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
                 <Label Style="{StaticResource SubtitleLabelStyle}" Text="Masz już konto?" />
@@ -321,7 +319,6 @@
                     </Label.GestureRecognizers>
                 </Label>
             </HorizontalStackLayout>
-
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

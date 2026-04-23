@@ -157,8 +157,7 @@
             <ActivityIndicator
                 HorizontalOptions="Center"
                 IsRunning="{Binding IsLoading}"
-                VerticalOptions="Center"
-                Color="White" />
+                VerticalOptions="Center" />
 
             <Label
                 Margin="0,60,0,0"

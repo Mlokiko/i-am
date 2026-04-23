@@ -12,8 +12,7 @@
             HorizontalOptions="Center"
             IsRunning="{Binding IsLoading}"
             IsVisible="{Binding IsLoading}"
-            VerticalOptions="Center"
-            Color="{StaticResource Primary}" />
+            VerticalOptions="Center" />
 
         <VerticalStackLayout
             Padding="30"

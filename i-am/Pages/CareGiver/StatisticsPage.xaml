@@ -32,8 +32,7 @@
             <ActivityIndicator
                 HorizontalOptions="Center"
                 IsRunning="{Binding IsLoading}"
-                IsVisible="{Binding IsLoading}"
-                Color="{StaticResource Primary}" />
+                IsVisible="{Binding IsLoading}" />
 
             <VerticalStackLayout IsVisible="{Binding IsDataVisible}" Spacing="20">
 

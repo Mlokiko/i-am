@@ -35,6 +35,7 @@
                         Margin="0,0,0,10"
                         Command="{Binding NavigateToStatisticsCommand}"
                         HorizontalOptions="Fill"
+                        IsVisible="{Binding IsCareGiver}"
                         Text="Zobacz Statystyki" />
                     <Grid
                         Margin="0,0,0,10"
@@ -313,9 +314,7 @@
                                                 HorizontalOptions="Center"
                                                 IsRunning="{Binding Source={x:Reference FrontImg}, Path=IsLoading}"
                                                 IsVisible="{Binding Source={x:Reference FrontImg}, Path=IsLoading}"
-                                                VerticalOptions="Center"
-                                                Color="{AppThemeBinding Light={StaticResource Primary},
-                                                                        Dark={StaticResource PrimaryDark}}" />
+                                                VerticalOptions="Center" />
                                             <Image
                                                 x:Name="FrontImg"
                                                 Aspect="AspectFill"
@@ -337,9 +336,7 @@
                                                 HorizontalOptions="Center"
                                                 IsRunning="{Binding Source={x:Reference RearImg}, Path=IsLoading}"
                                                 IsVisible="{Binding Source={x:Reference RearImg}, Path=IsLoading}"
-                                                VerticalOptions="Center"
-                                                Color="{AppThemeBinding Light={StaticResource Primary},
-                                                                        Dark={StaticResource PrimaryDark}}" />
+                                                VerticalOptions="Center" />
                                             <Image
                                                 x:Name="RearImg"
                                                 Aspect="AspectFill"
@@ -404,8 +401,7 @@
                 IsVisible="{Binding Source={x:Reference EnlargedImage}, Path=IsLoading}"
                 VerticalOptions="Center"
                 WidthRequest="50"
-                ZIndex="101"
-                Color="White" />
+                ZIndex="101" />
 
             <Image
                 x:Name="EnlargedImage"

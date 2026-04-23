@@ -1,6 +1,7 @@
 ﻿using i_am.Models;
 using Plugin.Firebase.Auth;
 using Plugin.Firebase.CloudMessaging;
+using Plugin.Firebase.Core.Exceptions;
 using Plugin.Firebase.Firestore;
 using Plugin.Firebase.Storage;
 using Plugin.LocalNotification;
@@ -14,8 +15,27 @@ namespace i_am.Services
         // Tworzenie użytkownika (Authentication) w Firebase
         public async Task<string> RegisterAsync(string email, string password)
         {
-            var user = await CrossFirebaseAuth.Current.CreateUserAsync(email, password);
-            return user.Uid;
+
+            try
+            {
+                var user = await CrossFirebaseAuth.Current.CreateUserAsync(email, password);
+                return user.Uid;
+            }
+            catch (CrossPlatformFirebaseAuthException ex) // Obsługa dla Plugin.Firebase >= 5.0.0
+            {
+                // Klasyfikator rozpoznaje natywny błąd i zamienia go na enum
+                var errorType = FirebaseAuthErrorClassifier.TryClassify(ex);
+
+                if (errorType == FirebaseAuthFailure.UserCollision)
+                {
+                    throw new InvalidOperationException("Ten adres e-mail jest już używany przez inne konto.");
+                }
+                if (errorType == FirebaseAuthFailure.WeakPassword)
+                {
+                    throw new InvalidOperationException("Podane hasło jest zbyt słabe.");
+                }
+                throw new InvalidOperationException($"Błąd rejestracji: {ex.NativeErrorMessage}");
+            }
         }
 
         // Tworzenie użytkownika (dokumentu) w Firestore

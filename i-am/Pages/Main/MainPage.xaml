@@ -16,40 +16,27 @@
             VerticalOptions="Center" />
     </Shell.TitleView>
 
-    <Grid Padding="20">
-        <VerticalStackLayout
-            HorizontalOptions="Fill"
-            Spacing="25"
-            VerticalOptions="Center">
-
-            <ScrollView>
-                <VerticalStackLayout Spacing="10">
-                    <Button Command="{Binding GoToNotificationsCommand}" Text="Powiadomienia" />
-
-                    <Button
-                        Command="{Binding GoToDailyActivityCommand}"
-                        IsVisible="{Binding IsCareTaker}"
-                        Text="Codzienna Aktywność" />
-
-                    <Button Command="{Binding GoToCalendarCommand}" Text="Kalendarz" />
-
-                    <Button
-                        Command="{Binding GoToManageCareTakersCommand}"
-                        IsVisible="{Binding IsCaregiver}"
-                        Text="Zarządzaj Podopiecznymi" />
-
-                    <Button
-                        Command="{Binding GoToManageCareGiversCommand}"
-                        IsVisible="{Binding IsCareTaker}"
-                        Text="Zarządzaj Opiekunami" />
-
-                    <Button Command="{Binding GoToSettingsCommand}" Text="Ustawienia" />
-
-                </VerticalStackLayout>
-            </ScrollView>
-
-            <VerticalStackLayout>
-
+    <ScrollView>
+        <Grid Padding="30">
+            <VerticalStackLayout
+                HorizontalOptions="Fill"
+                Spacing="15"
+                VerticalOptions="Center">
+                <Button Command="{Binding GoToNotificationsCommand}" Text="Powiadomienia" />
+                <Button
+                    Command="{Binding GoToDailyActivityCommand}"
+                    IsVisible="{Binding IsCareTaker}"
+                    Text="Codzienna Aktywność" />
+                <Button Command="{Binding GoToCalendarCommand}" Text="Kalendarz" />
+                <Button
+                    Command="{Binding GoToManageCareTakersCommand}"
+                    IsVisible="{Binding IsCaregiver}"
+                    Text="Zarządzaj Podopiecznymi" />
+                <Button
+                    Command="{Binding GoToManageCareGiversCommand}"
+                    IsVisible="{Binding IsCareTaker}"
+                    Text="Zarządzaj Opiekunami" />
+                <Button Command="{Binding GoToSettingsCommand}" Text="Ustawienia" />
                 <Label
                     Padding="20"
                     HorizontalOptions="Center"
@@ -60,7 +47,6 @@
                     </Label.GestureRecognizers>
                 </Label>
             </VerticalStackLayout>
-
-        </VerticalStackLayout>
-    </Grid>
+        </Grid>
+    </ScrollView>
 </ContentPage>

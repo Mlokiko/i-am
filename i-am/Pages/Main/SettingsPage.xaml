@@ -231,12 +231,21 @@
                     </Grid>
                 </Border>
 
+            </VerticalStackLayout>
+            <VerticalStackLayout Spacing="10">
+                <Label Style="{StaticResource HeaderLabelStyle}" Text="Konto" />
+                <Button Command="{Binding GoToManageAccountCommand}" Text="Zarządzaj swoim kontem" />
                 <Button
-                    Margin="0,10,0,20"
-                    Command="{Binding SaveSettingsCommand}"
-                    Text="Zapisz ustawienia" />
+                    Margin="0,10,0,0"
+                    Command="{Binding LogoutCommand}"
+                    Style="{StaticResource DangerButtonStyle}"
+                    Text="Wyloguj się" />
             </VerticalStackLayout>
 
+            <Button
+                Margin="0,10,0,20"
+                Command="{Binding SaveSettingsCommand}"
+                Text="Zapisz ustawienia" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

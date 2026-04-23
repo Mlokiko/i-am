@@ -36,9 +36,6 @@ namespace i_am.ViewModels
         private async Task GoToSettingsAsync() => await Shell.Current.GoToAsync(nameof(SettingsPage));
 
         [RelayCommand]
-        private async Task GoToManageAccountAsync() => await Shell.Current.GoToAsync(nameof(ManageAccountPage));
-
-        [RelayCommand]
         private async Task GoToInformationAsync() => await Shell.Current.GoToAsync(nameof(InformationPage));
 
 
@@ -59,35 +56,5 @@ namespace i_am.ViewModels
 
         [RelayCommand]
         private async Task GoToManageCareGiversAsync() => await Shell.Current.GoToAsync(nameof(ManageConnectionsPage));
-
-
-        // --- Wylogowanie ---
-        [RelayCommand]
-        private async Task LogoutAsync()
-        {
-            try
-            {
-                bool confirm = await Shell.Current.DisplayAlert("Wyloguj", "Jesteś pewien, że chcesz się wylogować?", "Tak", "Nie");
-
-                if (confirm)
-                {
-                    await _firestoreService.RemoveFcmTokenAsync();
-
-                    // Usuwa lokalny cache
-                    Preferences.Default.Remove("IsCaregiver");
-                    Preferences.Default.Remove("UserId");
-
-                    // Firebase czyści sesje
-                    await _firestoreService.SignOutAsync();
-
-                    // Podwójny ukośnik, aby zresetować stos nawigacji
-                    await Shell.Current.GoToAsync($"//{nameof(LandingPage)}");
-                }
-            }
-            catch (Exception ex)
-            {
-                await Shell.Current.DisplayAlert("Błąd", $"Problem z wylogowaniem: {ex.Message}", "OK");
-            }
-        }
     }
 }

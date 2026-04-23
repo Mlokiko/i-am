@@ -52,16 +52,12 @@
                         Text="Zarządzaj Opiekunami" />
 
                     <Button Command="{Binding GoToSettingsCommand}" Text="Ustawienia" />
-                    <Button Command="{Binding GoToManageAccountCommand}" Text="Zarządzaj swoim kontem" />
+                    
                 </VerticalStackLayout>
             </ScrollView>
 
             <VerticalStackLayout>
-                <Button
-                    Margin="0,10,0,0"
-                    Command="{Binding LogoutCommand}"
-                    Style="{StaticResource DangerButtonStyle}"
-                    Text="Wyloguj się" />
+               
                 <Label
                     Padding="20"
                     HorizontalOptions="Center"

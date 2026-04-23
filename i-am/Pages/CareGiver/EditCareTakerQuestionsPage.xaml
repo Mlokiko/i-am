@@ -5,32 +5,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:models="clr-namespace:i_am.Models"
     xmlns:vm="clr-namespace:i_am.ViewModels"
-    Title="Pytania Podopiecznego"
+    Title="Zarządzaj Pytaniami"
     x:DataType="vm:EditCareTakerQuestionsViewModel"
     BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight},
                                       Dark={StaticResource BackgroundDark}}">
 
     <ScrollView>
         <VerticalStackLayout Padding="15" Spacing="20">
-
-            <VerticalStackLayout IsVisible="{Binding IsCareTakerSelectionVisible}" Spacing="5">
-                <Label Style="{StaticResource FormLabelStyle}" Text="Wybierz podopiecznego:" />
-                <Border Padding="0" Style="{StaticResource CardBorderStyle}">
-                    <Grid HeightRequest="50">
-                        <Label
-                            Margin="15,0,0,0"
-                            FontSize="15"
-                            HorizontalOptions="Start"
-                            Text="{Binding SelectedCareTakerName}"
-                            VerticalOptions="Center" />
-                        <Button
-                            BackgroundColor="Transparent"
-                            Command="{Binding SelectCareTakerCommand}"
-                            HorizontalOptions="Fill"
-                            VerticalOptions="Fill" />
-                    </Grid>
-                </Border>
-            </VerticalStackLayout>
 
             <VerticalStackLayout IsVisible="{Binding IsQuestionsVisible}" Spacing="15">
                 <Grid
@@ -41,17 +22,16 @@
                         Grid.Column="0"
                         FontAttributes="Bold"
                         FontSize="16"
-                        Text="Lista pytań"
+                        Text="{Binding SelectedCareTaker.Name, StringFormat='Pytania dla: {0}'}"
                         VerticalOptions="Center" />
                     <Button
                         Grid.Column="1"
                         Command="{Binding OpenNewQuestionEditorCommand}"
                         HeightRequest="40"
-                        Text="Dodaj pytanie" />
+                        Text="Dodaj" />
                 </Grid>
 
                 <ActivityIndicator
-                    Margin="0,20,0,0"
                     HorizontalOptions="Center"
                     IsRunning="{Binding IsLoadingQuestions}"
                     IsVisible="{Binding IsLoadingQuestions}" />
@@ -61,7 +41,7 @@
                     HorizontalOptions="Center"
                     IsVisible="{Binding HasNoQuestions}"
                     Style="{StaticResource SubtitleLabelStyle}"
-                    Text="Brak pytań. Dodaj pierwsze używając przycisku wyżej." />
+                    Text="Brak pytań dla tego podopiecznego." />
 
                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding Questions}" Spacing="10">
                     <BindableLayout.ItemTemplate>
@@ -77,6 +57,7 @@
                                             FontAttributes="Bold"
                                             FontSize="15"
                                             Text="{Binding Text}" />
+
                                         <HorizontalStackLayout Spacing="8">
                                             <Label
                                                 FontSize="12"
@@ -93,10 +74,11 @@
                                                 FontAttributes="Bold"
                                                 FontSize="12"
                                                 IsVisible="{Binding IsRandom}"
-                                                Text="Losowe z puli"
+                                                Text="Losowe"
                                                 TextColor="{AppThemeBinding Light={StaticResource SuccessLight},
                                                                             Dark={StaticResource SuccessDark}}" />
                                         </HorizontalStackLayout>
+
                                         <Label
                                             FontSize="12"
                                             IsVisible="{Binding IsClosed}"
@@ -132,7 +114,6 @@
 
             <VerticalStackLayout IsVisible="{Binding IsEditorVisible}" Spacing="15">
                 <Label
-                    Margin="0,0,0,10"
                     FontAttributes="Bold"
                     FontSize="20"
                     HorizontalOptions="Center"
@@ -144,7 +125,6 @@
                         AutoSize="TextChanges"
                         BackgroundColor="Transparent"
                         MinimumHeightRequest="80"
-                        Placeholder="np. Jak się dzisiaj czujesz?"
                         Text="{Binding EditorQuestionText}" />
                 </Border>
 
@@ -170,9 +150,8 @@
                                 Text="Otw." />
                         </HorizontalStackLayout>
                     </VerticalStackLayout>
-
                     <VerticalStackLayout Grid.Column="1" Spacing="5">
-                        <Label Style="{StaticResource FormLabelStyle}" Text="Tylko losowe?" />
+                        <Label Style="{StaticResource FormLabelStyle}" Text="Losowe?" />
                         <Switch HorizontalOptions="Start" IsToggled="{Binding EditorIsRandomPool}" />
                     </VerticalStackLayout>
                 </Grid>
@@ -209,14 +188,13 @@
                         <Label
                             Grid.Column="0"
                             Style="{StaticResource FormLabelStyle}"
-                            Text="Odpowiedzi i ich punkty:" />
+                            Text="Odpowiedzi i punkty:" />
                         <Button
                             Grid.Column="1"
                             Command="{Binding AddOptionCommand}"
                             HeightRequest="35"
                             Text="Dodaj" />
                     </Grid>
-
                     <VerticalStackLayout BindableLayout.ItemsSource="{Binding EditorOptions}" Spacing="10">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="vm:EditorOptionItem">
@@ -225,21 +203,19 @@
                                         <Entry
                                             Margin="5,0"
                                             BackgroundColor="Transparent"
-                                            Placeholder="Odpowiedź"
+                                            Placeholder="Odp"
                                             Text="{Binding Text}" />
                                     </Border>
                                     <Border Grid.Column="1" Style="{StaticResource CompactInputBorderStyle}">
                                         <Entry
                                             Margin="5,0"
                                             BackgroundColor="Transparent"
-                                            HorizontalTextAlignment="Center"
                                             Keyboard="Numeric"
                                             Placeholder="Pkt"
                                             Text="{Binding Points}" />
                                     </Border>
                                     <Button
                                         Grid.Column="2"
-                                        Padding="0"
                                         Clicked="OnRemoveOptionClicked"
                                         CommandParameter="{Binding .}"
                                         Style="{StaticResource DangerButtonStyle}"
@@ -271,7 +247,6 @@
                         HeightRequest="50"
                         Text="Zapisz" />
                 </Grid>
-
             </VerticalStackLayout>
         </VerticalStackLayout>
     </ScrollView>

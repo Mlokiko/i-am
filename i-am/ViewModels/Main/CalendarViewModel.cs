@@ -307,5 +307,15 @@ namespace i_am.ViewModels
             IsPhotoEnlarged = false;
             EnlargedPhotoUrl = string.Empty;
         }
+
+        [RelayCommand]
+        private async Task NavigateToStatisticsAsync()
+        {
+            if (SelectedCareTaker != null)
+            {
+                // Przekazujemy CareTakerId do strony statystyk, aby automatycznie załadowała dane
+                await Shell.Current.GoToAsync($"{nameof(i_am.Pages.CareGiver.StatisticsPage)}?CareTakerId={SelectedCareTaker.Id}");
+            }
+        }
     }
 }

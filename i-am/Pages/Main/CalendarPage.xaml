@@ -31,7 +31,11 @@
                 </VerticalStackLayout>
 
                 <VerticalStackLayout IsVisible="{Binding HasCareTakerSelected}" Spacing="15">
-
+                    <Button
+                        Margin="0,0,0,10"
+                        Command="{Binding NavigateToStatisticsCommand}"
+                        HorizontalOptions="Fill"
+                        Text="Zobacz Statystyki" />
                     <Grid
                         Margin="0,0,0,10"
                         ColumnDefinitions="Auto, *, Auto"

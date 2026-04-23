@@ -17,7 +17,6 @@
                         FontSize="18"
                         Style="{StaticResource TitleLabelStyle}"
                         Text="{Binding InviteLabelText}" />
-
                     <Border Style="{StaticResource InputBorderStyle}">
                         <Entry
                             ClearButtonVisibility="WhileEditing"
@@ -25,14 +24,12 @@
                             Placeholder="{Binding InvitePlaceholder}"
                             Text="{Binding InviteEmail}" />
                     </Border>
-
                     <Button Command="{Binding InviteCommand}" Text="Wyślij Zaproszenie" />
                 </VerticalStackLayout>
             </Border>
 
             <VerticalStackLayout Spacing="10">
                 <Label Style="{StaticResource TitleLabelStyle}" Text="Aktywne zaproszenia" />
-
                 <CollectionView ItemsSource="{Binding AllInvitations}">
                     <CollectionView.EmptyView>
                         <Label
@@ -105,7 +102,6 @@
                                                 <Setter Property="IsVisible" Value="False" />
                                             </DataTrigger>
                                         </HorizontalStackLayout.Triggers>
-
                                         <Button
                                             BackgroundColor="{AppThemeBinding Light={StaticResource SuccessLight},
                                                                               Dark={StaticResource SuccessDark}}"
@@ -115,7 +111,6 @@
                                             HeightRequest="35"
                                             Text="Akceptuj"
                                             TextColor="White" />
-
                                         <Button
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageConnectionsViewModel}}, Path=RejectCommand}"
                                             CommandParameter="{Binding .}"
@@ -134,7 +129,6 @@
 
             <VerticalStackLayout Spacing="10">
                 <Label Style="{StaticResource TitleLabelStyle}" Text="{Binding ListTitleText}" />
-
                 <CollectionView ItemsSource="{Binding Connections}">
                     <CollectionView.EmptyView>
                         <Label
@@ -146,7 +140,7 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:User">
                             <Border Margin="0,0,0,10" Style="{StaticResource CardBorderStyle}">
-                                <Grid ColumnDefinitions="*, Auto">
+                                <Grid ColumnDefinitions="*, Auto, Auto">
                                     <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
                                         <Label Style="{StaticResource TitleLabelStyle}" Text="{Binding Name}" />
                                         <Label Style="{StaticResource SubtitleLabelStyle}" Text="{Binding Email}" />
@@ -154,6 +148,17 @@
 
                                     <Button
                                         Grid.Column="1"
+                                        Margin="0,0,10,0"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageConnectionsViewModel}}, Path=EditQuestionsCommand}"
+                                        CommandParameter="{Binding .}"
+                                        CornerRadius="6"
+                                        HeightRequest="35"
+                                        IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageConnectionsViewModel}}, Path=IsCaregiver}"
+                                        Text="Pytania"
+                                        VerticalOptions="Center" />
+
+                                    <Button
+                                        Grid.Column="2"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageConnectionsViewModel}}, Path=RemoveConnectionCommand}"
                                         CommandParameter="{Binding .}"
                                         CornerRadius="6"

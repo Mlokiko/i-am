@@ -34,14 +34,6 @@
                     <Button Command="{Binding GoToCalendarCommand}" Text="Kalendarz" />
 
                     <Button
-                        Command="{Binding GoToStatisticsCommand}"
-                        IsVisible="{Binding IsCaregiver}"
-                        Text="Statystyki Podopiecznego" />
-                    <Button
-                        Command="{Binding GoToEditCareTakerQuestionsCommand}"
-                        IsVisible="{Binding IsCaregiver}"
-                        Text="Edytuj pytania Podopiecznego" />
-                    <Button
                         Command="{Binding GoToManageCareTakersCommand}"
                         IsVisible="{Binding IsCaregiver}"
                         Text="Zarządzaj Podopiecznymi" />
@@ -52,12 +44,12 @@
                         Text="Zarządzaj Opiekunami" />
 
                     <Button Command="{Binding GoToSettingsCommand}" Text="Ustawienia" />
-                    
+
                 </VerticalStackLayout>
             </ScrollView>
 
             <VerticalStackLayout>
-               
+
                 <Label
                     Padding="20"
                     HorizontalOptions="Center"

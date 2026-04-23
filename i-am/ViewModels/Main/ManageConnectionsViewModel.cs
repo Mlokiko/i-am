@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using i_am.Models;
 using i_am.Services;
+using i_am.Pages.CareGiver;
 
 namespace i_am.ViewModels
 {
@@ -22,8 +23,8 @@ namespace i_am.ViewModels
         public ObservableCollection<User> Connections { get; } = new();
         public ObservableCollection<Invitation> AllInvitations { get; } = new();
 
-        [ObservableProperty]
-        private string inviteEmail = string.Empty;
+        [ObservableProperty] private string inviteEmail = string.Empty;
+        [ObservableProperty] private bool isCaregiver; // Dodane dla widoku [cite: 136]
 
         [ObservableProperty] private string pageTitle = "";
         [ObservableProperty] private string inviteLabelText = "";
@@ -34,8 +35,8 @@ namespace i_am.ViewModels
         public ManageConnectionsViewModel(FirestoreService firestoreService)
         {
             _firestoreService = firestoreService;
-            bool isCaregiver = Preferences.Default.Get("IsCaregiver", false);
-            SetUiTexts(isCaregiver);
+            IsCaregiver = Preferences.Default.Get("IsCaregiver", false); // [cite: 136]
+            SetUiTexts(IsCaregiver);
         }
 
         private void SetUiTexts(bool isCaregiver)
@@ -90,40 +91,26 @@ namespace i_am.ViewModels
                     UpdateCombinedInvitationsList();
                 });
             });
-            // DODANE: Nasłuchiwacz usuwający powiadomienia dotyczące połączeń, gdy jesteśmy na tej stronie
+
             _notificationCleanupListener = _firestoreService.ListenForNotifications(myUid, (freshList) =>
             {
-                // Typy powiadomień, które są powiązane z tą zakładką
-                var connectionNotificationTypes = new[]
-                {
-            "NewInvitation",
-            "InvitationAccepted",
-            "InvitationRejected"
-        };
-
+                var connectionNotificationTypes = new[] { "NewInvitation", "InvitationAccepted", "InvitationRejected" };
                 var toDelete = freshList.Where(n => connectionNotificationTypes.Contains(n.Type)).ToList();
 
                 foreach (var notification in toDelete)
                 {
                     if (!string.IsNullOrEmpty(notification.Id))
                     {
-                        // Task.Run zapobiega blokowaniu wątku Firestore/UI podczas operacji usuwania
                         _ = Task.Run(async () =>
                         {
-                            try
-                            {
-                                await _firestoreService.DeleteNotificationAsync(notification.Id);
-                            }
-                            catch (Exception ex)
-                            {
-                                System.Diagnostics.Debug.WriteLine($"Błąd automatycznego usuwania powiadomienia: {ex.Message}");
-                            }
+                            try { await _firestoreService.DeleteNotificationAsync(notification.Id); }
+                            catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Błąd: {ex.Message}"); }
                         });
                     }
                 }
             });
         }
-         
+
         public void Cleanup()
         {
             _sentListener?.Dispose();
@@ -142,7 +129,6 @@ namespace i_am.ViewModels
         private async Task LoadConnectionsAsync()
         {
             if (_currentUser == null) return;
-
             var targetIds = _currentUser.IsCaregiver ? _currentUser.CaretakersID : _currentUser.CaregiversID;
             var connectionsList = await _firestoreService.GetUsersByIdsAsync(targetIds);
 
@@ -154,6 +140,14 @@ namespace i_am.ViewModels
         }
 
         [RelayCommand]
+        private async Task EditQuestionsAsync(User targetUser)
+        {
+            if (targetUser == null) return;
+            // Nawigacja do edycji pytań z przekazaniem ID podopiecznego
+            await Shell.Current.GoToAsync($"{nameof(EditCareTakerQuestionsPage)}?targetId={targetUser.Id}");
+        }
+
+        [RelayCommand]
         private async Task InviteAsync()
         {
             if (string.IsNullOrWhiteSpace(InviteEmail))
@@ -161,11 +155,8 @@ namespace i_am.ViewModels
                 await Shell.Current.DisplayAlert("Błąd", "Podaj adres email.", "OK");
                 return;
             }
-
             if (_currentUser == null) return;
-
             string targetEmail = InviteEmail.Trim().ToLower();
-
             if (_currentUser.Email.ToLower() == targetEmail)
             {
                 await Shell.Current.DisplayAlert("Błąd", "Nie możesz zaprosić samego siebie.", "OK");
@@ -174,21 +165,10 @@ namespace i_am.ViewModels
 
             try
             {
-                bool success = await _firestoreService.SendInvitationAsync(
-                    _currentUser.Id,
-                    _currentUser.Name,
-                    _currentUser.IsCaregiver,
-                    targetEmail);
-
-                if (success)
-                {
-                    InviteEmail = string.Empty;
-                }
+                bool success = await _firestoreService.SendInvitationAsync(_currentUser.Id, _currentUser.Name, _currentUser.IsCaregiver, targetEmail);
+                if (success) InviteEmail = string.Empty;
             }
-            catch (Exception ex)
-            {
-                await Shell.Current.DisplayAlert("Błąd", ex.Message, "OK");
-            }
+            catch (Exception ex) { await Shell.Current.DisplayAlert("Błąd", ex.Message, "OK"); }
         }
 
         [RelayCommand]
@@ -214,18 +194,12 @@ namespace i_am.ViewModels
         private async Task RemoveConnectionAsync(User targetUser)
         {
             if (targetUser == null || _currentUser == null) return;
-
             bool confirm = await Shell.Current.DisplayAlert("Usuń", $"Czy na pewno usunąć użytkownika {targetUser.Name} z listy?", "Tak", "Anuluj");
             if (confirm)
             {
                 string caregiverId = _currentUser.IsCaregiver ? _currentUser.Id : targetUser.Id;
                 string caretakerId = _currentUser.IsCaregiver ? targetUser.Id : _currentUser.Id;
-
-                await _firestoreService.RemoveAcceptedInvitationAsync(
-                      caregiverId,
-                      caretakerId,
-                      _currentUser.Id,
-                      _currentUser.Name);
+                await _firestoreService.RemoveAcceptedInvitationAsync(caregiverId, caretakerId, _currentUser.Id, _currentUser.Name);
             }
         }
     }

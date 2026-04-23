@@ -40,11 +40,6 @@ namespace i_am.ViewModels
 
 
         // --- Opiekun ---
-        [RelayCommand]
-        private async Task GoToStatisticsAsync() => await Shell.Current.GoToAsync(nameof(StatisticsPage));
-
-        [RelayCommand]
-        private async Task GoToEditCareTakerQuestionsAsync() => await Shell.Current.GoToAsync(nameof(EditCareTakerQuestionsPage));
 
         [RelayCommand]
         private async Task GoToManageCareTakersAsync() => await Shell.Current.GoToAsync(nameof(ManageConnectionsPage));

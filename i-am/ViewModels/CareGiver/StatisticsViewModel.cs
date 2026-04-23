@@ -6,10 +6,13 @@ using i_am.Services;
 
 namespace i_am.ViewModels
 {
+    [QueryProperty(nameof(PassedCareTakerId), "CareTakerId")]
     public partial class StatisticsViewModel : ObservableObject
     {
         private readonly FirestoreService _firestoreService;
         private string _myUid = string.Empty;
+
+        [ObservableProperty] private string passedCareTakerId = string.Empty;
 
         [ObservableProperty] private bool isLoading;
         [ObservableProperty] private bool isDataVisible;
@@ -52,26 +55,39 @@ namespace i_am.ViewModels
                 CareTakers.Clear();
                 foreach (var t in fetchedTakers) CareTakers.Add(t);
 
-                // LOGIKA AUTOMATYCZNEGO WYBORU
-                if (CareTakers.Count == 1)
+                // --- NOWA LOGIKA UWZGLĘDNIAJĄCA PARAMETR Z KALENDARZA ---
+                if (!string.IsNullOrEmpty(PassedCareTakerId))
                 {
-                    IsSelectionVisible = false; // Ukrywamy przycisk wyboru
+                    var target = CareTakers.FirstOrDefault(c => c.Id == PassedCareTakerId);
+                    if (target != null)
+                    {
+                        SelectedCareTaker = target;
+                        SelectedCareTakerName = target.Name;
+                        IsSelectionVisible = CareTakers.Count > 1; // Pokaż listę wyboru tylko jeśli jest więcej niż 1
+
+                        await LoadStatisticsAsync(target);
+                    }
+                    PassedCareTakerId = string.Empty; // Czyścimy po załadowaniu
+                }
+                // --- STARA LOGIKA DLA POJEDYNCZEGO PODOPIECZNEGO ---
+                else if (CareTakers.Count == 1)
+                {
+                    IsSelectionVisible = false;
 
                     var singleCareTaker = CareTakers.First();
                     SelectedCareTaker = singleCareTaker;
                     SelectedCareTakerName = singleCareTaker.Name;
 
-                    // Ładujemy dane w tle
                     await LoadStatisticsAsync(singleCareTaker);
                 }
                 else if (CareTakers.Count > 1)
                 {
-                    IsSelectionVisible = true; // Pokazujemy wybór, bo jest ich więcej
+                    IsSelectionVisible = true;
                 }
             }
             else
             {
-                IsSelectionVisible = false; // Ukrywamy, jeśli w ogóle brak podopiecznych
+                IsSelectionVisible = false;
             }
             IsLoading = false;
         }

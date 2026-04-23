@@ -55,7 +55,7 @@ namespace i_am.ViewModels
         public bool IsCareGiver => !IsCareTaker;
 
 
-        // --- USTAWIENIA PODOPIECZNEGO (Raporty i ograniczenia) ---
+        // --- USTAWIENIA PODOPIECZNEGO (Wpisy i ograniczenia) ---
         [ObservableProperty]
         private string selectedDayStartHour = "04:00";
 
@@ -229,7 +229,7 @@ namespace i_am.ViewModels
             var request = new NotificationRequest
             {
                 NotificationId = notificationId,
-                Title = "Czas na Twój raport!",
+                Title = "Czas na Twój wpis!",
                 Description = "Hej! Poświęć chwilę na uzupełnienie dzisiejszej ankiety.",
                 Schedule = new NotificationRequestSchedule
                 {

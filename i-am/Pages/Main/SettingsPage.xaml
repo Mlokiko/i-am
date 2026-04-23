@@ -51,7 +51,7 @@
                             <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
                                 <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
                                     <Label Style="{StaticResource TitleLabelStyle}" Text="Ogranicz czas odpowiedzi" />
-                                    <Label Style="{StaticResource SubtitleLabelStyle}" Text="Włącz, aby móc wysyłać raport tylko w wybranych godzinach" />
+                                    <Label Style="{StaticResource SubtitleLabelStyle}" Text="Włącz, aby móc wysyłać wpis tylko w wybranych godzinach" />
                                 </VerticalStackLayout>
                                 <Switch Grid.Column="1" IsToggled="{Binding IsActivityTimeRestricted}" />
                             </Grid>
@@ -105,7 +105,7 @@
                             <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
                                 <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
                                     <Label Style="{StaticResource TitleLabelStyle}" Text="Codzienne przypomnienie" />
-                                    <Label Style="{StaticResource SubtitleLabelStyle}" Text="Przypominaj mi o wypełnieniu raportu" />
+                                    <Label Style="{StaticResource SubtitleLabelStyle}" Text="Przypominaj mi o wypełnieniu wpisu" />
                                 </VerticalStackLayout>
                                 <Switch Grid.Column="1" IsToggled="{Binding IsDailyReminderEnabled}" />
                             </Grid>

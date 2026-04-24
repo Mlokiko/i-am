@@ -90,14 +90,13 @@
                                 Text="Nd" />
                         </Grid>
 
-                        <FlexLayout
-                            BindableLayout.ItemsSource="{Binding Days}"
-                            Direction="Row"
-                            JustifyContent="Start"
-                            Wrap="Wrap">
-                            <BindableLayout.ItemTemplate>
+                        <CollectionView ItemsSource="{Binding Days}">
+                            <CollectionView.ItemsLayout>
+                                <GridItemsLayout Orientation="Vertical" Span="7" />
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="vm:CalendarDayItem">
-                                    <ContentView Padding="2" FlexLayout.Basis="14.28%">
+                                    <ContentView Padding="2">
                                         <Border Style="{StaticResource CalendarDayBorderStyle}">
                                             <Border.Triggers>
                                                 <DataTrigger
@@ -193,8 +192,8 @@
                                         </Border>
                                     </ContentView>
                                 </DataTemplate>
-                            </BindableLayout.ItemTemplate>
-                        </FlexLayout>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
                     </VerticalStackLayout>
                 </VerticalStackLayout>
                 <Button

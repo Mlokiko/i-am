@@ -112,7 +112,18 @@
                                                     Value="NoData">
                                                     <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray600}}" />
                                                 </DataTrigger>
-
+                                                <DataTrigger
+                                                    Binding="{Binding ActivityStatus}"
+                                                    TargetType="Border"
+                                                    Value="EmptyOrOutOfRange">
+                                                    <Setter Property="BackgroundColor" Value="Transparent" />
+                                                </DataTrigger>
+                                                <DataTrigger
+                                                    Binding="{Binding ActivityStatus}"
+                                                    TargetType="Border"
+                                                    Value="NoData">
+                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray600}}" />
+                                                </DataTrigger>
                                                 <DataTrigger
                                                     Binding="{Binding ActivityStatus}"
                                                     TargetType="Border"

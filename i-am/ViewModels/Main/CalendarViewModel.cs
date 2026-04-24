@@ -111,13 +111,13 @@ namespace i_am.ViewModels
 
                 if (!string.IsNullOrEmpty(PassedCareTakerId))
                 {
-                    var target = CareTakers.FirstOrDefault(c => c.Id == PassedCareTakerId);
+                    var target = CareTakers?.FirstOrDefault(c => c.Id == PassedCareTakerId);
                     if (target != null)
                     {
                         SelectedCareTaker = target;
                         SelectedCareTakerName = target.Name;
                         HasCareTakerSelected = true;
-                        IsCareTakerSelectionVisible = CareTakers.Count > 1;
+                        IsCareTakerSelectionVisible = CareTakers?.Count > 1;
 
                         if (DateTime.TryParseExact(PassedDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime targetDate))
                         {
@@ -137,7 +137,7 @@ namespace i_am.ViewModels
                 }
                 else if (!HasCareTakerSelected)
                 {
-                    if (CareTakers.Count == 1)
+                    if (CareTakers?.Count == 1)
                     {
                         var single = CareTakers.First();
                         SelectedCareTaker = single;
@@ -148,13 +148,20 @@ namespace i_am.ViewModels
                     }
                     else
                     {
-                        IsCareTakerSelectionVisible = CareTakers.Count > 1;
+                        IsCareTakerSelectionVisible = CareTakers?.Count > 1;
                     }
                 }
             }
             else
             {
                 HasCareTakerSelected = true;
+                IsLoading = true;
+                var myProfile = await _firestoreService.GetUserProfileAsync(_myUid);
+                if (myProfile != null)
+                {
+                    SelectedCareTaker = myProfile;
+                }
+
                 await LoadResponsesAsync(_myUid);
             }
 

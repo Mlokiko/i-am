@@ -31,12 +31,6 @@
                 </VerticalStackLayout>
 
                 <VerticalStackLayout IsVisible="{Binding HasCareTakerSelected}" Spacing="15">
-                    <Button
-                        Margin="0,0,0,10"
-                        Command="{Binding NavigateToStatisticsCommand}"
-                        HorizontalOptions="Fill"
-                        IsVisible="{Binding IsCareGiver}"
-                        Text="Zobacz Statystyki" />
                     <Grid
                         Margin="0,0,0,10"
                         ColumnDefinitions="Auto, *, Auto"
@@ -203,6 +197,12 @@
                         </FlexLayout>
                     </VerticalStackLayout>
                 </VerticalStackLayout>
+                <Button
+                    Margin="0,0,0,10"
+                    Command="{Binding NavigateToStatisticsCommand}"
+                    HorizontalOptions="Fill"
+                    IsVisible="{Binding IsCareGiver}"
+                    Text="Zobacz Statystyki" />
             </VerticalStackLayout>
         </ScrollView>
 
@@ -235,7 +235,7 @@
                 Stroke="{AppThemeBinding Light={StaticResource Gray200},
                                          Dark={StaticResource Gray600}}"
                 StrokeShape="RoundRectangle 20,20,0,0">
-                <Grid Padding="0,0,0,30" RowDefinitions="Auto, Auto">
+                <Grid Padding="0,0,0,0" RowDefinitions="Auto, Auto">
 
                     <Grid
                         Grid.Row="0"
@@ -306,7 +306,7 @@
                     </Grid>
 
                     <ScrollView Grid.Row="1" MaximumHeightRequest="450">
-                        <VerticalStackLayout Padding="20,0" Spacing="20">
+                        <VerticalStackLayout Padding="20,0,20,20" Spacing="20">
 
                             <VerticalStackLayout IsVisible="{Binding SelectedDay.HasAnyPhoto}" Spacing="10">
                                 <Label
@@ -432,7 +432,6 @@
                 FontSize="30"
                 HorizontalOptions="End"
                 Text="✕"
-                TextColor="White"
                 VerticalOptions="Start" />
         </Grid>
 

@@ -12,10 +12,9 @@ namespace i_am.ViewModels
         private readonly FirestoreService _firestoreService;
         private string _myUid = string.Empty;
 
-        [ObservableProperty] private string passedCareTakerId = string.Empty;
-
         [ObservableProperty] private bool isLoading;
         [ObservableProperty] private bool isDataVisible;
+        [ObservableProperty] private string passedCareTakerId = string.Empty;
         [ObservableProperty] private bool isSelectionVisible = true;
 
         public ObservableCollection<User> CareTakers { get; } = new();

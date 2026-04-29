@@ -40,24 +40,12 @@
                 <Border Style="{StaticResource CardBorderStyle}">
                     <VerticalStackLayout Spacing="5">
                         <Label Style="{StaticResource TitleLabelStyle}" Text="Wypełnione dni" />
-                        <Label
-                            FontAttributes="Bold"
-                            Style="{StaticResource FormValueLabelStyle}"
-                            Text="{Binding MonthDaysAnswered}"
-                            TextColor="{StaticResource Primary}" />
+                        <Label Text="{Binding MonthDaysAnswered}" />
 
-                        <BoxView
-                            Margin="0,5"
-                            HeightRequest="1"
-                            Color="{AppThemeBinding Light={StaticResource Gray200},
-                                                    Dark={StaticResource Gray500}}" />
+                        <BoxView Style="{StaticResource DividerStyle}" />
 
                         <Label Style="{StaticResource TitleLabelStyle}" Text="Dołączone zdjęcia" />
-                        <Label
-                            FontAttributes="Bold"
-                            Style="{StaticResource FormValueLabelStyle}"
-                            Text="{Binding MonthPhotosTaken}"
-                            TextColor="{StaticResource Secondary}" />
+                        <Label Text="{Binding MonthPhotosTaken}" />
                     </VerticalStackLayout>
                 </Border>
 
@@ -143,7 +131,6 @@
                             FontAttributes="Bold"
                             Text="{Binding AllTimeStat}"
                             VerticalOptions="Center" />
-
                     </Grid>
                 </Border>
 
@@ -153,11 +140,7 @@
                         <Label Style="{StaticResource TitleLabelStyle}" Text="Początek nowego dnia" />
                         <Label Style="{StaticResource SubtitleLabelStyle}" Text="{Binding DayHoursConfig}" />
 
-                        <BoxView
-                            Margin="0,5"
-                            HeightRequest="1"
-                            Color="{AppThemeBinding Light={StaticResource Gray200},
-                                                    Dark={StaticResource Gray500}}" />
+                        <BoxView Style="{StaticResource DividerStyle}" />
 
                         <Label Style="{StaticResource TitleLabelStyle}" Text="Godziny możliwości odpowiedzi" />
                         <Label Style="{StaticResource SubtitleLabelStyle}" Text="{Binding ActivityWindowConfig}" />

@@ -1,3 +1,16 @@
+// Jak korzystać z firebase functions:
+// 1. Instalacja Firebase CLI: npm install -g firebase-tools
+// 2. Logowanie do Firebase: firebase login
+// 3. Inicjalizacja projekt: firebase init functions (tutaj wybrany był javascript)
+// 4. Testowanie lokalne: firebase emulators:start --only functions
+// 5. Wdrożenie na serwerze: firebase deploy --only functions
+
+
+// potrzebne moduły,
+// onDocumentCreated - funkcja uruchamiająca się przy tworzeniu dokumentu w Firestore
+// onSchedule - funkcja uruchamiająca się co określony czas
+// setGlobalOptions - ustawienia globalne dla wszystkich funkcji (np. region, timeout itp.)
+// admin do zarządzania bazą danych i wysyłania powiadomień
 const { onDocumentCreated } = require("firebase-functions/v2/firestore");
 const { onSchedule } = require("firebase-functions/v2/scheduler");
 const { setGlobalOptions } = require("firebase-functions/v2");
@@ -8,17 +21,19 @@ admin.initializeApp();
 setGlobalOptions({ region: "europe-central2" });
 
 // ----------------------------------------------------------------------
-// 1. TWOJA OBECNA FUNKCJA WYSYŁAJĄCA PUSH
+// Wysyłanie powiadomień push
+// Każdy użytkownik który ma stworzony token FCM (Tworzony za każdym razem gdy user się loguje, usuwany przy wylogowaniu oraz poprzez opcję w ustawieniach) otrzyma powiadomienie
 // ----------------------------------------------------------------------
+
+// 1. Funkcja uruchamia się przy tworzeniu dokumentu w kolekcji "notifications"
 exports.sendPushNotification = onDocumentCreated("notifications/{notificationId}", async (event) => {
-  // W Gen 2 dane wyciągamy z event.data
   const snap = event.data;
   if (!snap) return;
 
   const notificationData = snap.data();
   const receiverId = notificationData.receiverId;
 
-  // 1. Pobranie danych użytkownika
+  // 2. Pobranie danych użytkownika do którego wysyłamy powiadomienie
   const userDoc = await admin.firestore()
     .collection("users")
     .doc(receiverId)
@@ -31,7 +46,7 @@ exports.sendPushNotification = onDocumentCreated("notifications/{notificationId}
   const userData = userDoc.data();
   const fcmToken = userData.fcmToken;
 
-  // 2. Wysłanie powiadomienia, jeśli użytkownik ma token
+  // 3. Wysłanie powiadomienia, jeśli użytkownik ma token
   if (fcmToken) {
     const message = {
       token: fcmToken,
@@ -48,9 +63,9 @@ exports.sendPushNotification = onDocumentCreated("notifications/{notificationId}
 
     try {
       await admin.messaging().send(message);
-      console.log(`Push wyslany do ${userData.name}`);
+      console.log(`Push wysłany do ${userData.name}`);
     } catch (error) {
-      console.error("Blad podczas wysylania FCM:", error);
+      console.error("Błąd podczas wysyłania FCM:", error);
     }
   } else {
     console.log(`Brak tokena dla ${userData.name}`);
@@ -58,14 +73,17 @@ exports.sendPushNotification = onDocumentCreated("notifications/{notificationId}
 });
 
 // ----------------------------------------------------------------------
-// 2. NOWA FUNKCJA HARMONOGRAMU - Sprawdzanie nieaktywności
+// Wysyłanie powiadomień o braku aktywności podopiecznego (notification oraz powiadomienie push)
 // ----------------------------------------------------------------------
-// Uruchamia się co godzinę (możesz zmienić np. na 'every 30 minutes')
-exports.checkInactivity = onSchedule("every 1 hours", async (event) => {
+// Funkcja uruchamiana na serwerze, zbyt częste uruchamianie jej niepotrzebne obciążenie by generowało, optimum to co 1-2 godziny
+
+// 1. Funkcja uruchamia się co określony czas
+// every 30 minutes / every 1 hours / every 2 hours / every 12 hours / every 24 hours
+exports.checkInactivity = onSchedule("every 1 hour", async (event) => {
   const db = admin.firestore();
   const now = Date.now();
 
-  // Pobieramy wszystkich użytkowników, którzy są podopiecznymi
+  // 2. Pobieramy wszystkich użytkowników, którzy są podopiecznymi
   const caretakersSnap = await db.collection("users")
     .where("isCareGiver", "==", false)
     .get();
@@ -75,7 +93,7 @@ exports.checkInactivity = onSchedule("every 1 hours", async (event) => {
     // Jeśli nie ma przypisanych opiekunów, przeskakujemy
     if (!caretaker.careGiversID || caretaker.careGiversID.length === 0) continue;
 
-    // Pobieramy ostatnią aktywność podopiecznego (jeśli brak danych, uznajemy że jest aktywny teraz)
+    // 3. Pobieramy ostatnią aktywność podopiecznego (jeśli brak danych, uznajemy że jest aktywny teraz)
     const lastActiveTime = caretaker.lastActiveAt 
         ? caretaker.lastActiveAt.toDate().getTime() 
         : now;
@@ -83,19 +101,19 @@ exports.checkInactivity = onSchedule("every 1 hours", async (event) => {
     const hoursInactive = (now - lastActiveTime) / (1000 * 60 * 60);
 
     for (const giverId of caretaker.careGiversID) {
-      // Pobieramy profil konkretnego opiekuna
+      // 4. Pobieramy profil konkretnego opiekuna
       const giverDoc = await db.collection("users").doc(giverId).get();
       if (!giverDoc.exists) continue;
 
       const giver = giverDoc.data();
 
-      // Sprawdzamy ustawienia opiekuna odnośnie inaktywności
+      // 5. Sprawdzamy ustawienia opiekuna odnośnie inaktywności
       if (!giver.inactivityAlertsEnabled) continue;
 
       const threshold = giver.inactivityThresholdHours || 24; // Default 24h
 
+      // 6. Zabezpiecznenie przed spamem:
       if (hoursInactive >= threshold) {
-        // ZABEZPIECZENIE PRZED SPAMEM:
         // Sprawdzamy, czy w ciągu ostatnich np. 12 godzin nie wysłaliśmy już takiego powiadomienia
         const recentAlertsSnap = await db.collection("notifications")
           .where("receiverId", "==", giverId)
@@ -117,7 +135,7 @@ exports.checkInactivity = onSchedule("every 1 hours", async (event) => {
           }
         }
 
-        // Jeśli osiągnął próg inaktywności i nie wysłaliśmy ostatnio alarmu - generujemy powiadomienie
+        // 7. Jeśli osiągnął próg inaktywności i nie wysłaliśmy ostatnio alarmu - generujemy powiadomienie
         if (shouldSend) {
           await db.collection("notifications").add({
             receiverId: giverId,

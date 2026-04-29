@@ -6,7 +6,7 @@
 // 5. Wdrożenie na serwerze: firebase deploy --only functions
 
 
-// potrzebne moduły,
+// Potrzebne importy:
 // onDocumentCreated - funkcja uruchamiająca się przy tworzeniu dokumentu w Firestore
 // onSchedule - funkcja uruchamiająca się co określony czas
 // setGlobalOptions - ustawienia globalne dla wszystkich funkcji (np. region, timeout itp.)

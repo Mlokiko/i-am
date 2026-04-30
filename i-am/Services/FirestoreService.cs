@@ -506,14 +506,16 @@ namespace i_am.Services
             deleteTasks.AddRange(queryA.Documents.Where(d => !string.IsNullOrEmpty(d.Data?.Id)).Select(d => DeleteInvitationAsync(d.Data.Id)));
             deleteTasks.AddRange(queryB.Documents.Where(d => !string.IsNullOrEmpty(d.Data?.Id)).Select(d => DeleteInvitationAsync(d.Data.Id)));
 
-            await Task.WhenAll(deleteTasks); // Równoległe usuwanie powiązanych zaproszeń
+            await Task.WhenAll(deleteTasks);
+
+            string roleText = (removerUid == caregiverId) ? "opiekunem" : "podopiecznym";
 
             string targetUserId = (removerUid == caregiverId) ? caretakerId : caregiverId;
             await SendNotificationAsync(new AppNotification
             {
                 ReceiverId = targetUserId,
                 Title = "Zmiana w kontaktach",
-                Message = $"Użytkownik {removerName} usunął Cię ze swojej listy kontaktów.",//$"Użytkownik {removerName} przestał być twoim [opiekunem/podopiecznym]"
+                Message = $"Użytkownik {removerName} przestał być twoim {roleText}.",
                 Type = "ConnectionDeleted"
             });
         }

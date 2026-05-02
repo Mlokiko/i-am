@@ -540,4 +540,20 @@
         <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" />
     </Style>
 
+    <Style x:Key="AlertButtonStyle" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="#E53935" />
+        <Setter Property="TextColor" Value="White" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="16,8" />
+        <Setter Property="HeightRequest" Value="40" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="HorizontalOptions" Value="End" />
+        <Setter Property="Margin" Value="0,0,10,0" />
+        <Setter Property="Shadow">
+            <Shadow Brush="Black" Opacity="0.3" Radius="4" Offset="2,2" />
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

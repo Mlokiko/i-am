@@ -357,6 +357,42 @@ namespace i_am.Services
                 System.Diagnostics.Debug.WriteLine($"Nie udało się zaktualizować aktywności: {ex.Message}");
             }
         }
+
+        public async Task SendEmergencyAlertAsync(string careTakerId)
+        {
+            try
+            {
+                var careTakerProfile = await GetUserProfileAsync(careTakerId);
+                if (careTakerProfile == null)
+                {
+                    throw new InvalidOperationException("Nie można pobrać profilu użytkownika.");
+                }
+
+                if (careTakerProfile.CaregiversID == null || !careTakerProfile.CaregiversID.Any())
+                {
+                    throw new InvalidOperationException("Nie masz przypisanych żadnych opiekunów, którzy mogliby otrzymać alert.");
+                }
+
+                var notificationTasks = careTakerProfile.CaregiversID.Select(giverId =>
+                    SendNotificationAsync(new AppNotification
+                    {
+                        ReceiverId = giverId,
+                        SenderId = careTakerId,
+                        Title = "⚠️ ALERT ⚠️",
+                        Message = $"Pilnie skontaktuj się z {careTakerProfile.Name}. Potrzebna jest Twoja pomoc!",
+                        Type = "EmergencyAlert"
+                    })
+                );
+
+                await Task.WhenAll(notificationTasks);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Błąd wysyłania alertu: {ex.Message}");
+                throw;
+            }
+        }
+
         #endregion
 
         #region Zaproszenia (Invitations)
@@ -506,14 +542,16 @@ namespace i_am.Services
             deleteTasks.AddRange(queryA.Documents.Where(d => !string.IsNullOrEmpty(d.Data?.Id)).Select(d => DeleteInvitationAsync(d.Data.Id)));
             deleteTasks.AddRange(queryB.Documents.Where(d => !string.IsNullOrEmpty(d.Data?.Id)).Select(d => DeleteInvitationAsync(d.Data.Id)));
 
-            await Task.WhenAll(deleteTasks); // Równoległe usuwanie powiązanych zaproszeń
+            await Task.WhenAll(deleteTasks);
+
+            string roleText = (removerUid == caregiverId) ? "opiekunem" : "podopiecznym";
 
             string targetUserId = (removerUid == caregiverId) ? caretakerId : caregiverId;
             await SendNotificationAsync(new AppNotification
             {
                 ReceiverId = targetUserId,
                 Title = "Zmiana w kontaktach",
-                Message = $"Użytkownik {removerName} usunął Cię ze swojej listy kontaktów.",//$"Użytkownik {removerName} przestał być twoim [opiekunem/podopiecznym]"
+                Message = $"Użytkownik {removerName} przestał być twoim {roleText}.",
                 Type = "ConnectionDeleted"
             });
         }

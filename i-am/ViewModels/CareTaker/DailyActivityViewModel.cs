@@ -323,5 +323,35 @@ namespace i_am.ViewModels
             }
             return null;
         }
+
+        [RelayCommand]
+        private async Task SendEmergencyAlertAsync()
+        {
+            bool confirm = await Shell.Current.DisplayAlert(
+                "Potwierdzenie",
+                "Czy na pewno chcesz wysłać pilny alert do swoich opiekunów?",
+                "Tak, wyślij",
+                "Anuluj");
+
+            if (!confirm) return;
+
+            try
+            {
+                await _firestoreService.SendEmergencyAlertAsync(_myUid);
+
+                await Shell.Current.DisplayAlert(
+                    "Alert wysłany",
+                    "Twoi opiekunowie zostali powiadomieni o potrzebie pilnego kontaktu.",
+                    "OK");
+            }
+            catch (InvalidOperationException ex)
+            {
+                await Shell.Current.DisplayAlert("Błąd", ex.Message, "OK");
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Błąd", $"Nie udało się wysłać alertu: {ex.Message}", "OK");
+            }
+        }
     }
 }

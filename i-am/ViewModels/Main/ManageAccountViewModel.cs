@@ -56,7 +56,7 @@ namespace i_am.ViewModels
                 {
                     Name = profile.Name;
                     Email = profile.Email;
-                    PhoneNumber = string.IsNullOrWhiteSpace(profile.PhoneNumber) ? "Nie podano" : profile.PhoneNumber;
+                    PhoneNumber = profile.PhoneNumber;
                     BirthDate = profile.BirthDate.ToLocalTime().ToString("yyyy.MM.dd");
                     Sex = profile.Sex;
                     Role = profile.IsCaregiver ? "Opiekun" : "Podopieczny";
@@ -125,6 +125,13 @@ namespace i_am.ViewModels
                     Preferences.Default.Remove("IsCaregiver");
                     Preferences.Default.Remove("UserId");
                     await Shell.Current.GoToAsync($"//{nameof(LandingPage)}");
+                }
+                catch (UnauthorizedAccessException ex) when (ex.Message == "ReauthenticationRequired")
+                {
+                    await Shell.Current.DisplayAlert(
+                        "Wymagane ponowne logowanie",
+                        "Ze względów bezpieczeństwa ta operacja wymaga świeżego logowania. Zaloguj się ponownie i od razu spróbuj usunąć konto.",
+                        "Rozumiem");
                 }
                 catch (Exception ex)
                 {

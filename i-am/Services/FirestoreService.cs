@@ -68,15 +68,13 @@ namespace i_am.Services
         public async Task<User?> GetUserProfileAsync(string uid)
         {
             var firestore = CrossFirebaseFirestore.Current;
-
             var snapshot = await firestore.GetCollection("users")
                                           .GetDocument(uid)
                                           .GetDocumentSnapshotAsync<User>();
-
             return snapshot.Data;
         }
 
-        // Usuwanie konta użytkownika - najpierw Firestore, potem Authentication 
+        // Usuwanie konta użytkownika - najpierw wszystkie powiązane z userem dane (zdjęcia, odpowiedzi, powiązania w Firestore, główny dokument firestore potem Authentication 
         public async Task DeleteUserAsync()
         {
             var currentUser = CrossFirebaseAuth.Current.CurrentUser;
@@ -88,24 +86,19 @@ namespace i_am.Services
             var userProfile = await GetUserProfileAsync(uid);
             if (userProfile == null) return;
 
-            // --- 2. SPRAWDZENIE CZASU OD OSTATNIEGO LOGOWANIA ---
+            // 2. Sprawdzenie czasu ostatniego logowania - firestore nie pozwala na usunięcie konta gdy ostatnie logowanie było powyżej 5min
             var recentLogin = Preferences.Get("RecentLogIn", DateTime.MinValue);
             TimeSpan timeSinceLastLogin = DateTime.UtcNow - recentLogin;
 
             if (timeSinceLastLogin.TotalMinutes >= 4)
             {
-                await Shell.Current.DisplayAlert(
-                    "Wymagane ponowne logowanie",
-                    "Ze względów bezpieczeństwa (ochrona przed nieautoryzowanym usunięciem) ta operacja wymaga bardzo świeżej sesji.\n\nWyloguj się, zaloguj ponownie i od razu spróbuj usunąć konto.",
-                    "Rozumiem");
-                return;
+                throw new UnauthorizedAccessException("ReauthenticationRequired");
             }
-            // --- KONIEC SPRAWDZANIA ---
 
             var firestore = CrossFirebaseFirestore.Current;
             var batch = firestore.CreateBatch();
 
-            // Zbieramy wszystkich powiązanych użytkowników bez duplikatów przy użyciu nowoczesnego C#
+            // Zbieramy wszystkich powiązanych użytkowników
             var connectedUsers = new HashSet<string>(userProfile.CaregiversID ?? []);
             connectedUsers.UnionWith(userProfile.CaretakersID ?? []);
 
@@ -151,7 +144,7 @@ namespace i_am.Services
 #endif
         }
 
-        // --- GENERYCZNA METODA DO USUWANIA DOKUMENTÓW W KOLEKCJACH ---
+        // Generyczna metoda do usuwania dokumentów w kolekcjach
         private async Task DeleteAllDocumentsAsync<T>(ICollectionReference collectionRef, Func<T, string> idSelector)
         {
             var snapshot = await collectionRef.GetDocumentsAsync<T>();
@@ -233,7 +226,7 @@ namespace i_am.Services
                     await CrossFirebaseFirestore.Current
                         .GetCollection("users")
                         .GetDocument(uid)
-                        .UpdateDataAsync(("fcmToken", token)); // Użycie Tuple
+                        .UpdateDataAsync(("fcmToken", token));
                 }
             }
             catch (Exception ex)
@@ -252,7 +245,7 @@ namespace i_am.Services
                 await CrossFirebaseFirestore.Current
                     .GetCollection("users")
                     .GetDocument(uid)
-                    .UpdateDataAsync(("fcmToken", string.Empty)); // Użycie Tuple
+                    .UpdateDataAsync(("fcmToken", string.Empty));
             }
             catch (Exception ex)
             {
@@ -265,7 +258,7 @@ namespace i_am.Services
             var firestore = CrossFirebaseFirestore.Current;
             await firestore.GetCollection(collectionName)
                            .GetDocument(documentId)
-                           .UpdateDataAsync((fieldName, value)); // Użycie Tuple
+                           .UpdateDataAsync((fieldName, value));
         }
 
         public async Task UpdateUserProfileAsync(string uid, string phoneNumber, string sex)
@@ -277,7 +270,7 @@ namespace i_am.Services
                     .GetDocument(uid)
                     .UpdateDataAsync(
                         ("phoneNumber", phoneNumber),
-                        ("sex", sex)); // Użycie Tuple
+                        ("sex", sex));
             }
             catch (Exception ex)
             {
@@ -296,7 +289,7 @@ namespace i_am.Services
                         ("dayStartHour", dayStartHour),
                         ("isActivityTimeRestricted", isRestricted),
                         ("activityRestrictionStartHour", startHour),
-                        ("activityRestrictionEndHour", endHour)); // Użycie Tuple
+                        ("activityRestrictionEndHour", endHour));
                 return true;
             }
             catch (Exception ex)
@@ -350,7 +343,7 @@ namespace i_am.Services
                 await CrossFirebaseFirestore.Current
                     .GetCollection("users")
                     .GetDocument(uid)
-                    .UpdateDataAsync(("lastActiveAt", DateTimeOffset.UtcNow)); // Użycie Tuple
+                    .UpdateDataAsync(("lastActiveAt", DateTimeOffset.UtcNow));
             }
             catch (Exception ex)
             {
@@ -494,7 +487,7 @@ namespace i_am.Services
 
             await firestore.GetCollection("invitations")
                            .GetDocument(invitation.Id)
-                           .UpdateDataAsync(("status", "Rejected")); // Użycie Tuple
+                           .UpdateDataAsync(("status", "Rejected"));
 
             var myProfile = await GetUserProfileAsync(myUid);
             string myName = myProfile?.Name ?? "Użytkownik";
@@ -559,7 +552,7 @@ namespace i_am.Services
         // Zoptymalizowane pobieranie użytkowników przy pomocy Task.WhenAll
         public async Task<List<User>> GetUsersByIdsAsync(List<string>? userIds)
         {
-            if (userIds is not { Count: > 0 }) return []; // Zwracamy pustą kolekcję w nowym formacie
+            if (userIds is not { Count: > 0 }) return [];
 
             var firestore = CrossFirebaseFirestore.Current.GetCollection("users");
 
@@ -827,7 +820,6 @@ namespace i_am.Services
                 return string.Empty;
             }
         }
-
         #endregion
     }
 }

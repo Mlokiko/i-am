@@ -552,7 +552,11 @@
         <Setter Property="HorizontalOptions" Value="End" />
         <Setter Property="Margin" Value="0,0,10,0" />
         <Setter Property="Shadow">
-            <Shadow Brush="Black" Opacity="0.3" Radius="4" Offset="2,2" />
+            <Shadow
+                Brush="Black"
+                Opacity="0.3"
+                Radius="4"
+                Offset="2,2" />
         </Setter>
     </Style>
 

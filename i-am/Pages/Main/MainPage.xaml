@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:viewModels="clr-namespace:i_am.ViewModels"
-             x:Class="i_am.Pages.Main.MainPage"
-             x:DataType="viewModels:MainPageViewModel"
-             Shell.NavBarIsVisible="True"
-             Title="I AM">
+<ContentPage
+    x:Class="i_am.Pages.Main.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewModels="clr-namespace:i_am.ViewModels"
+    Title="I AM"
+    x:DataType="viewModels:MainPageViewModel"
+    Shell.NavBarIsVisible="True">
 
     <Shell.TitleView>
-        <Grid ColumnDefinitions="*,Auto" Padding="10,0">
-            <Label Text="I AM"
-                   Grid.Column="0"
-                   FontSize="24"
-                   FontAttributes="Bold"
-                   TextColor="White"
-                   VerticalOptions="Center"
-                   HorizontalOptions="Start"/>
+        <Grid HorizontalOptions="Fill">
+            <Label
+                FontAttributes="Bold"
+                FontFamily="OpenSansSemibold"
+                FontSize="21"
+                HorizontalOptions="Center"
+                Text="I AM"
+                TextColor="White"
+                VerticalOptions="Center" />
 
-            <!-- Przycisk ALERT - widoczny tylko dla podopiecznych -->
-            <Button Grid.Column="1"
-                    Text="ALERT"
-                    Style="{StaticResource AlertButtonStyle}"
-                    Command="{Binding SendEmergencyAlertCommand}"
-                    IsVisible="{Binding IsCareTaker}"/>
+            <Button
+                Command="{Binding SendEmergencyAlertCommand}"
+                HorizontalOptions="End"
+                IsVisible="{Binding IsCareTaker}"
+                Style="{StaticResource AlertButtonStyle}"
+                Text="ALERT"
+                VerticalOptions="Center" />
         </Grid>
     </Shell.TitleView>
 

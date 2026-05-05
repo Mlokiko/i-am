@@ -61,67 +61,6 @@
                 </Border>
 
                 <Border Style="{StaticResource CardBorderStyle}">
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding OpenPhoneDialerCommand}" CommandParameter="800012005" />
-                    </Border.GestureRecognizers>
-                    <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
-                        <Label
-                            Grid.Column="0"
-                            Style="{StaticResource TitleLabelStyle}"
-                            Text="Telefon Pogadania" />
-                        <Label
-                            Grid.Column="1"
-                            FontAttributes="Bold"
-                            FontSize="20"
-                            Text="800 012 005"
-                            TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                        Dark={StaticResource PrimaryDark}}"
-                            VerticalOptions="Center" />
-                    </Grid>
-                </Border>
-
-                <Border Style="{StaticResource CardBorderStyle}">
-                    <VerticalStackLayout Spacing="12">
-                        <Grid ColumnDefinitions="*, Auto">
-                            <Label
-                                Grid.Column="0"
-                                Style="{StaticResource TitleLabelStyle}"
-                                Text="Wsparcie dla Dorosłych" />
-                            <Label
-                                Grid.Column="1"
-                                FontAttributes="Bold"
-                                FontSize="20"
-                                Text="800 702 222"
-                                TextColor="{AppThemeBinding Light={StaticResource Primary},
-                                                            Dark={StaticResource PrimaryDark}}"
-                                VerticalOptions="Center">
-                                <Label.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding OpenPhoneDialerCommand}" CommandParameter="800702222" />
-                                </Label.GestureRecognizers>
-                            </Label>
-                        </Grid>
-                        <BoxView Margin="0" Style="{StaticResource DividerStyle}" />
-                        <HorizontalStackLayout HorizontalOptions="End" Spacing="5">
-                            <Label
-                                Style="{StaticResource SubtitleLabelStyle}"
-                                Text="Czat:"
-                                VerticalOptions="Center" />
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="14"
-                                Text="centrumwsparcia.pl"
-                                TextColor="{AppThemeBinding Light={StaticResource Secondary},
-                                                            Dark={StaticResource SecondaryDarkText}}"
-                                TextDecorations="Underline">
-                                <Label.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding OpenWebsiteCommand}" CommandParameter="https://centrumwsparcia.pl" />
-                                </Label.GestureRecognizers>
-                            </Label>
-                        </HorizontalStackLayout>
-                    </VerticalStackLayout>
-                </Border>
-
-                <Border Style="{StaticResource CardBorderStyle}">
                     <VerticalStackLayout Spacing="12">
                         <Grid ColumnDefinitions="*, Auto">
                             <Label
@@ -203,6 +142,68 @@
                     </VerticalStackLayout>
                 </Border>
 
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <VerticalStackLayout Spacing="12">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <Label
+                                Grid.Column="0"
+                                Style="{StaticResource TitleLabelStyle}"
+                                Text="Wsparcie dla Dorosłych" />
+                                            <Label
+                                Grid.Column="1"
+                                FontAttributes="Bold"
+                                FontSize="20"
+                                Text="800 702 222"
+                                TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                            Dark={StaticResource PrimaryDark}}"
+                                VerticalOptions="Center">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding OpenPhoneDialerCommand}" CommandParameter="800702222" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </Grid>
+                        <BoxView Margin="0" Style="{StaticResource DividerStyle}" />
+                        <HorizontalStackLayout HorizontalOptions="End" Spacing="5">
+                            <Label
+                                Style="{StaticResource SubtitleLabelStyle}"
+                                Text="Czat:"
+                                VerticalOptions="Center" />
+                                            <Label
+                                FontAttributes="Bold"
+                                FontSize="14"
+                                Text="centrumwsparcia.pl"
+                                TextColor="{AppThemeBinding Light={StaticResource Secondary},
+                                                            Dark={StaticResource SecondaryDarkText}}"
+                                TextDecorations="Underline">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding OpenWebsiteCommand}" CommandParameter="https://centrumwsparcia.pl" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+                
+
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenPhoneDialerCommand}" CommandParameter="800012005" />
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                        <Label
+                            Grid.Column="0"
+                            Style="{StaticResource TitleLabelStyle}"
+                            Text="Telefon Pogadania" />
+                                    <Label
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            FontSize="20"
+                            Text="800 012 005"
+                            TextColor="{AppThemeBinding Light={StaticResource Primary},
+                                                        Dark={StaticResource PrimaryDark}}"
+                            VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+                
             </VerticalStackLayout>
 
             <VerticalStackLayout Margin="0,10,0,30" Spacing="15">

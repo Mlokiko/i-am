@@ -87,7 +87,7 @@
                         <Label
                             Grid.Row="2"
                             Grid.Column="0"
-                            Text="Zeszły tydzień:"
+                            Text="Poprzedni tydzień:"
                             VerticalOptions="Center" />
                         <Label
                             Grid.Row="2"
@@ -119,7 +119,7 @@
                         <Label
                             Grid.Row="6"
                             Grid.Column="0"
-                            Text="Zeszły miesiąc:"
+                            Text="Poprzedni miesiąc:"
                             VerticalOptions="Center" />
                         <Label
                             Grid.Row="6"
@@ -135,7 +135,7 @@
                         <Label
                             Grid.Row="8"
                             Grid.Column="0"
-                            Text="Cały czas:"
+                            Text="Podsumowanie:"
                             VerticalOptions="Center" />
                         <Label
                             Grid.Row="8"

@@ -266,7 +266,7 @@ namespace i_am.ViewModels
                     }
 
                     if (response.TotalScore <= -3) response.EvaluationStatus = "Sugeruje zaburzenie (Krytyczne)";
-                    else if (response.TotalScore <= -2) response.EvaluationStatus = "Sugeruje stan zaniżony (Ostrzeżenie)";
+                    else if (response.TotalScore <= -2) response.EvaluationStatus = "Sugeruje stan obniżony (Ostrzeżenie)";
                     else if (response.TotalScore <= -1) response.EvaluationStatus = "Niewspierające doznania";
                     else response.EvaluationStatus = "W normie";
 

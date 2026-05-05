@@ -269,7 +269,7 @@
                             <x:Array Type="{x:Type x:String}">
                                 <x:String>Mężczyzna</x:String>
                                 <x:String>Kobieta</x:String>
-                                <x:String>Inne</x:String>
+                                <x:String>Inna</x:String>
                             </x:Array>
                         </Picker.ItemsSource>
                     </Picker>

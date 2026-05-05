@@ -248,9 +248,10 @@
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="14"
+                                IsVisible="{Binding IsCareGiver}"
                                 Text="{Binding SelectedDay.Response.EvaluationStatus, StringFormat='Status: {0}'}">
                                 <Label.Triggers>
-                                    <DataTrigger
+                                    <DataTrigger 
                                         Binding="{Binding SelectedDay.ActivityStatus}"
                                         TargetType="Label"
                                         Value="Good">

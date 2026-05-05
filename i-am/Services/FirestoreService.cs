@@ -768,7 +768,7 @@ namespace i_am.Services
                     new() { Text = "9-11 godzin", Points = 0 },
                     new() { Text = "12 lub więcej", Points = -2 }
                 ]},
-                new() { OrderIndex = order++, IsRandomPool = false, Type = "Closed", MaxSelections = 1, Text = "Zaznacz na skali jak się dzisiaj czujesz:", Options = [
+                new() { OrderIndex = order++, IsRandomPool = false, Type = "Closed", MaxSelections = 1, Text = "Podsumuj swój dzień pod względem energii.", Options = [
                     new() { Text = "Przemęczony", Points = -2 },
                     new() { Text = "Bardzo zmęczony", Points = -1 },
                     new() { Text = "Zmęczony", Points = -1 },
@@ -781,7 +781,7 @@ namespace i_am.Services
                 new() { OrderIndex = order++, IsRandomPool = true, Type = "Closed", MaxSelections = 1, Text = "Czy miałeś problem ze skupieniem się podczas wykonywania podstawowych czynności (np. oglądanie TV, czytanie)?", Options = [new() { Text = "TAK", Points = -1 }, new() { Text = "NIE", Points = 0 }] },
                 new() { OrderIndex = order++, IsRandomPool = true, Type = "Closed", MaxSelections = 1, Text = "Czy zdarzyło ci się dzisiaj ruszać lub mówić tak wolno, że zauważyli to inni (lub przeciwnie, nie mogłeś usiedzieć w miejscu)?", Options = [new() { Text = "TAK", Points = -3 }, new() { Text = "NIE", Points = 0 }] },
                 new() { OrderIndex = order++, IsRandomPool = true, Type = "Open", Text = "O czym pomyślałeś jak się obudziłeś?" },
-                new() { OrderIndex = order++, IsRandomPool = true, Type = "Open", Text = "Co byś chciał dzisiaj zrobić?" },
+                new() { OrderIndex = order++, IsRandomPool = true, Type = "Open", Text = "Co chciałeś dzisiaj zrobić?" },
                 new() { OrderIndex = order++, IsRandomPool = true, Type = "Open", Text = "Kiedy ostatni raz czułeś radość?" },
                 new() { OrderIndex = order++, IsRandomPool = true, Type = "Open", Text = "Co sprawiłoby Ci radość?" },
                 new() { OrderIndex = order++, IsRandomPool = true, Type = "Open", Text = "Podaj choć jedną rzecz z której byłeś dzisiaj dumny." }

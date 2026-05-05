@@ -25,7 +25,7 @@ namespace i_am.ViewModels
             "Wszystkie (niezależnie od wyniku)",
             "W normie (0 pkt)",
             "Niewspierające doznania i gorsze (<= -1 pkt)",
-            "Stan zaniżony i gorsze (<= -2 pkt)",
+            "Stan obniżony i gorsze (<= -2 pkt)",
             "Tylko Sugeruje zaburzenie (Krytyczne) (<= -3 pkt)"
         };
 
@@ -281,7 +281,7 @@ namespace i_am.ViewModels
         private string MapSurveyFilterToDb(string displayValue) => displayValue switch
         {
             "Tylko Sugeruje zaburzenie (Krytyczne) (<= -3 pkt)" => "CriticalOnly",
-            "Stan zaniżony i gorsze (<= -2 pkt)" => "WarningAndWorse",
+            "Stan obniżony i gorsze (<= -2 pkt)" => "WarningAndWorse",
             "Niewspierające doznania i gorsze (<= -1 pkt)" => "NegativeAndWorse",
             "W normie (0 pkt)" => "NormalOnly",
             _ => "All"
@@ -290,7 +290,7 @@ namespace i_am.ViewModels
         private string MapDbToSurveyFilter(string dbValue) => dbValue switch
         {
             "CriticalOnly" => "Tylko Sugeruje zaburzenie (Krytyczne) (<= -3 pkt)",
-            "WarningAndWorse" => "Stan zaniżony i gorsze (<= -2 pkt)",
+            "WarningAndWorse" => "Stan obniżony i gorsze (<= -2 pkt)",
             "NegativeAndWorse" => "Niewspierające doznania i gorsze (<= -1 pkt)",
             "NormalOnly" => "W normie (0 pkt)",
             _ => "Wszystkie (niezależnie od wyniku)"

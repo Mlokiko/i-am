@@ -37,7 +37,7 @@ namespace i_am.ViewModels
         {
             "Mężczyzna",
             "Kobieta",
-            "Inne"
+            "Inna"
         };
 
         public ManageAccountViewModel(FirestoreService firestoreService)
